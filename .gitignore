@@ -1,0 +1,10 @@
+
+*.swp
+
+target/
+
+.idea/
+
+application.properties
+
+

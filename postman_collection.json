@@ -1,0 +1,332 @@
+{
+	"info": {
+		"_postman_id": "baf60048-b431-4280-a3c1-61ba63ab98d8",
+		"name": "Voting App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/api/public/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"admin@votingapp.com\",\n    \"password\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/public/login",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"public",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/public/user/new",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"email@email.com\",\n    \"phone\": null,\n    \"name\": \"blahblah\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/new",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"public",
+						"user",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/public/user/isUsernameAvailable",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/isUsernameAvailable?q=admin",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"public",
+						"user",
+						"isUsernameAvailable"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "admin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/public/user/isEmailAvailable",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/isEmailAvailable?q=admin@votingapp.com",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"public",
+						"user",
+						"isEmailAvailable"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "admin@votingapp.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/public/user/isPhoneNumberAvailable",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/isPhoneNumberAvailable?q=3035213115",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"public",
+						"user",
+						"isPhoneNumberAvailable"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "3035213115"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/public/user/isUserInformationUnique",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/isUserInformationUnique?name=adminsss&phone=3035213177&email=haxwell@gmail.com33",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"public",
+						"user",
+						"isUserInformationUnique"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "adminsss"
+						},
+						{
+							"key": "phone",
+							"value": "3035213177"
+						},
+						{
+							"key": "email",
+							"value": "haxwell@gmail.com33"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/topic/create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{current-jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": 1,\n    \"name\": \"newTopic\",\n    \"description\": \"desc\",\n    \"expirationDate\": \"2022-06-21T13:14:21+0000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/topic/create",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"topic",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/topic  -- get all",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{current-jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/topic",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"topic"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/topic  -- update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{current-jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/topic/1",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"topic",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/topic  -- get one Copy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{current-jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/topic/1",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"topic",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/vote - get current votes per topic",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/vote/3",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"vote",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

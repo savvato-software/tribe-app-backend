@@ -1,0 +1,5 @@
+
+RUNNING THE APP
+==
+1. You will need the environment variables PLIVO_SMS_AUTH_ID and PLIVO_SMS_AUTH_TOKEN passed in when you run.
+

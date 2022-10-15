@@ -1,5 +1,8 @@
 package com.savvato.tribeapp.dto;
 
+import lombok.Builder;
+
+@Builder
 public class ProfileDTO {
 
 	public String name;

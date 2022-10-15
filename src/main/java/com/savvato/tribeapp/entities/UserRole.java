@@ -8,8 +8,8 @@ import javax.persistence.Id;
 @Entity
 public class UserRole {
 
-	public static final UserRole ROLE_ADMIN = new UserRole(1L, "admin");
-	public static final UserRole ROLE_ACCOUNTHOLDER = new UserRole(2L, "accountholder");
+	public static final UserRole ROLE_ADMIN = new UserRole(1L, "ROLE_admin");
+	public static final UserRole ROLE_ACCOUNTHOLDER = new UserRole(2L, "ROLE_accountholder");
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

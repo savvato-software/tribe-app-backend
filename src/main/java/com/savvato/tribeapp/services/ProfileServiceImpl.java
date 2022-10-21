@@ -17,7 +17,7 @@ public class ProfileServiceImpl implements ProfileService {
 
 	public Optional<ProfileDTO> getByUserId(Long userId) {
 		Optional<User> opt = userService.findById(userId);
-		ProfileDTO rtn = new ProfileDTO();
+		ProfileDTO rtn = ProfileDTO.builder().build();
 
 		if (opt.isPresent()) {
 			User u = opt.get();

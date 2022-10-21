@@ -8,6 +8,8 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.AuthRequest;
 import com.savvato.tribeapp.entities.User;
+import com.savvato.tribeapp.services.AuthService;
+import com.savvato.tribeapp.services.AuthServiceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +49,7 @@ public class AuthAPIController {
             return ResponseEntity.ok()
                 .header(
                     HttpHeaders.AUTHORIZATION,
-                    generateAccessToken(user)
+                    AuthServiceImpl.generateAccessToken(user)
                 )
                 .body(user);
         } catch (BadCredentialsException ex) {
@@ -55,13 +57,4 @@ public class AuthAPIController {
         }
     }
     
-    public String generateAccessToken(User user) {
-        return Jwts.builder()
-                .setSubject(String.format("%s,%s", user.getId(), user.getEmail()))
-                .setIssuer(Constants.JWT_ISSUER)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week
-                .signWith(SignatureAlgorithm.HS512, Constants.JWT_SECRET)
-                .compact();
-    }
 }

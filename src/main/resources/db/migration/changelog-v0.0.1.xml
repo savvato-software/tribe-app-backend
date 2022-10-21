@@ -23,6 +23,13 @@
 			</column>
 			<column name="enabled" type="TINYINT(1)">
 			</column>
+			<column name="created" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP">
+				<constraints nullable="false"/>
+			</column>
+			<column name="last_updated" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP">
+				<constraints nullable="false"/>
+			</column>
+
 		</createTable>
 
 		<sql dbms="mysql">

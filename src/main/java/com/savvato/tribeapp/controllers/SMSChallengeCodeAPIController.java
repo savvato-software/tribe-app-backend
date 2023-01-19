@@ -24,7 +24,11 @@ public class SMSChallengeCodeAPIController {
 
     @RequestMapping(value = { "/api/public/sendSMSChallengeCodeToPhoneNumber" }, method=RequestMethod.POST)
     public String sendSMSChallengeCode(@RequestBody @Valid SMSChallengeRequest req) {
-        String phoneNumber = "1" + req.phoneNumber;  // assume the number we're getting is 10 digits, without the country code
+        String phoneNumber = req.phoneNumber;  // assume the number we're getting is 10 digits, without the country code
+
+        if (!phoneNumber.startsWith("0"))
+            phoneNumber = "1" + phoneNumber;
+
         String rtn = smsccs.sendSMSChallengeCodeToPhoneNumber(phoneNumber);
         logger.debug("Sent challenge code to " + phoneNumber + ". " + rtn);
         return rtn;

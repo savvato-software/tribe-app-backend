@@ -129,7 +129,10 @@ public class UserServiceImpl implements UserService {
 
 		User rtn = null;
 
-		if (smsccs.isAValidSMSChallengeCode("1" + phoneNumber, smsChallengeCode)) {
+		if (!phoneNumber.startsWith("0"))
+			phoneNumber = "1" + phoneNumber;
+
+		if (smsccs.isAValidSMSChallengeCode(phoneNumber, smsChallengeCode)) {
 			Optional<List<User>> opt = this.userRepo.findByPhone(phoneNumber);
 
 			if (opt.isPresent()) {
@@ -142,6 +145,5 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return rtn;
-
 	}
 }

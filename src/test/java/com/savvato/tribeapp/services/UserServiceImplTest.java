@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 
@@ -38,11 +37,6 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 	
 	@MockBean
 	private UserRepository userRepository;
-
-	@MockBean
-	private ProfileService profileService;
-	
-//	final Long USER_ID = 739L;
 
 	@Test
 	public void testCreateNewUser() {
@@ -80,8 +74,6 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 
 		Mockito.when(userRepository.findByNamePhoneOrEmail(any(String.class), any(String.class), any(String.class)))
 				.thenReturn(Optional.of(user2));
-
-		Mockito.when(userRepository.save(any(User.class))).thenReturn(user1);
 
 		// when
 		boolean caughtException = false;

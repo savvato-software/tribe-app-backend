@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -21,6 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -97,5 +99,54 @@ public class ProfileAPITest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(Constants.FAKE_USER_NAME1));
+
+              
+                
     }
+     @Test
+    public void testProfileHappyPathUpdate() throws Exception {
+        
+        Set<UserRole> rolesSet = new HashSet<>();
+        
+        User user = new User();
+        user.setId(1L);
+        user.setName(Constants.FAKE_USER_NAME1);
+        user.setPassword("admin"); // pw => admin
+        user.setEnabled(1);
+        user.setRoles(rolesSet);
+        user.setCreated();
+        user.setLastUpdated();
+        user.setEmail(Constants.FAKE_USER_EMAIL1);
+
+        Mockito.when(userPrincipalService.getUserPrincipalByName(Mockito.anyString())).thenReturn(
+                new UserPrincipal(user)
+        );
+        
+
+        Mockito.when(profileService.update(Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+        .thenReturn(true);
+        //request.userId, request.name, request.email, request.phone
+
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        this.mockMvc.
+        perform(
+            put("/api/profile/1")
+            .header("Authorization", "Bearer " + auth)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content("{\"userId\":\"1L\",\"name\":\"bob\",\"email\":\"admin@app.com\",\"phone\":\"3035551212\"},\"password\":\"admin\"}")
+        )
+        
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value("stilladmin"));
+        
+} 
+
+
+    // unhappy path return false 400;
+
+
+
+    
 }

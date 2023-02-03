@@ -1,17 +1,19 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
+import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
-import com.savvato.tribeapp.entities.User;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 import java.util.Set;
@@ -21,7 +23,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class UserServiceImplTest extends AbstractServiceImplTest {
 
 	@TestConfiguration
@@ -34,6 +36,15 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 	
 	@Autowired
 	private UserService userService;
+
+	@MockBean
+	private UserRoleMapService userRoleMapService;
+
+	@MockBean
+	private PasswordEncoder passwordEncoder;
+
+	@MockBean
+	private SMSChallengeCodeService smsccs;
 	
 	@MockBean
 	private UserRepository userRepository;

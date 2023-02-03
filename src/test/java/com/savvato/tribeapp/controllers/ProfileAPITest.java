@@ -23,6 +23,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -107,6 +108,8 @@ public class ProfileAPITest {
     public void testProfileHappyPathUpdate() throws Exception {
         
         Set<UserRole> rolesSet = new HashSet<>();
+        rolesSet.add(UserRole.ROLE_ACCOUNTHOLDER);
+        rolesSet.add(UserRole.ROLE_ADMIN);
         
         User user = new User();
         user.setId(1L);
@@ -117,15 +120,14 @@ public class ProfileAPITest {
         user.setCreated();
         user.setLastUpdated();
         user.setEmail(Constants.FAKE_USER_EMAIL1);
-
-        Mockito.when(userPrincipalService.getUserPrincipalByName(Mockito.anyString())).thenReturn(
+        
+        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString())).thenReturn(
                 new UserPrincipal(user)
         );
         
 
         Mockito.when(profileService.update(Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
         .thenReturn(true);
-        //request.userId, request.name, request.email, request.phone
 
         String auth = AuthServiceImpl.generateAccessToken(user);
 
@@ -135,18 +137,53 @@ public class ProfileAPITest {
             .header("Authorization", "Bearer " + auth)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content("{\"userId\":\"1L\",\"name\":\"bob\",\"email\":\"admin@app.com\",\"phone\":\"3035551212\"},\"password\":\"admin\"}")
+            .content("{\"userId\":\"1\",\"name\":\"bob\",\"email\":\"admin@app.com\",\"phone\":\"3035551212\"}")
         )
         
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.name").value("stilladmin"));
-        
+        .andExpect(content().string("true"));
+
 } 
 
-
-    // unhappy path return false 400;
-
-
-
+@Test
+public void testProfileUnHappyPathUpdate() throws Exception {
     
+    Set<UserRole> rolesSet = new HashSet<>();
+    rolesSet.add(UserRole.ROLE_ACCOUNTHOLDER);
+    rolesSet.add(UserRole.ROLE_ADMIN);
+    
+    User user = new User();
+    user.setId(1L);
+    user.setName(Constants.FAKE_USER_NAME1);
+    user.setPassword("admin"); // pw => admin
+    user.setEnabled(1);
+    user.setRoles(rolesSet);
+    user.setCreated();
+    user.setLastUpdated();
+    user.setEmail(Constants.FAKE_USER_EMAIL1);
+    
+    Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString())).thenReturn(
+            new UserPrincipal(user)
+    );
+    
+
+    Mockito.when(profileService.update(Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+    .thenReturn(false);
+
+    String auth = AuthServiceImpl.generateAccessToken(user);
+
+    this.mockMvc.
+    perform(
+        put("/api/profile/1")
+        .header("Authorization", "Bearer " + auth)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content("{\"userId\":\"1\",\"name\":\"bob\",\"email\":\"admin\",\"phone\":\"3035551212\"}")
+    )
+    
+    .andExpect(status().isBadRequest())
+    .andExpect(content().string("false"));
+
+} 
+
 }

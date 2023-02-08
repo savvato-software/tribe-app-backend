@@ -24,6 +24,12 @@ public abstract class AbstractServiceImplTest {
     public static String USER1_NAME = "Fake A. Admin";
     public static String USER2_NAME = "Fake R. User"; // the R stand for Regular
 
+    public Set<UserRole> getUserRoles_AccountHolder() {
+        Set<UserRole> rtn = new HashSet<>();
+        rtn.add(UserRole.ROLE_ACCOUNTHOLDER);
+        return rtn;
+    }
+
     public Set<UserRole> getUserRoles_Admin() {
         Set<UserRole> rtn = new HashSet<>();
 

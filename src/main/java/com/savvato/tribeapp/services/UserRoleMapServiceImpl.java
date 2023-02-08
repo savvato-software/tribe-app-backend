@@ -20,25 +20,22 @@ public class UserRoleMapServiceImpl implements UserRoleMapService {
 	UserRoleMapRepository userRoleMapRepo;
 	
 	public void addRoleToUser(Long userId, ROLES role) {
-		userRoleMapRepo.save(new UserRoleMap(userId, Long.valueOf(role.ordinal()+"") ));
+		userRoleMapRepo.save(new UserRoleMap(userId, Long.valueOf(role.ordinal()+1+"") ));
 	}
 	
 	public void removeRoleFromUser(Long userId, ROLES role) {
-		userRoleMapRepo.delete(new UserRoleMap(userId, Long.valueOf(role.ordinal()+"") ));
+		userRoleMapRepo.delete(new UserRoleMap(userId, Long.valueOf(role.ordinal()+1+"") ));
 	}
 
 	public boolean addRolesToUser(Long userId, ArrayList<String> roles) {
-		EnumSet<ROLES> allRoles = EnumSet.allOf(ROLES.class);
+
 		for (String role : roles) {
-			if (allRoles.contains(role)) {
+			try {
 				addRoleToUser(userId, ROLES.valueOf(role));
-			} else {
-				roles.remove(role);
+			} catch (Exception e) {
+				return false;
 			}
 		}
-		if (roles.isEmpty()) {
-			return true;
-		}
-		return false;
+		return true;
 	}
 }

@@ -27,4 +27,14 @@ public class PermissionsAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);
         }
     }
+    @RequestMapping(value = { "/api/permissions" }, method= RequestMethod.DELETE)
+    public ResponseEntity<Boolean> deletePermissions(@RequestBody @Valid PermissionsRequest request) {
+        boolean rtn = userRoleMapService.removeRolesFromUser(request.id, request.permissions);
+
+        if (rtn) {
+            return ResponseEntity.status(HttpStatus.OK).body(rtn);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);
+        }
+    }
 }

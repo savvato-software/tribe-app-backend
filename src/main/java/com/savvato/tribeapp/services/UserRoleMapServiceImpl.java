@@ -4,18 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.savvato.tribeapp.entities.UserRoleMap;
-import com.savvato.tribeapp.repositories.UserRepository;
 import com.savvato.tribeapp.repositories.UserRoleMapRepository;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 @Service
 public class UserRoleMapServiceImpl implements UserRoleMapService {
-
-	@Autowired
-	UserRepository userRepo;
-
 	@Autowired
 	UserRoleMapRepository userRoleMapRepo;
 	
@@ -27,15 +21,31 @@ public class UserRoleMapServiceImpl implements UserRoleMapService {
 		userRoleMapRepo.delete(new UserRoleMap(userId, Long.valueOf(role.ordinal()+1+"") ));
 	}
 
-	public boolean addRolesToUser(Long userId, ArrayList<String> roles) {
-
-		for (String role : roles) {
+	public boolean addRolesToUser(Long userId, ArrayList<String> rolesToAdd) {
+		boolean successfulAdd = true;
+		for (String role : rolesToAdd) {
 			try {
 				addRoleToUser(userId, ROLES.valueOf(role));
 			} catch (Exception e) {
-				return false;
+				successfulAdd =  false;
 			}
 		}
-		return true;
+		return successfulAdd;
+	}
+
+	public boolean removeRolesFromUser(Long userId, ArrayList<String> rolesToDelete) {
+		boolean successfulDelete = true;
+		for (String role : rolesToDelete) {
+			if (role != "ACCOUNTHOLDER") {
+				try {
+					removeRoleFromUser(userId, ROLES.valueOf(role));
+				} catch (Exception e) {
+					successfulDelete =  false;
+				}
+			} else {
+				successfulDelete = false;
+			}
+		}
+		return successfulDelete;
 	}
 }

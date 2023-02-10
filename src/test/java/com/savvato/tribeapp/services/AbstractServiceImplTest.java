@@ -39,6 +39,16 @@ public abstract class AbstractServiceImplTest {
         return rtn;
     }
 
+    public Set<UserRole> getUserRoles_Admin_AccountHolder() {
+        Set<UserRole> rtn = new HashSet<>();
+
+        rtn.add(UserRole.ROLE_ADMIN);
+        rtn.add(UserRole.ROLE_PHRASEREVIEWER);
+        rtn.add(UserRole.ROLE_ACCOUNTHOLDER);
+
+        return rtn;
+    }
+
     public User getUser1() {
         User rtn = new User();
 

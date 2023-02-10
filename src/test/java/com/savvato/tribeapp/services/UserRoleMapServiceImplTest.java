@@ -56,7 +56,6 @@ public class UserRoleMapServiceImplTest extends AbstractServiceImplTest {
         UserRoleMap accountholder = new UserRoleMap(user.getId(),2L);
         UserRoleMap phrasereviewer = new UserRoleMap(user.getId(),3L);
 
-        // return true if userRoleMapRepository.save() is called at all
         Mockito.when(userRoleMapRepository.save(Mockito.any()))
                 .thenReturn(admin)
                 .thenReturn(accountholder)
@@ -71,7 +70,9 @@ public class UserRoleMapServiceImplTest extends AbstractServiceImplTest {
         assertEquals(arg1.getAllValues().get(0).getUserRoleId(),userRole.ROLE_ADMIN.getId());
 
         assertEquals(arg1.getAllValues().get(1).getUserId(), user.getId());
+        assertEquals(arg1.getAllValues().get(1).getUserRoleId(),userRole.ROLE_ACCOUNTHOLDER.getId());
         assertEquals(arg1.getAllValues().get(2).getUserId(), user.getId());
+        assertEquals(arg1.getAllValues().get(2).getUserRoleId(),userRole.ROLE_PHRASEREVIEWER.getId());
     }
 
     @Test
@@ -89,5 +90,27 @@ public class UserRoleMapServiceImplTest extends AbstractServiceImplTest {
 
         verify(userRoleMapRepository, never()).save(Mockito.any());
     }
+    // first two values valid, third one being invalid
 
+    @Test
+    public void testRemoveRolesFromUser() {
+        // create a new array list with ADMIN, ACCOUNT_HOLDER, PHRASE_REVIEWER in it
+        ArrayList<String> expectedRoles = new ArrayList<String>(List.of("ADMIN", "PHRASE_REVIEWER"));
+
+        User user = getUser1();
+        user.setRoles(getUserRoles_Admin_AccountHolder());
+
+        // call userRoleMapService.addRolesToUser() with parameters userRequest.userId and the array list
+        boolean returnedTrue = userRoleMapService.removeRolesFromUser(user.getId(), expectedRoles);
+
+        ArgumentCaptor<UserRoleMap> arg1 = ArgumentCaptor.forClass(UserRoleMap.class);
+        verify(userRoleMapRepository, times(2)).delete(arg1.capture());
+        assertEquals(arg1.getAllValues().get(0).getUserId(), user.getId());
+        assertEquals(arg1.getAllValues().get(0).getUserRoleId(),userRole.ROLE_ADMIN.getId());
+
+        assertEquals(arg1.getAllValues().get(1).getUserId(), user.getId());
+        assertEquals(arg1.getAllValues().get(1).getUserRoleId(),userRole.ROLE_PHRASEREVIEWER.getId());
+
+        assertThat(returnedTrue).isTrue();
+    }
 }

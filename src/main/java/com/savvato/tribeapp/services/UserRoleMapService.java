@@ -8,5 +8,7 @@ public interface UserRoleMapService {
 	
 	public void addRoleToUser(Long userId, ROLES role);
 	public void removeRoleFromUser(Long userId, ROLES role);
-	public boolean addRolesToUser(Long userId, ArrayList<String> roles);
+	public boolean addRolesToUser(Long userId, ArrayList<String> rolesToAdd);
+	public boolean removeRolesFromUser(Long userId, ArrayList<String> rolesToDelete);
+
 }

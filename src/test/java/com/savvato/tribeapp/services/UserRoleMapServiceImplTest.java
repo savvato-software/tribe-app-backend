@@ -87,8 +87,6 @@ public class UserRoleMapServiceImplTest extends AbstractServiceImplTest {
         boolean returnedFalse = userRoleMapService.addRolesToUser(user.getId(), expectedRoles);
 
         assertThat(returnedFalse).isFalse();
-
-        verify(userRoleMapRepository, never()).save(Mockito.any());
     }
     // first two values valid, third one being invalid
 

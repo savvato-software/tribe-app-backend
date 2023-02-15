@@ -111,4 +111,26 @@ public class UserRoleMapServiceImplTest extends AbstractServiceImplTest {
 
         assertThat(returnedTrue).isTrue();
     }
+
+    @Test
+    public void testRemoveIncorrectRolesFromUser() {
+        // create a new array list with ADMIN, ACCOUNT_HOLDER, PHRASE_REVIEWER in it
+        ArrayList<String> expectedRoles = new ArrayList<String>(List.of("ADMIN", "PHRASE_REVIEWER", "ACCOUNTHOLDER"));
+
+        User user = getUser1();
+        user.setRoles(getUserRoles_Admin_AccountHolder());
+
+        // call userRoleMapService.addRolesToUser() with parameters userRequest.userId and the array list
+        boolean returnedFalse = userRoleMapService.removeRolesFromUser(user.getId(), expectedRoles);
+
+        ArgumentCaptor<UserRoleMap> arg1 = ArgumentCaptor.forClass(UserRoleMap.class);
+        verify(userRoleMapRepository, times(2)).delete(arg1.capture());
+        assertEquals(arg1.getAllValues().get(0).getUserId(), user.getId());
+        assertEquals(arg1.getAllValues().get(0).getUserRoleId(),userRole.ROLE_ADMIN.getId());
+
+        assertEquals(arg1.getAllValues().get(1).getUserId(), user.getId());
+        assertEquals(arg1.getAllValues().get(1).getUserRoleId(),userRole.ROLE_PHRASEREVIEWER.getId());
+
+        assertThat(returnedFalse).isFalse();
+    }
 }

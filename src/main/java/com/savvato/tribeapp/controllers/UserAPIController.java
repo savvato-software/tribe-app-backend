@@ -91,4 +91,5 @@ public class UserAPIController {
 	public User changeLostPassword(@RequestBody @Valid LostPasswordRequest request) {
 		return userService.changeLostPassword(request.pw, request.phoneNumber, request.smsChallengeCode);
 	}
+
 }

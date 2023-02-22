@@ -54,18 +54,4 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         assertEquals(rtn.get(), expectedPhrase);
         assertEquals(phraseService.getLastAssignedPhraseId(), expectedPhrase.getId());
     }
-
-    @Test
-    public void setLastAssignedPhraseId() {
-        Phrase expectedPhrase = new Phrase();
-        expectedPhrase.setId(1L);
-        expectedPhrase.setHasBeenGroomed(true);
-        expectedPhrase.setAdverb("competitively");
-        expectedPhrase.setVerb("programs");
-        expectedPhrase.setPreposition("with");
-        expectedPhrase.setNoun("Python");
-
-        Mockito.when(phraseRepository.findNextAvailablePhrase(any(Long.class))).thenReturn(Optional.of(expectedPhrase));
-        Mockito.when(phraseService.getReviewPhrase());
-    }
 }

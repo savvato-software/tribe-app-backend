@@ -88,7 +88,7 @@ public class UserRoleMapServiceImplTest extends AbstractServiceImplTest {
 
         assertThat(returnedFalse).isFalse();
     }
-    // first two values valid, third one being invalid
+    
 
     @Test
     public void testRemoveRolesFromUser() {

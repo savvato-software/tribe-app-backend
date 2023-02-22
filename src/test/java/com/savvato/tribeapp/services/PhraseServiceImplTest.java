@@ -56,7 +56,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
     }
 
     @Test
-    public void setLastAssignedPhraseId(Long id) {
+    public void setLastAssignedPhraseId() {
         Phrase expectedPhrase = new Phrase();
         expectedPhrase.setId(1L);
         expectedPhrase.setHasBeenGroomed(true);

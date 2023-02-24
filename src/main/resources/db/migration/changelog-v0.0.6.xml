@@ -7,7 +7,7 @@
 
     <changeSet author="sun" id="v0.0.6-1">
 
-        <createTable tableName="review-submitting-user table" catalogName="tribeapp_db" >
+        <createTable tableName="review_submitting_user" catalogName="tribeapp_db" >
             <column name="userId" type="BIGINT(20)" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>

@@ -7,7 +7,7 @@
 
     <changeSet author="sun" id="v0.0.4-1">
 
-        <createTable tableName="rejected-phrase" catalogName="tribeapp_db" >
+        <createTable tableName="rejected_phrase" catalogName="tribeapp_db" >
             <column name="id" type="BIGINT(20)" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>

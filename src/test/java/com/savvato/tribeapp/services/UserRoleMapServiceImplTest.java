@@ -89,6 +89,7 @@ public class UserRoleMapServiceImplTest extends AbstractServiceImplTest {
         assertThat(returnedFalse).isFalse();
     }
     
+
     @Test
     public void testRemoveRolesFromUser() {
         // create a new array list with ADMIN, ACCOUNT_HOLDER, PHRASE_REVIEWER in it

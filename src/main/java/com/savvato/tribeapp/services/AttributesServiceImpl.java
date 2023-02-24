@@ -1,0 +1,7 @@
+package com.savvato.tribeapp.services;
+
+public class AttributesServiceImpl implements AttributesService{
+
+
+
+}

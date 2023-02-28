@@ -1,32 +1,29 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
-import com.savvato.tribeapp.entities.Phrase;
-import com.savvato.tribeapp.repositories.PhraseRepository;
-import com.savvato.tribeapp.services.PhraseService;
+import com.savvato.tribeapp.entities.ToBeReviewed;
+import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
+import com.savvato.tribeapp.services.ToBeReviewedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-public class PhraseReviewAPIController {
+public class ToBeReviewedAPIController {
 
     @Autowired
-    PhraseRepository pr;
+    ToBeReviewedRepository pr;
 
     @Autowired
-    PhraseService phraseService;
+    ToBeReviewedService toBeReviewedService;
 
     @RequestMapping(value = { "/api/review" }, method= RequestMethod.GET)
     public ResponseEntity getPhrase() {
-        Optional<Phrase> opt = phraseService.getReviewPhrase();
+        Optional<ToBeReviewed> opt = toBeReviewedService.getReviewPhrase();
 
         if (opt.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(opt.get());

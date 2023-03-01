@@ -8,7 +8,5 @@ import java.util.Optional;
 // need to validate those words, if validation passes, then call the service to write to the DB
 public interface AttributesService {
 
-
-
 }
 

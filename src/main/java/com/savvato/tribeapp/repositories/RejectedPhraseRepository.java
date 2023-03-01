@@ -12,6 +12,6 @@ import org.springframework.data.repository.CrudRepository;
 public interface RejectedPhraseRepository extends CrudRepository<Phrase, Long> {
 
     @Query(nativeQuery = true, value = "select phrase.* from rejected_non_english_word phrase where phrase.id>?1 and phrase.hasBeenGroomed=1")
-    Optional<Phrase> findNextAvailablePhrase(Long id);
+    Optional<Phrase> comparePhrase(Long id);
 
 }

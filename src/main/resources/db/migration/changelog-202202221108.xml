@@ -5,22 +5,25 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="sun" id="v0.0.3-1">
+    <changeSet author="haxwell" id="202202221108-01">
 
-        <createTable tableName="phrase" catalogName="tribeapp_db" >
+        <createTable tableName="to_be_reviewed" catalogName="tribeapp_db" >
             <column name="id" type="BIGINT(20)" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="adverbId" type="BIGINT(20)">
+            <column name="has_been_groomed" type="TINYINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="verbId" type="BIGINT(20)">
+            <column name="adverb" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="prepositionId" type="BIGINT(20)">
+            <column name="verb" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="nounId" type="BIGINT(20)">
+            <column name="noun" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="preposition" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

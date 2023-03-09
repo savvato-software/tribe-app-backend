@@ -11,9 +11,8 @@ public class ReviewDecision {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public Long reviewId;
-
     public Long userId;
-    public String reviewDecisionReasonId;
+    public Long reviewDecisionReasonId;
 
     public Long getId() {
         return id;
@@ -39,11 +38,11 @@ public class ReviewDecision {
         this.userId = userId;
     }
 
-    public String getReviewDecisionReasonId() {
+    public Long getReviewDecisionReasonId() {
         return reviewDecisionReasonId;
     }
 
-    public void setReviewDecisionReasonId(String reviewDecisionReasonId) {
+    public void setReviewDecisionReasonId(Long reviewDecisionReasonId) {
         this.reviewDecisionReasonId = reviewDecisionReasonId;
     }
 }

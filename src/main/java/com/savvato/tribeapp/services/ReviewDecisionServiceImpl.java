@@ -1,6 +1,6 @@
 package com.savvato.tribeapp.services;
 
-import com.plivo.api.xml.P;
+import com.savvato.tribeapp.entities.ReviewDecision;
 import com.savvato.tribeapp.entities.ReviewDecisionReason;
 import com.savvato.tribeapp.repositories.ReviewDecisionReasonRepository;
 import com.savvato.tribeapp.repositories.ReviewDecisionRepository;
@@ -18,9 +18,16 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
     ReviewDecisionReasonRepository reviewDecisionReasonRepository;
 
     @Override
-    public boolean saveReviewDecision(Long reviewId, Long reviewerId, String reason) {
+    public boolean saveReviewDecision(Long reviewId, Long userId, String reason) {
         Optional<ReviewDecisionReason> opt = reviewDecisionReasonRepository.findByReason(reason);
         if (opt.isPresent()) {
+            Long reasonId = opt.get().getId();
+            ReviewDecision decision = new ReviewDecision();
+            decision.setReviewId(reviewId);
+            decision.setUserId(userId);
+            decision.setReviewDecisionReasonId(reasonId);
+
+            reviewDecisionRepository.save(decision);
             return true;
         }
         else {

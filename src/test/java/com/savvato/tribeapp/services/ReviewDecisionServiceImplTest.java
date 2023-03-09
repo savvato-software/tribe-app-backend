@@ -66,12 +66,13 @@ public class ReviewDecisionServiceImplTest {
         reviewDecisionReason.setId(1L);
         reviewDecisionReason.setReason("approved");
 
+        Mockito.when(reviewDecisionReasonRepository.findByReason(Mockito.any())).thenReturn(Optional.of(reviewDecisionReason));
         reviewDecisionService.saveReviewDecision(reviewDecisionRequest.reviewId, reviewDecisionRequest.reviewerId, reviewDecisionRequest.decision);
 
         ArgumentCaptor<ReviewDecision> arg1 = ArgumentCaptor.forClass(ReviewDecision.class);
         verify(reviewDecisionRepository, times(1)).save(arg1.capture());
         assertEquals(arg1.getValue().reviewId, reviewDecisionRequest.reviewId);
         assertEquals(arg1.getValue().userId, reviewDecisionRequest.reviewerId);
-        //next steps: separate findinga  reason and saving the decision in two methods
+        assertEquals(arg1.getValue().reviewDecisionReasonId, reviewDecisionReason.getId());
     }
 }

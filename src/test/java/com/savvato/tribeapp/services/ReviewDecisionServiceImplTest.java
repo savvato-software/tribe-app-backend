@@ -8,7 +8,6 @@ import com.savvato.tribeapp.repositories.ReviewDecisionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -42,6 +41,21 @@ public class ReviewDecisionServiceImplTest {
     ReviewDecisionReasonRepository reviewDecisionReasonRepository;
 
     @Test
+    public void getReviewDecisionReasonId() {
+        ReviewDecisionReason reviewDecisionReason = new ReviewDecisionReason();
+        reviewDecisionReason.setId(1L);
+        reviewDecisionReason.setReason("approved");
+        Mockito.when(reviewDecisionReasonRepository.findByReason(Mockito.any())).thenReturn(Optional.of(reviewDecisionReason));
+
+        Long reviewDecisionReasonId = reviewDecisionService.getReviewDecisionReasonId("approved");
+        assertEquals(reviewDecisionReasonId, reviewDecisionReason.getId());
+
+        ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
+        verify(reviewDecisionReasonRepository, times(1)).findByReason(arg1.capture());
+        assertEquals(arg1.getValue(), reviewDecisionReason.getReason());
+    }
+
+    @Test
     public void saveReviewDecision() {
         ReviewDecisionRequest reviewDecisionRequest = new ReviewDecisionRequest();
         reviewDecisionRequest.reviewId = 1L;
@@ -51,12 +65,13 @@ public class ReviewDecisionServiceImplTest {
         ReviewDecisionReason reviewDecisionReason = new ReviewDecisionReason();
         reviewDecisionReason.setId(1L);
         reviewDecisionReason.setReason("approved");
-        Mockito.when(reviewDecisionReasonRepository.findByReason(Mockito.any())).thenReturn(Optional.of(reviewDecisionReason));
 
         reviewDecisionService.saveReviewDecision(reviewDecisionRequest.reviewId, reviewDecisionRequest.reviewerId, reviewDecisionRequest.decision);
 
-        ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
-        verify(reviewDecisionReasonRepository, times(1)).findByReason(arg1.capture());
-        assertEquals(arg1.getValue(), reviewDecisionReason.getReason());
+        ArgumentCaptor<ReviewDecision> arg1 = ArgumentCaptor.forClass(ReviewDecision.class);
+        verify(reviewDecisionRepository, times(1)).save(arg1.capture());
+        assertEquals(arg1.getValue().reviewId, reviewDecisionRequest.reviewId);
+        assertEquals(arg1.getValue().userId, reviewDecisionRequest.reviewerId);
+        //next steps: separate findinga  reason and saving the decision in two methods
     }
 }

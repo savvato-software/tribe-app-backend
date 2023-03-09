@@ -19,9 +19,8 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
 
     @Override
     public boolean saveReviewDecision(Long reviewId, Long userId, String reason) {
-        Optional<ReviewDecisionReason> opt = reviewDecisionReasonRepository.findByReason(reason);
-        if (opt.isPresent()) {
-            Long reasonId = opt.get().getId();
+        Long reasonId = getReviewDecisionReasonId(reason);
+        if (reasonId != -1L) {
             ReviewDecision decision = new ReviewDecision();
             decision.setReviewId(reviewId);
             decision.setUserId(userId);
@@ -33,5 +32,14 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
         else {
             return false;
         }
+    }
+
+    @Override
+    public Long getReviewDecisionReasonId(String reason) {
+        Optional<ReviewDecisionReason> opt = reviewDecisionReasonRepository.findByReason(reason);
+        if (opt.isPresent()) {
+            return opt.get().getId();
+        }
+        return -1L;
     }
 }

@@ -4,6 +4,7 @@ import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -29,6 +30,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         }
     }
     @Autowired
+    @InjectMocks
     ToBeReviewedService toBeReviewedService;
 
     @MockBean

@@ -26,8 +26,13 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
             decision.setUserId(userId);
             decision.setReviewDecisionReasonId(reasonId);
 
-            reviewDecisionRepository.save(decision);
-            return true;
+            // try-catch in case save function fails due to foreign key constraint violation, etc.
+            try {
+                reviewDecisionRepository.save(decision);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
         }
         else {
             return false;

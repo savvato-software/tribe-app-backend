@@ -6,19 +6,15 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet author="maryam" id="202203011835-01">
-
         <createTable tableName="review_decision" catalogName="tribeapp_db" >
-            <column name="id" type="BIGINT(20)" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
             <column name="reviewId" type="BIGINT(20)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" foreignKeyName="review_decision_fk1" references="to_be_reviewed(id)"/>
             </column>
             <column name="userId" type="BIGINT(20)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" foreignKeyName="review_decision_fk2" references="user(id)"/>
             </column>
             <column name="reviewDecisionReasonId" type="BIGINT(20)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" foreignKeyName="review_decision_fk3" references="review_decision_reason(id)"/>
             </column>
         </createTable>
     </changeSet>

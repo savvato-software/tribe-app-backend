@@ -30,7 +30,6 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         }
     }
     @Autowired
-    @InjectMocks
     ToBeReviewedService toBeReviewedService;
 
     @MockBean
@@ -58,25 +57,12 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
     // test that when getReviewPhrase() finds no phrases to review, it returns an empty optional object
     @Test
     public void when_no_next_review_phrase_present_should_return_empty_optional() {
-        //Note: git branch TRIB-61
 
-        //Working on correctly ensuring that the repository is checked for no values:
-
-        // Does this affect other tests?
-        // Is this repository even linked to the call to the service?
-        //toBeReviewedRepository.deleteAll();
-
-        //added "injectmocks" to service property. Does this work when the class already has that property autowired?
-        //Note: new git branch change-props
-//        @InjectMocks
-
-        //This doesn't actually test if the repository is empty. It just automatically returns an empty optional
-        //Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.empty());
+        //Ensure the repository is returning an empty optional
+        Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.empty());
 
         //Success: test that the getReviewPhrase() method returns an empty Optional object
         assertFalse(toBeReviewedService.getReviewPhrase().isPresent());
-
-
-
+        
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -50,5 +51,17 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
 
         assertEquals(rtn.get(), expectedToBeReviewed);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());
+    }
+
+    // test that when getReviewPhrase() finds no phrases to review, it returns an empty optional object
+    @Test
+    public void testGetReviewPhraseWhenNoNextItemIsAvailable() {
+
+        //Ensure the repository is returning an empty optional
+        Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.empty());
+
+        //Success: test that the getReviewPhrase() method returns an empty Optional object
+        assertFalse(toBeReviewedService.getReviewPhrase().isPresent());
+        
     }
 }

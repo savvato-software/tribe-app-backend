@@ -55,7 +55,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
 
     // test that when getReviewPhrase() finds no phrases to review, it returns an empty optional object
     @Test
-    public void when_no_next_review_phrase_present_should_return_empty_optional() {
+    public void testGetReviewPhraseWhenNoNextItemIsAvailable() {
 
         //Ensure the repository is returning an empty optional
         Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.empty());

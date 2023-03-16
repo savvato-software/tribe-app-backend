@@ -36,7 +36,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
 
     // test that the method is returning the database's results correctly
     @Test
-    public void getReviewPhrase() {
+    public void testGetReviewPhraseHappyPath() {
         ToBeReviewed expectedToBeReviewed = new ToBeReviewed();
         expectedToBeReviewed.setId(1L);
         expectedToBeReviewed.setHasBeenGroomed(true);

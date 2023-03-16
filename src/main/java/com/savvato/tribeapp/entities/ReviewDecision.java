@@ -1,26 +1,15 @@
 package com.savvato.tribeapp.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@IdClass(ReviewDecisionId.class)
 public class ReviewDecision {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
     public Long reviewId;
+    @Id
     public Long userId;
     public Long reviewDecisionReasonId;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getReviewId() {
         return reviewId;

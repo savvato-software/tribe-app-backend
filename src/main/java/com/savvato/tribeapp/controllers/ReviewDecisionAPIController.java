@@ -1,6 +1,8 @@
 package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.dto.ReviewDecisionRequest;
+import com.savvato.tribeapp.dto.ReviewDecisionDTO;
+import com.savvato.tribeapp.entities.ReviewDecision;
 import com.savvato.tribeapp.services.ReviewDecisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,12 +20,13 @@ public class ReviewDecisionAPIController {
     ReviewDecisionService reviewDecisionService;
 
     @RequestMapping(value = { "/api/reviewer-decision" }, method= RequestMethod.POST)
-    public ResponseEntity<Boolean> saveReviewDecision(@RequestBody @Valid ReviewDecisionRequest request) {
-        boolean rtn = reviewDecisionService.saveReviewDecision(request.reviewId, request.reviewerId, request.decision);
-        if (rtn) {
-            return ResponseEntity.status(HttpStatus.OK).body(rtn);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);
-        }
+    public ResponseEntity<ReviewDecisionDTO> saveReviewDecision(@RequestBody @Valid ReviewDecisionRequest request) {
+        ReviewDecision decisionSaved = reviewDecisionService.saveReviewDecision(request.reviewId, request.reviewerId, request.reasonId);
+        ReviewDecisionDTO rtn = ReviewDecisionDTO.builder().build();
+
+        rtn.reviewId = decisionSaved.getReviewId();
+        rtn.userId = decisionSaved.getUserId();
+        rtn.reasonId = decisionSaved.getReasonId();
+        return ResponseEntity.status(HttpStatus.OK).body(rtn);
     }
 }

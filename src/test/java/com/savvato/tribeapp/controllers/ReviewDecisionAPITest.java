@@ -1,2 +1,4 @@
-package com.savvato.tribeapp.controllers;public class ReviewDecisionAPITest {
+package com.savvato.tribeapp.controllers;
+
+public class ReviewDecisionAPITest {
 }

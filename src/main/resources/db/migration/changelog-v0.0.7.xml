@@ -9,10 +9,10 @@
 
         <createTable tableName="user_phrase" catalogName="tribeapp_db" >
             <column name="user_id" type="BIGINT(20)">
-                <constraints nullable="false" foreignKeyName="user_user_role_map_fk1" references="user(id)"/>
+                <constraints nullable="false" foreignKeyName="user_phrase_fk1" references="user(id)"/>
             </column>
-            <column name="user_role_id" type="BIGINT(20)">
-                <constraints nullable="false" foreignKeyName="user_user_role_map_fk2" references="user_role(id)"/>
+            <column name="phrase_id" type="BIGINT(20)">
+                <constraints nullable="false" foreignKeyName="user_phrase_fk2" references="phrase(id)"/>
             </column>
         </createTable>
 

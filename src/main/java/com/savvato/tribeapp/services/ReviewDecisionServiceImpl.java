@@ -16,35 +16,11 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
 
     @Autowired
     ReviewDecisionReasonRepository reviewDecisionReasonRepository;
-
     @Override
-    public boolean saveReviewDecision(Long reviewId, Long userId, String reason) {
-        Long reasonId = getReviewDecisionReasonId(reason);
-        if (reasonId != -1L) {
-            ReviewDecision decision = new ReviewDecision();
-            decision.setReviewId(reviewId);
-            decision.setUserId(userId);
-            decision.setReviewDecisionReasonId(reasonId);
-
-            // try-catch in case save function fails due to foreign key constraint violation, etc.
-            try {
-                reviewDecisionRepository.save(decision);
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
+    public ReviewDecision saveReviewDecision(Long reviewId, Long userId, Long reasonId) {
+        ReviewDecision decision = new ReviewDecision(reviewId, userId, reasonId);
+        ReviewDecision newReviewDecisionRecord = reviewDecisionRepository.save(decision);
+        return newReviewDecisionRecord;
     }
 
-    @Override
-    public Long getReviewDecisionReasonId(String reason) {
-        Optional<ReviewDecisionReason> opt = reviewDecisionReasonRepository.findByReason(reason);
-        if (opt.isPresent()) {
-            return opt.get().getId();
-        }
-        return -1L;
-    }
 }

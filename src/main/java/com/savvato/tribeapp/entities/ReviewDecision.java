@@ -9,7 +9,16 @@ public class ReviewDecision {
     public Long reviewId;
     @Id
     public Long userId;
-    public Long reviewDecisionReasonId;
+    public Long reasonId;
+
+    public ReviewDecision(Long reviewId, Long userId, Long reasonId) {
+        this.reviewId = reviewId;
+        this.userId = userId;
+        this.reasonId = reasonId;
+    }
+
+    public ReviewDecision() {
+    }
 
     public Long getReviewId() {
         return reviewId;
@@ -27,11 +36,11 @@ public class ReviewDecision {
         this.userId = userId;
     }
 
-    public Long getReviewDecisionReasonId() {
-        return reviewDecisionReasonId;
+    public Long getReasonId() {
+        return reasonId;
     }
 
-    public void setReviewDecisionReasonId(Long reviewDecisionReasonId) {
-        this.reviewDecisionReasonId = reviewDecisionReasonId;
+    public void setReasonId(Long reasonId) {
+        this.reasonId = reasonId;
     }
 }

@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "baf60048-b431-4280-a3c1-61ba63ab98d8",
-		"name": "Voting App",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"_postman_id": "afb5a3d7-203e-47d9-9e4d-44e8b4077d88",
+		"name": "Tribe App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5124293"
 	},
 	"item": [
 		{
@@ -181,7 +182,37 @@
 			"response": []
 		},
 		{
-			"name": "/api/topic/create",
+			"name": "api/profile/1",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{current-jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/profile/1",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"profile",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/attributes",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -197,7 +228,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"userId\": 1,\n    \"name\": \"newTopic\",\n    \"description\": \"desc\",\n    \"expirationDate\": \"2022-06-21T13:14:21+0000\"\n}",
+					"raw": "{\n    \"adverb\" : \"competitively\",\n    \"verb\" : \"plays\",\n    \"preposition\" : \" \",\n    \"noun\" : \"chess\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -205,128 +236,24 @@
 					}
 				},
 				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/topic/create",
+					"raw": "{{http-protocol}}://{{api-url}}/api/attributes",
 					"protocol": "{{http-protocol}}",
 					"host": [
 						"{{api-url}}"
 					],
 					"path": [
 						"api",
-						"topic",
-						"create"
+						"attributes"
 					]
 				}
 			},
 			"response": []
-		},
+		}
+	],
+	"variable": [
 		{
-			"name": "api/topic  -- get all",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{current-jwt}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/topic",
-					"protocol": "{{http-protocol}}",
-					"host": [
-						"{{api-url}}"
-					],
-					"path": [
-						"api",
-						"topic"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "api/topic  -- update",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{current-jwt}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/topic/1",
-					"protocol": "{{http-protocol}}",
-					"host": [
-						"{{api-url}}"
-					],
-					"path": [
-						"api",
-						"topic",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "api/topic  -- get one Copy",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{current-jwt}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/topic/1",
-					"protocol": "{{http-protocol}}",
-					"host": [
-						"{{api-url}}"
-					],
-					"path": [
-						"api",
-						"topic",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/api/vote - get current votes per topic",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/vote/3",
-					"protocol": "{{http-protocol}}",
-					"host": [
-						"{{api-url}}"
-					],
-					"path": [
-						"api",
-						"vote",
-						"3"
-					]
-				}
-			},
-			"response": []
+			"key": "current-jwt",
+			"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxLGFkbWluQGFwcC5jb20iLCJpc3MiOiJjb20uc2F2dmF0byIsImlhdCI6MTY2NTc3MjEzMSwiZXhwIjoxNjY2Mzc2OTMxfQ.lDeDFegg670n2p1kR_e7JdbNv-Tb9TFiLGRaVklezxRgk7jtWgWb3KAKBpLpbbnVYd0ww-UOTvvGT24_XGI7mQ"
 		}
 	]
 }

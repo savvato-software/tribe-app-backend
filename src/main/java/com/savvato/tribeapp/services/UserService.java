@@ -12,5 +12,6 @@ public interface UserService {
 	public Optional<User> findById(Long id);
 	Optional<User> update(UserRequest request);
 
-	User changeLostPassword(String pw, String phoneNumber, String challengeCode);
+	User changePassword(String pw, String phoneNumber, String challengeCode);
+	
 }

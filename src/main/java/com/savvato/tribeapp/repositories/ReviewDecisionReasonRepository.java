@@ -8,5 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewDecisionReasonRepository extends CrudRepository<ReviewDecisionReason, Long> {
+<<<<<<< HEAD
     Optional<ReviewDecisionReason> findByReason(String reason);
+=======
+>>>>>>> trib-59-test
 }

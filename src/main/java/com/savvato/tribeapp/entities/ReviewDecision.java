@@ -21,9 +21,12 @@ public class ReviewDecision {
         setCreated();
     }
 
+<<<<<<< HEAD
     public ReviewDecision() {
     }
 
+=======
+>>>>>>> trib-59-test
     public Long getReviewId() {
         return reviewId;
     }

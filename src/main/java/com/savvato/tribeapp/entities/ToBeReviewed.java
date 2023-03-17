@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="to_be_reviewed")
-public class Phrase {
+public class ToBeReviewed {
     public Long getId() {
         return id;
     }

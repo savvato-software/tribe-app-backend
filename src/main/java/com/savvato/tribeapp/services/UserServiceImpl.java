@@ -122,8 +122,8 @@ public class UserServiceImpl implements UserService {
 		// email.
 	}
 
-	public User changeLostPassword(String pw, String phoneNumber, String smsChallengeCode) {
-		// This method is for when the user has forgotten the password they set on their account.
+	public User changePassword(String pw, String phoneNumber, String smsChallengeCode) {
+		// This method is for when the user wants to change there password.
 		//  It does not require authentication, but the sms challenge code helps to ensure that
 		//  at least this request came from the phone associated with the account.
 

@@ -13,17 +13,20 @@ if stashed_changes:
 	print("Stashed changes.")
 
 # Check out the develop branch and do a pull
-os.system('git checkout develop && git pull')
-print("Checked out develop branch and did a pull.")
+ckoutput = os.system('git checkout develop')
 
-# Find the list of feature branches
-feature_branches = os.popen('git branch -r --list \*feature*').read().split('\n')
-feature_branches = [x.replace('origin/','') for x in feature_branches]
+if 'up to date' not in ckoutput:
+    os.system('git pull')
+    print("Checked out develop branch and did a pull.")
 
-# For each feature branch, merge the develop branch into it and push
-for feature_branch in feature_branches:
-	os.system('git checkout ' + feature_branch + ' && git merge develop && git push')
-	print("Merged develop branch into " + feature_branch + " and pushed.")
+    # Find the list of feature branches
+    feature_branches = os.popen('git branch -r --list \*feature*').read().split('\n')
+    feature_branches = [x.replace('origin/','') for x in feature_branches]
+
+    # For each feature branch, merge the develop branch into it and push
+    for feature_branch in feature_branches:
+        os.system('git checkout ' + feature_branch + ' && git merge develop && git push')
+        print("Merged develop branch into " + feature_branch + " and pushed.")
 
 # Change back to the original branch and pop any stashed changes
 os.system('git checkout ' + original_branch)

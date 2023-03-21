@@ -1,4 +1,9 @@
 
+POTENTIAL ERRORS
+==
+Liquibase failed to start because no changelog could be found at 'classpath:/db/changelog/db.changelog-master.yaml'.
+    - you need to copy in the correct application.properties file. See the #getting-started channel in slack, or ask another member to send you theirs.
+
 RUNNING THE APP
 ==
 1. You will need the environment variables PLIVO_SMS_AUTH_ID and PLIVO_SMS_AUTH_TOKEN passed in when you run.

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="audra" id="202303161319-01">
+
+        <createTable tableName="user_phrase" catalogName="tribeapp_db" >
+            <column name="user_id" type="BIGINT(20)">
+                <constraints nullable="false" foreignKeyName="user_phrase_fk1" references="user(id)"/>
+            </column>
+            <column name="phrase_id" type="BIGINT(20)">
+                <constraints nullable="false" foreignKeyName="user_phrase_fk2" references="phrase(id)"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+
+</databaseChangeLog>
+

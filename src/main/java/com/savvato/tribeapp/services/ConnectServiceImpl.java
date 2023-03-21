@@ -14,7 +14,7 @@ public class ConnectServiceImpl implements ConnectService {
     @Autowired
     CacheService cache;
 
-    private static final Log logger = LogFactory.getLog(SMSChallengeCodeServiceImpl.class);
+    private static final Log logger = LogFactory.getLog(ConnectServiceImpl.class);
 
     private int qrCodeStringLength = 12;
 

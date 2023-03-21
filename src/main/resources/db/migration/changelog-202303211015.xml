@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="josh" id="202303211015-01">
+
+        <createTable tableName="connections" catalogName="tribeapp_db" >
+            <column name="id" type="BIGINT(20)" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="userId1" type="BIGINT(20)">
+                <constraints nullable="false" foreignKeyName="connections_fk1" references="user(id)" deleteCascade="true"/>
+            </column>
+            <column name="userId2" type="BIGINT(20)">
+                <constraints nullable="false" foreignKeyName="connections_fk2" references="user(id)" deleteCascade="true"/>
+            </column>
+            <column name="createdAt" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+
+</databaseChangeLog>

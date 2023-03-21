@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="josh" id="v0.0.7-1">
+    <changeSet author="josh" id="202303211015-01">
 
         <createTable tableName="connections" catalogName="tribeapp_db" >
             <column name="id" type="BIGINT(20)" autoIncrement="true">

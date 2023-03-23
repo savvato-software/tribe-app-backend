@@ -5,6 +5,13 @@ import javax.persistence.*;
 @Entity
 @Table(name="review_decision_reason")
 public class ReviewDecisionReason {
+    public ReviewDecisionReason() {
+    }
+    public ReviewDecisionReason(Long id, String reason) {
+        this.id = id;
+        this.reason = reason;
+    }
+
     public Long getId() {
         return id;
     }
@@ -26,4 +33,5 @@ public class ReviewDecisionReason {
     }
 
     private String reason;
+
 }

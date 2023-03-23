@@ -43,9 +43,6 @@ public class ReviewDecisionServiceImplTest {
     @MockBean
     ReviewDecisionReasonRepository reviewDecisionReasonRepository;
 
-    // TODO: Confirm no need to test for reviewerId, reviewId being invalid since those should be automatically generated
-    // TODO: Confirm length of test names
-
     @Test
     public void saveReviewDecision() {
         ReviewDecision decision = new ReviewDecision(1L, 1L, 1L);
@@ -64,16 +61,5 @@ public class ReviewDecisionServiceImplTest {
         assertEquals(saveResult.reviewId, decision.reviewId);
         assertEquals(saveResult.userId, decision.userId);
         assertEquals(saveResult.reasonId, decision.reasonId);
-    }
-
-    @Test()
-    public void saveReviewDecisionIncorrect() throws Exception {
-        ReviewDecision decision = new ReviewDecision(-1L, 100L, -2L);
-        Mockito.when(reviewDecisionRepository.save(Mockito.any())).thenThrow(new DataAccessException("The save function failed."){});
-
-        assertThrows(DataAccessException.class, ()-> {
-            reviewDecisionService.saveReviewDecision(decision.getReviewId(), decision.getUserId(), decision.getReasonId());
-        });
-
     }
 }

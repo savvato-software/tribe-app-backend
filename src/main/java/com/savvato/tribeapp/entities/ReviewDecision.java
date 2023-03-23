@@ -7,10 +7,10 @@ import java.util.Calendar;
 @IdClass(ReviewDecisionId.class)
 public class ReviewDecision {
     @Id
-    public Long reviewId;
+    private Long reviewId;
     @Id
-    public Long userId;
-    public Long reasonId;
+    private Long userId;
+    private Long reasonId;
     private java.sql.Timestamp created;
 
 

@@ -47,7 +47,7 @@ public class ReviewDecisionServiceImplTest {
     public void saveReviewDecision() {
         ReviewDecision decision = new ReviewDecision(1L, 1L, 1L);
         Mockito.when(reviewDecisionRepository.save(Mockito.any())).thenReturn(decision);
-        ReviewDecision saveResult = reviewDecisionService.saveReviewDecision(decision.reviewId, decision.userId, decision.reasonId);
+        ReviewDecision saveResult = reviewDecisionService.saveReviewDecision(decision.getReviewId(), decision.getUserId(), decision.getReasonId());
 
         // Ensure that save() is called at least once on reviewDecisionRepository,
         //  and that the arguments passed to save() match the given decision
@@ -58,8 +58,8 @@ public class ReviewDecisionServiceImplTest {
         assertEquals(arg1.getValue().getReasonId(), decision.getReasonId());
 
         // Ensure that the result returned by the save() function matches the given decision
-        assertEquals(saveResult.reviewId, decision.reviewId);
-        assertEquals(saveResult.userId, decision.userId);
-        assertEquals(saveResult.reasonId, decision.reasonId);
+        assertEquals(saveResult.getReviewId(), decision.getReviewId());
+        assertEquals(saveResult.getUserId(), decision.getUserId());
+        assertEquals(saveResult.getReasonId(), decision.getReasonId());
     }
 }

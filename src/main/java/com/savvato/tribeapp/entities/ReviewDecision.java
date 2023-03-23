@@ -13,6 +13,9 @@ public class ReviewDecision {
     private Long reasonId;
     private java.sql.Timestamp created;
 
+    public ReviewDecision() {
+        setCreated();
+    }
 
     public ReviewDecision(Long reviewId, Long userId, Long reasonId) {
         this.reviewId = reviewId;

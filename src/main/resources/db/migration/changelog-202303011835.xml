@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="maryam" id="202203011835-01">
+        <createTable tableName="review_decision" catalogName="tribeapp_db" >
+            <column name="reviewId" type="BIGINT(20)">
+                <constraints nullable="false" foreignKeyName="review_decision_fk1" references="to_be_reviewed(id)"/>
+            </column>
+            <column name="userId" type="BIGINT(20)">
+                <constraints nullable="false" foreignKeyName="review_decision_fk2" references="user(id)"/>
+            </column>
+            <column name="reviewDecisionReasonId" type="BIGINT(20)">
+                <constraints nullable="false" foreignKeyName="review_decision_fk3" references="review_decision_reason(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+</databaseChangeLog>

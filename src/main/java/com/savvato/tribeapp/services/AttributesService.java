@@ -1,14 +1,9 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.controllers.dto.UserRequest;
-import com.savvato.tribeapp.entities.User;
-
-import java.util.Optional;
-
-// need to validate those words, if validation passes, then call the service to write to the DB
 public interface AttributesService {
 
-    public boolean isFourWordsValid(String verb, String noun, String adverb, String preposition);
+    boolean isPhraseValid(String verb, String noun, String adverb, String preposition);
+    void applyPhraseToUser(String verb, String noun, String adverb, String preposition);
 
 }
 

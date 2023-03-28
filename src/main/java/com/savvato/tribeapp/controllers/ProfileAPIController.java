@@ -16,10 +16,7 @@ public class ProfileAPIController {
 
 	@Autowired
     ProfileService profileService;
-	// providing an instance
-	// don't worry about how it is created
-	// injects dependency into your code
-	
+
 	ProfileAPIController() {
 			
 	}

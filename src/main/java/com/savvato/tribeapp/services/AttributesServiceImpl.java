@@ -1,70 +1,78 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.entities.Phrase;
-import com.savvato.tribeapp.repositories.PhraseRepository;
-import com.savvato.tribeapp.repositories.RejectedNonEnglishWordRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.savvato.tribeapp.repositories.*;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class AttributesServiceImpl implements AttributesService{
 
-    // controller - to call this service
-    // this service to take the four words
-    // query the non-english word table for each of the four words
-    // should return false if it appears in the table
-    // validation should not pass
-    // am I returning a boolean? - so yes I am!!!
-
-    // method or two -
-    // method - takes the four words and that method calls another method that takes a single word
-    // and call that single word method for each of the four words
-    // the one word function will call the repository to see if it appears in the table
-
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
+    private final VerbRepository verbRepository;
+    private final NounRepository nounRepository;
+    private final AdverbRepository adverbRepository;
+    private final PrepositionRepository prepositionRepository;
 
-    // method - takes the four words and that method calls another method that takes a single word
-    public boolean isFourWordsValid(String verb, String noun, String adverb, String preposition) {
+    public AttributesServiceImpl(VerbRepository verbRepository,
+                                 NounRepository nounRepository,
+                                 AdverbRepository adverbRepository,
+                                 PrepositionRepository prepositionRepository
+    ) {
+        this.verbRepository = verbRepository;
+        this.nounRepository = nounRepository;
+        this.adverbRepository = adverbRepository;
+        this.prepositionRepository = prepositionRepository;
+    }
 
+    public boolean isPhraseValid(String verb, String noun, String adverb, String preposition) {
         boolean rtn = true;
-        rtn = rtn && checkSingleWord(verb);
-        rtn = rtn && checkSingleWord(noun);
-        rtn = rtn && checkSingleWord(adverb);
-        rtn = rtn && checkSingleWord(preposition);
+        rtn = rtn && isWordPreviouslyRejected(verb);
+        rtn = rtn && isWordPreviouslyRejected(noun);
+        rtn = rtn && isWordPreviouslyRejected(adverb);
+        rtn = rtn && isWordPreviouslyRejected(preposition);
 
-        System.out.println("take four words method reached");
         return rtn;
     }
 
-    public boolean checkSingleWord(String word) {
-
-        Optional<Phrase>opt = this.rejectedNonEnglishWordRepository.findPhraseByGivenWord(word);
-
-        if( opt.isPresent() ) {
-            return false;
-        }
-        else
-            return true;
+    public boolean isWordPreviouslyRejected(String word) {
+        return this.rejectedNonEnglishWordRepository.findByWord(word).isPresent();
     }
 
+    public void applyPhraseToUser(String verb, String noun, String adverb, String preposition) {
+        boolean rtn = hasPhraseBeenReviewed(verb, noun, adverb, preposition);
 
-//    @Autowired
-//    //RejectedPhraseRepository rejectedPhraseRepository;
-//
-//    @Override
-//    //public Long getLastAssignedPhraseId() {
-//        return lastAssignedPhraseId;
-//    }
-//
-//    public Optional<Phrase> getRejectedPhrase() {
-//        Optional<Phrase> opt = comparePhrase.findNextAvailablePhrase(lastAssignedPhraseId);
-//        if (opt.isPresent()) {
-//            setLastAssignedPhraseId(opt.get().getId());
-//            return opt;
-//        }
-//        return Optional.empty();
-//    }
+        if (rtn) {
+            // we have seen this before
+            // associate it with the user
+        } else {
+            // we have not seen this before
+            // add it to the database
+            // associate it with the user
+        }
+    }
 
+    public boolean hasPhraseBeenReviewed(String verb, String noun, String adverb, String preposition) {
+        boolean rtn = true;
+        rtn = rtn && isGivenVerbFound(verb);
+        rtn = rtn && isGivenNounFound(noun);
+        rtn = rtn && isGivenAdverbFound(adverb);
+        rtn = rtn && isGivenPrepositionFound(preposition);
+
+        return rtn;
+    }
+
+    public boolean isGivenVerbFound(String verb) {
+        return this.verbRepository.findByWord(verb).isPresent();
+    }
+
+    public boolean isGivenNounFound(String noun) {
+        return this.nounRepository.findByWord(noun).isPresent();
+    }
+
+    public boolean isGivenAdverbFound(String adverb) {
+        return this.adverbRepository.findByWord(adverb).isPresent();
+    }
+
+    public boolean isGivenPrepositionFound(String preposition) {
+        return this.prepositionRepository.findByWord(preposition).isPresent();
+    }
 }

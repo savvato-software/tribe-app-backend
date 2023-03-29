@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
+import com.savvato.tribeapp.dto.AttributeDTO;
 import com.savvato.tribeapp.services.AttributesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class AttributesAPIController {
@@ -17,6 +20,17 @@ public class AttributesAPIController {
 
     AttributesAPIController() {
 
+    }
+
+    @RequestMapping(value = { "/api/attributes/{userId}" }, method=RequestMethod.GET)
+    public ResponseEntity<List<AttributeDTO>> getAttributesForUser(@PathVariable Long userId) {
+
+        Optional<List<AttributeDTO>> opt = attributesService.getAttributesByUserId(userId);
+
+        if (opt.isPresent())
+            return ResponseEntity.status(HttpStatus.OK).body(opt.get());
+        else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     @RequestMapping(value = { "/api/attributes" }, method=RequestMethod.POST)

@@ -1,10 +1,20 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.dto.AttributeDTO;
+import com.savvato.tribeapp.entities.Phrase;
 import com.savvato.tribeapp.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AttributesServiceImpl implements AttributesService{
+
+    @Autowired
+    UserPhraseService userPhraseService;
 
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
     private final VerbRepository verbRepository;
@@ -74,5 +84,27 @@ public class AttributesServiceImpl implements AttributesService{
 
     public boolean isGivenPrepositionFound(String preposition) {
         return this.prepositionRepository.findByWord(preposition).isPresent();
+    }
+
+    @Override
+    public Optional<List<AttributeDTO>> getAttributesByUserId(Long userId) {
+
+        List<AttributeDTO> attributes = new ArrayList<>();
+
+        // Get all user phrases
+        Optional<List<Phrase>> optUserPhrases = userPhraseService.findPhrasesByUserId(userId);
+
+        // If there are phrases, build DTO and add to attributes list
+        if(optUserPhrases.isPresent()) {
+            List<Phrase> attribute = optUserPhrases.get();
+            for(Phrase phrase : attribute) {
+                AttributeDTO attributeDTO = AttributeDTO.builder().build();
+                attributeDTO.phrase = phrase;
+                attributes.add(attributeDTO);
+            }
+        }
+
+        // Return Optional of attributes or empty Optional if there aren't any
+        return (attributes.isEmpty() ? Optional.empty() : Optional.of(attributes));
     }
 }

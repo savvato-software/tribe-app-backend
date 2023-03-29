@@ -12,51 +12,51 @@ public class Phrase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public String adverb;
+    public Long adverbId;
 
-    public String verb;
+    public Long verbId;
 
-    public String preposition;
+    public Long prepositionId;
 
-    public String noun;
-
+    public Long nounID;
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {this.id = id;}
-
-    public String getAdverb() {
-        return adverb;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setAdverb(String adverb) {
-        this.adverb = adverb;
+    public Long getAdverbId() {
+        return adverbId;
     }
 
-    public String getVerb() {
-        return verb;
+    public void setAdverbId(Long adverbId) {
+        this.adverbId = adverbId;
     }
 
-    public void setVerb(String verb) {
-        this.verb = verb;
+    public Long getVerbId() {
+        return verbId;
     }
 
-    public String getPreposition() {
-        return preposition;
+    public void setVerbId(Long verbId) {
+        this.verbId = verbId;
     }
 
-    public void setPreposition(String preposition) {
-        this.preposition = preposition;
+    public Long getPrepositionId() {
+        return prepositionId;
     }
 
-    public String getNoun() {
-        return noun;
+    public void setPrepositionId(Long prepositionId) {
+        this.prepositionId = prepositionId;
     }
 
-    public void setNoun(String noun) {
-        this.noun = noun;
+    public Long getNounID() {
+        return nounID;
+    }
+
+    public void setNounID(Long nounID) {
+        this.nounID = nounID;
     }
 }
-

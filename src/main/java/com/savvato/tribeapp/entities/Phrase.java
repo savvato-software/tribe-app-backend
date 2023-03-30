@@ -1,9 +1,12 @@
 package com.savvato.tribeapp.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Phrase {
@@ -12,12 +15,20 @@ public class Phrase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    @ManyToOne(targetEntity = Adverb.class, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "adverbId")
     public Long adverbId;
 
+//    @ManyToOne(targetEntity = Verb.class, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "verbId")
     public Long verbId;
 
+//    @ManyToOne(targetEntity = Preposition.class, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "prepositionId")
     public Long prepositionId;
 
+//    @ManyToOne(targetEntity = Noun.class, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "nounId")
     public Long nounID;
 
     public Long getId() {
@@ -31,6 +42,7 @@ public class Phrase {
     public Long getAdverbId() {
         return adverbId;
     }
+
 
     public void setAdverbId(Long adverbId) {
         this.adverbId = adverbId;
@@ -52,11 +64,11 @@ public class Phrase {
         this.prepositionId = prepositionId;
     }
 
-    public Long getNounID() {
+    public Long getNounId() {
         return nounID;
     }
 
-    public void setNounID(Long nounID) {
+    public void setNounId(Long nounID) {
         this.nounID = nounID;
     }
 }

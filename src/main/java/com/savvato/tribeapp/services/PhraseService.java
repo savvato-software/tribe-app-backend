@@ -1,10 +1,11 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.entities.Phrase;
+import com.savvato.tribeapp.dto.PhraseDTO;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PhraseService {
 
-    Optional<Phrase> getPhraseWords(Long id);
+    Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long id);
 }

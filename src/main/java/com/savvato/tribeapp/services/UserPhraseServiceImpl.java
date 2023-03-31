@@ -25,7 +25,7 @@ public class UserPhraseServiceImpl implements UserPhraseService{
         // access user phrase repo to get a list of all phrase ids associated with user
         Optional<List<Long>> optPhraseIdsForUser = userPhraseRepository.findPhraseIdsByUserId(userId);
 
-        return (optPhraseIdsForUser.isPresent() ? optPhraseIdsForUser : Optional.empty());
+        return optPhraseIdsForUser;
 
     }
 

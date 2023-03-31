@@ -54,7 +54,7 @@ public class PhraseServiceImpl implements PhraseService {
             }
 
             // loop through phrases and get words
-            for (Phrase phrase : phrases) { //do we need to check again if empty
+            for (Phrase phrase : phrases) { 
                 PhraseDTO phraseDTO = PhraseDTO.builder().build();
 
                 Optional<String> optAdverb = adverbRepository.findAdverbById(phrase.getAdverbId());

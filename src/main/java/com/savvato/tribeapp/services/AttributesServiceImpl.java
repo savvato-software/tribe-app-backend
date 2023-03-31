@@ -1,7 +1,7 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.dto.AttributeDTO;
-import com.savvato.tribeapp.entities.Phrase;
+import com.savvato.tribeapp.dto.PhraseDTO;
 import com.savvato.tribeapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.Optional;
 public class AttributesServiceImpl implements AttributesService{
 
     @Autowired
-    UserPhraseService userPhraseService;
+    PhraseService phraseService;
 
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
     private final VerbRepository verbRepository;
@@ -91,13 +91,13 @@ public class AttributesServiceImpl implements AttributesService{
 
         List<AttributeDTO> attributes = new ArrayList<>();
 
-        // Get all user phrases
-        Optional<List<Phrase>> optUserPhrases = userPhraseService.findPhrasesByUserId(userId);
+        // Get all user phrases as phraseDTOs
+        Optional<List<PhraseDTO>> optUserPhraseDTOs = phraseService.getListOfPhraseDTOByUserId(userId);
 
         // If there are phrases, build DTO and add to attributes list
-        if(optUserPhrases.isPresent()) {
-            List<Phrase> attribute = optUserPhrases.get();
-            for(Phrase phrase : attribute) {
+        if(optUserPhraseDTOs.isPresent()) {
+            List<PhraseDTO> attribute = optUserPhraseDTOs.get();
+            for(PhraseDTO phrase : attribute) {
                 AttributeDTO attributeDTO = AttributeDTO.builder().build();
                 attributeDTO.phrase = phrase;
                 attributes.add(attributeDTO);

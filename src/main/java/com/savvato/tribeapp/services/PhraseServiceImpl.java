@@ -50,11 +50,13 @@ public class PhraseServiceImpl implements PhraseService {
                 Optional<Phrase> optPhrase = phraseRepository.findPhraseByPhraseId(phraseId);
                 if (optPhrase.isPresent()) {
                     phrases.add(optPhrase.get());
+                } else {
+                    throw new IllegalStateException("phrase not found");
                 }
             }
 
             // loop through phrases and get words
-            for (Phrase phrase : phrases) { 
+            for (Phrase phrase : phrases) {
                 PhraseDTO phraseDTO = PhraseDTO.builder().build();
 
                 Optional<String> optAdverb = adverbRepository.findAdverbById(phrase.getAdverbId());

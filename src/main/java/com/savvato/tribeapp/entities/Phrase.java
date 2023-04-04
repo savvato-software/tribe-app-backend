@@ -18,7 +18,7 @@ public class Phrase {
 
     public Long prepositionId;
 
-    public Long nounID;
+    public Long nounId;
 
     public Long getId() {
         return id;
@@ -54,10 +54,10 @@ public class Phrase {
     }
 
     public Long getNounId() {
-        return nounID;
+        return nounId;
     }
 
     public void setNounId(Long nounID) {
-        this.nounID = nounID;
+        this.nounId = nounID;
     }
 }

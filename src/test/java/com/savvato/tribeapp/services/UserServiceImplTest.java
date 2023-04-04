@@ -78,7 +78,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateUser_whenUsernameBelongsToExistingUser() {
+	public void testCreateUser_whenUsernameBelongsToExistingUser() {
 		// given
 		User user1 = getUser1();
 		User user2 = getUser2();
@@ -99,14 +99,79 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 		assertThat(caughtException).isTrue();
 	}
 
-	//	@Test
-	public void testUpdateUser_whenPhoneIsNotValid() {
+	@Test
+	public void testUpdateUser_happyPath() {
 		// given
+		User user1 = getUser1();
+		user1.setName("Barry Johnson");
+
+		UserRequest userRequest = getUserRequestFor(user1);
+
+		Mockito.when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user1));
+
+		Mockito.when(userRepository.save(any(User.class))).thenReturn(user1);
 
 		// when
+		Optional<User> rtn = userService.update(userRequest);
 
 		// then
+		assertThat(rtn != null && rtn instanceof Optional<User>);
+		assertThat(rtn.isPresent()).isTrue();
+		assertThat(rtn.get().getName().equals("Barry Johnson"));
+
+		ArgumentCaptor<User> arg1 = ArgumentCaptor.forClass(User.class);
+		verify(userRepository, times(1)).save(arg1.capture());
+		assertThat(arg1.getValue().getName()).isEqualTo(userRequest.name);
+		// assertThat(arg1.getValue().getPassword()).isNotEqualTo(userRequest.password); // password should be hashed, but in our test, is not
+		assertThat(arg1.getValue().getEmail()).isEqualTo(userRequest.email);
+		assertThat(arg1.getValue().getPhone()).isEqualTo(userRequest.phone);
 	}
+
+	@Test
+	public void testUpdateUser_whenGivenUserIdIsNotFound() {
+		// given
+		User user1 = getUser1();
+		user1.setName("Barry Johnson");
+
+		UserRequest userRequest = getUserRequestFor(user1);
+
+		Mockito.when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+		Mockito.when(userRepository.save(any(User.class))).thenReturn(user1);
+
+		// when
+		Optional<User> rtn = userService.update(userRequest);
+
+		// then
+		assertThat(rtn != null && rtn instanceof Optional<User>);
+		assertThat(rtn.isPresent()).isFalse();
+
+		ArgumentCaptor<User> arg1 = ArgumentCaptor.forClass(User.class);
+		verify(userRepository, times(0)).save(arg1.capture());
+	}
+
+	@Test
+	public void testUpdateUser_whenGivenNameIsNull() {
+		// given
+		User user1 = getUser1();
+		user1.setName(null);
+
+		UserRequest userRequest = getUserRequestFor(user1);
+
+		// when
+		boolean caughtException = false;
+
+		try {
+			userService.update(userRequest);
+		} catch (IllegalArgumentException iae) {
+			caughtException = true;
+		}
+
+		// then
+		assertThat(caughtException).isTrue();
+	}
+
+
 
 //	@Test
 	public void testUpdateUser_whenEmailIsNotValid() {

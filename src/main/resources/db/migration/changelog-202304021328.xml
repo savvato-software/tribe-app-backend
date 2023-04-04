@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="haxwell" id="202304021328-01" context="test">
+        <sql dbms="mysql">
+            INSERT INTO adverb (word) VALUES ('competitively');
+            INSERT INTO verb (word) VALUES ('writes');
+            INSERT INTO noun (word) VALUES ('code');
+
+            INSERT INTO verb (word) VALUES ('plays');
+            INSERT INTO noun (word) VALUES ('chess');
+
+            INSERT INTO verb (word)         VALUES ('sculpts');
+            INSERT INTO preposition (word)  VALUES ('with');
+            INSERT INTO noun (word)         VALUES ('clay');
+        </sql>
+    </changeSet>
+
+    <changeSet author="haxwell" id="202304021328-02" context="test">
+        <sql dbms="mysql">
+            INSERT INTO phrase (id, adverb_id, verb_id, noun_id) VALUES (1, 1, 1, 1);
+            INSERT INTO phrase (id, verb_id, noun_id) VALUES (2, 2, 2);
+            INSERT INTO phrase (id, verb_id, preposition_id, noun_id) VALUES (3, 3, 1, 3);
+        </sql>
+    </changeSet>
+
+    <changeSet author="haxwell" id="202304021328-03" context="test">
+        <sql dbms="mysql">
+            INSERT INTO user_phrase (user_id, phrase_id) VALUES (1, 1);
+            INSERT INTO user_phrase (user_id, phrase_id) VALUES (1, 2);
+            INSERT INTO user_phrase (user_id, phrase_id) VALUES (2, 2);
+            INSERT INTO user_phrase (user_id, phrase_id) VALUES (2, 3);
+        </sql>
+    </changeSet>
+
+
+
+</databaseChangeLog>

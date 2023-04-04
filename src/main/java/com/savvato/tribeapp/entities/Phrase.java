@@ -32,6 +32,7 @@ public class Phrase {
         return adverbId;
     }
 
+
     public void setAdverbId(Long adverbId) {
         this.adverbId = adverbId;
     }
@@ -52,11 +53,11 @@ public class Phrase {
         this.prepositionId = prepositionId;
     }
 
-    public Long getNounID() {
+    public Long getNounId() {
         return nounID;
     }
 
-    public void setNounID(Long nounID) {
+    public void setNounId(Long nounID) {
         this.nounID = nounID;
     }
 }

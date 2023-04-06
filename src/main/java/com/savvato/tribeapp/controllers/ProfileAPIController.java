@@ -16,7 +16,7 @@ public class ProfileAPIController {
 
 	@Autowired
     ProfileService profileService;
-	
+
 	ProfileAPIController() {
 			
 	}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="haxwell" id="202304021000-01">
+        <renameColumn  catalogName="tribeapp_db"
+                       tableName="phrase"
+                       newColumnName="adverb_id"
+                       oldColumnName="adverbId"
+                       columnDataType="BIGINT(20)"/>
+        <renameColumn  catalogName="tribeapp_db"
+                       tableName="phrase"
+                       newColumnName="verb_id"
+                       oldColumnName="verbId"
+                       columnDataType="BIGINT(20)"/>
+        <renameColumn  catalogName="tribeapp_db"
+                       tableName="phrase"
+                       newColumnName="noun_id"
+                       oldColumnName="nounId"
+                       columnDataType="BIGINT(20)"/>
+        <renameColumn  catalogName="tribeapp_db"
+                       tableName="phrase"
+                       newColumnName="preposition_id"
+                       oldColumnName="prepositionId"
+                       columnDataType="BIGINT(20)"/>
+    </changeSet>
+
+    <changeSet author="haxwell" id="202304021000-02">
+        <addNotNullConstraint catalogName="tribeapp_db"
+                              columnDataType="BIGINT(20)"
+                              columnName="noun_id"
+                              tableName="phrase"/>
+        <addNotNullConstraint catalogName="tribeapp_db"
+                              columnDataType="BIGINT(20)"
+                              columnName="verb_id"
+                              tableName="phrase"/>
+    </changeSet>
+</databaseChangeLog>

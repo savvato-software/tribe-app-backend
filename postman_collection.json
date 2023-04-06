@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"admin@votingapp.com\",\n    \"password\": \"admin\"\n}",
+					"raw": "{\n    \"email\": \"admin@tribeapp.com\",\n    \"password\": \"admin\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

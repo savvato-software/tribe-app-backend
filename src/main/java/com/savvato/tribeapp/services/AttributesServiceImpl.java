@@ -105,7 +105,7 @@ public class AttributesServiceImpl implements AttributesService{
             }
         }
 
-        // Return Optional of attributes or empty Optional if there aren't any
-        return (attributes.isEmpty() ? Optional.empty() : Optional.of(attributes));
+        // Returns list of attributeDTOs. Can be empty.
+        return Optional.of(attributes);
     }
 }

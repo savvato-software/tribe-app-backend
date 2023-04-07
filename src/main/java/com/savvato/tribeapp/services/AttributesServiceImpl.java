@@ -16,22 +16,21 @@ public class AttributesServiceImpl implements AttributesService{
     @Autowired
     PhraseService phraseService;
 
-    RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
-    private final VerbRepository verbRepository;
-    private final NounRepository nounRepository;
-    private final AdverbRepository adverbRepository;
-    private final PrepositionRepository prepositionRepository;
+    @Autowired
+    VerbRepository verbRepository;
 
-    public AttributesServiceImpl(VerbRepository verbRepository,
-                                 NounRepository nounRepository,
-                                 AdverbRepository adverbRepository,
-                                 PrepositionRepository prepositionRepository
-    ) {
-        this.verbRepository = verbRepository;
-        this.nounRepository = nounRepository;
-        this.adverbRepository = adverbRepository;
-        this.prepositionRepository = prepositionRepository;
-    }
+    @Autowired
+    NounRepository nounRepository;
+
+    @Autowired
+    AdverbRepository adverbRepository;
+
+    @Autowired
+    PrepositionRepository prepositionRepository;
+
+    @Autowired
+    RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
+
 
     public boolean isPhraseValid(String verb, String noun, String adverb, String preposition) {
         boolean rtn = true;

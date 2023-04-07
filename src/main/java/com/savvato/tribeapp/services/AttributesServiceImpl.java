@@ -96,8 +96,8 @@ public class AttributesServiceImpl implements AttributesService{
 
         // If there are phrases, build DTO and add to attributes list
         if(optUserPhraseDTOs.isPresent()) {
-            List<PhraseDTO> attribute = optUserPhraseDTOs.get();
-            for(PhraseDTO phrase : attribute) {
+            List<PhraseDTO> phrases = optUserPhraseDTOs.get();
+            for(PhraseDTO phrase : phrases) {
                 AttributeDTO attributeDTO = AttributeDTO.builder()
                         .phrase(phrase)
                         .build();

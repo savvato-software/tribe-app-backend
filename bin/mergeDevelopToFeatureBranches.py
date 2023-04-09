@@ -5,7 +5,7 @@ import os
 print("****************************************************************")
 print(" Merge Develop Into Each Feature Branch, and Push to the Cloud")
 print("****************************************************************")
-print("");
+print("")
 
 # Get the current branch name
 original_branch = os.popen('git rev-parse --abbrev-ref HEAD').read().strip()

@@ -3,6 +3,7 @@ package com.savvato.tribeapp.controllers;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
 import com.savvato.tribeapp.services.AttributesService;
+import com.savvato.tribeapp.services.PhraseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,9 @@ public class AttributesAPIController {
 
     @Autowired
     AttributesService attributesService;
+
+    @Autowired
+    PhraseService phraseService;
 
     AttributesAPIController() {
 
@@ -40,8 +44,8 @@ public class AttributesAPIController {
         if (req.noun == null || req.verb == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
-        if (attributesService.isPhraseValid(req.noun, req.verb, req.preposition, req.adverb)) {
-            attributesService.applyPhraseToUser(req.noun, req.verb, req.preposition, req.adverb);
+        if (phraseService.isPhraseValid(req.noun, req.verb, req.preposition, req.adverb)) {
+            phraseService.applyPhraseToUser(req.noun, req.verb, req.preposition, req.adverb);
         }
 
         if (rtn)

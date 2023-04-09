@@ -7,9 +7,6 @@ import java.util.Optional;
 
 public interface AttributesService {
 
-    boolean isPhraseValid(String verb, String noun, String adverb, String preposition);
-    void applyPhraseToUser(String verb, String noun, String adverb, String preposition);
-
     Optional<List<AttributeDTO>> getAttributesByUserId(Long id);
 
 }

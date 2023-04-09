@@ -15,6 +15,7 @@ stashed_changes = len(stash_output.split('\n')) > 1
 if stashed_changes:
     print("Stashed changes.")
 
+
 # Check out the develop branch and do a pull
 ckoutput = subprocess.run(['git','checkout','develop'], stdout=subprocess.PIPE).stdout.decode('utf-8')
 
@@ -22,16 +23,16 @@ if 'up to date' not in ckoutput:
     subprocess.run(['git','pull'])
     print("Checked out develop branch and did a pull.")
 
-    # Find the list of feature branches
-    feature_branches = subprocess.run(['git', 'branch', '-r', '--list', '\*feature*'], stdout=subprocess.PIPE).stdout.decode('utf-8').split('\n')
-    feature_branches = [x.replace('origin/','') for x in feature_branches]
+# Find the list of feature branches
+feature_branches = subprocess.run(['git', 'branch', '-r', '--list', '\*feature*'], stdout=subprocess.PIPE).stdout.decode('utf-8').split('\n')
+feature_branches = [x.replace('origin/','') for x in feature_branches]
 
-    # For each feature branch, merge the develop branch into it and push
-    for feature_branch in feature_branches:
-        subprocess.run(['git', 'checkout', feature_branch], stdout=subprocess.PIPE).stdout.decode('utf-8')
-        subprocess.run(['git', 'merge', 'develop'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-        subprocess.run(['git', 'push'], stdout=subprocess.PIPE).stdout.decode('utf-8')
-        print("Merged develop branch into " + feature_branch + " and pushed.")
+# For each feature branch, merge the develop branch into it and push
+for feature_branch in feature_branches:
+    subprocess.run(['git', 'checkout', feature_branch], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    subprocess.run(['git', 'merge', 'develop'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    subprocess.run(['git', 'push'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    print("Merged develop branch into " + feature_branch + " and pushed.")
 
 # Change back to the original branch and pop any stashed changes
 subprocess.run(['git', 'checkout', original_branch], stdout=subprocess.PIPE).stdout.decode('utf-8')

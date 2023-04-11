@@ -34,6 +34,7 @@ public class PhraseServiceImpl implements PhraseService {
     @Autowired
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
 
+    @Override
     public boolean isPhraseValid(String verb, String noun, String adverb, String preposition) {
         boolean rtn = true;
         rtn = rtn && isWordPreviouslyRejected(verb);
@@ -48,6 +49,7 @@ public class PhraseServiceImpl implements PhraseService {
         return this.rejectedNonEnglishWordRepository.findByWord(word).isPresent();
     }
 
+    @Override
     public void applyPhraseToUser(String verb, String noun, String adverb, String preposition) {
         boolean rtn = hasPhraseBeenReviewed(verb, noun, adverb, preposition);
 

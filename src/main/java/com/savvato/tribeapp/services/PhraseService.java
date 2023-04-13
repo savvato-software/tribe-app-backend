@@ -9,7 +9,7 @@ public interface PhraseService {
 
     boolean isPhraseValid(String adverb, String verb, String preposition, String noun);
 
-    void applyPhraseToUser(String verb, String noun, String adverb, String preposition);
+    void applyPhraseToUser(String adverb, String verb, String preposition, String noun);
 
     Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long id);
 }

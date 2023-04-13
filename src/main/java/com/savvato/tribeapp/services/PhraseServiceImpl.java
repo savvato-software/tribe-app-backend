@@ -48,7 +48,7 @@ public class PhraseServiceImpl implements PhraseService {
         return this.rejectedNonEnglishWordRepository.findByWord(word).isPresent();
     }
 
-    public void applyPhraseToUser(String verb, String noun, String adverb, String preposition) {
+    public void applyPhraseToUser(String adverb, String verb, String preposition, String noun) {
         boolean rtn = hasPhraseBeenReviewed(verb, noun, adverb, preposition);
 
         if (rtn) {

@@ -70,7 +70,7 @@ public class PhraseServiceImpl implements PhraseService {
     public Optional<Long> checkIfPhraseHasBeenReviewed(String adverb, String verb, String preposition, String noun) {
 
         // Dev note: do not check for null verb or noun values passed in. API controller does this.
-        Optional<Long> reviewedPhraseId = Optional.empty();
+        Long phraseId = null;
         Long adverbId = null;
         Long verbId = null;
         Long prepositionId = null;
@@ -94,12 +94,14 @@ public class PhraseServiceImpl implements PhraseService {
             }
 
             // check phrase repo to see if this combination of ids exists as a phrase
-            ////// figure out null values
-            reviewedPhraseId = phraseRepository.findPhraseIdByAdverbIdAndVerbIdAndPrepositionIdAndNounId(adverbId, verbId, prepositionId, nounId);
+            Optional<Phrase> reviewedPhrase = phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(adverbId, verbId, prepositionId, nounId);
+            if(reviewedPhrase.isPresent()) {
+                phraseId = reviewedPhrase.get().getId();
+            }
 
         }
 
-        return reviewedPhraseId;
+        return Optional.of(phraseId);
     }
 
     public Optional<Adverb> findAdverbIfExists(String adverb) {

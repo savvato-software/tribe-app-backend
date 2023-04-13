@@ -23,13 +23,13 @@ public class PhraseServiceImpl implements PhraseService {
     AdverbRepository adverbRepository;
 
     @Autowired
-    NounRepository nounRepository;
+    VerbRepository verbRepository;
 
     @Autowired
     PrepositionRepository prepositionRepository;
 
     @Autowired
-    VerbRepository verbRepository;
+    NounRepository nounRepository;
 
     @Autowired
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
@@ -71,22 +71,22 @@ public class PhraseServiceImpl implements PhraseService {
         return rtn;
     }
 
-    public boolean isGivenVerbFound(String verb) {
-        return this.verbRepository.findByWord(verb).isPresent();
-    }
-
-    public boolean isGivenNounFound(String noun) {
-        return this.nounRepository.findByWord(noun).isPresent();
-    }
-
     public boolean isGivenAdverbFound(String adverb) {
         return this.adverbRepository.findByWord(adverb).isPresent();
+    }
+
+    public boolean isGivenVerbFound(String verb) {
+        return this.verbRepository.findByWord(verb).isPresent();
     }
 
     public boolean isGivenPrepositionFound(String preposition) {
         return this.prepositionRepository.findByWord(preposition).isPresent();
     }
 
+    public boolean isGivenNounFound(String noun) {
+        return this.nounRepository.findByWord(noun).isPresent();
+    }
+    
     @Override
     public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long userId) {
 

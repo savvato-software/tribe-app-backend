@@ -26,11 +26,12 @@
         </sql>
     </changeSet>
 
+    <!-- adverb and preposition ids of "1" indicate nullvalue -->
     <changeSet author="audra" id="202304121346-02" context="test">
         <sql dbms="mysql">
-            INSERT INTO phrase (id, adverb_id, verb_id, noun_id) VALUES (1, 100, 100, 100);
-            INSERT INTO phrase (id, verb_id, noun_id) VALUES (2, 101, 101);
-            INSERT INTO phrase (id, verb_id, preposition_id, noun_id) VALUES (3, 102, 100, 102);
+            INSERT INTO phrase (id, adverb_id, verb_id, preposition_id, noun_id) VALUES (1, 100, 100, 1, 100);
+            INSERT INTO phrase (id, adverb_id, verb_id, preposition_id, noun_id) VALUES (2, 1, 101, 1, 101);
+            INSERT INTO phrase (id, adverb_id, verb_id, preposition_id, noun_id) VALUES (3, 1, 102, 100, 102);
         </sql>
     </changeSet>
 

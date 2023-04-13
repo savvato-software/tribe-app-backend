@@ -44,8 +44,9 @@ public class AttributesAPIController {
         if (req.noun == null || req.verb == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
-        if (phraseService.isPhraseValid(req.noun, req.verb, req.preposition, req.adverb)) {
-            phraseService.applyPhraseToUser(req.id, req.noun, req.verb, req.preposition, req.adverb); // added id
+        if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
+            //phraseService.applyPhraseToUser(req.id, req.adverb, req.verb, req.preposition, req.noun);
+            phraseService.applyPhraseToUser(req.adverb, req.verb, req.preposition, req.noun);
             rtn = true; // added
         }
 

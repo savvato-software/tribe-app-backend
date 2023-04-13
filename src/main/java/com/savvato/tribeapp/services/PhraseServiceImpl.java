@@ -24,25 +24,24 @@ public class PhraseServiceImpl implements PhraseService {
     AdverbRepository adverbRepository;
 
     @Autowired
-    NounRepository nounRepository;
+    VerbRepository verbRepository;
 
     @Autowired
     PrepositionRepository prepositionRepository;
 
     @Autowired
-    VerbRepository verbRepository;
+    NounRepository nounRepository;
 
     @Autowired
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
 
     @Override
-    public boolean isPhraseValid(String verb, String noun, String adverb, String preposition) {
-
+    public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) {
         boolean rtn = true;
-        rtn = rtn && !isWordPreviouslyRejected(verb);
-        rtn = rtn && !isWordPreviouslyRejected(noun);
         rtn = rtn && !isWordPreviouslyRejected(adverb);
+        rtn = rtn && !isWordPreviouslyRejected(verb);
         rtn = rtn && !isWordPreviouslyRejected(preposition);
+        rtn = rtn && !isWordPreviouslyRejected(noun);
 
         return rtn;
     }
@@ -52,11 +51,12 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     @Override
-    public void applyPhraseToUser(Long userId, String verb, String noun, String adverb, String preposition) {
-        Optional<Long> reviewedPhraseId = checkIfPhraseHasBeenReviewed(verb, noun, adverb, preposition);
+    //public void applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun) {
+        public void applyPhraseToUser(String adverb, String verb, String preposition, String noun) {
+        Optional<Long> reviewedPhraseId = checkIfPhraseHasBeenReviewed(adverb, verb, preposition, noun);
 
         if (reviewedPhraseId.isPresent()) {
-            System.out.println("phrase exists!");
+            System.out.println("phrase exists: " + reviewedPhraseId.get());
             // we have seen this before
             // associate it with the user
         } else {
@@ -67,27 +67,27 @@ public class PhraseServiceImpl implements PhraseService {
         }
     }
 
-    public Optional<Long> checkIfPhraseHasBeenReviewed(String verb, String noun, String adverb, String preposition) {
+    public Optional<Long> checkIfPhraseHasBeenReviewed(String adverb, String verb, String preposition, String noun) {
 
         // Dev note: do not check for null verb or noun values passed in. API controller does this.
         Optional<Long> reviewedPhraseId = Optional.empty();
-        Long verbId = null;
-        Long nounId = null;
         Long adverbId = null;
+        Long verbId = null;
         Long prepositionId = null;
+        Long nounId = null;
 
         // Check if the verb and noun already exist in their respective repos and retrieve ids
-        if(findVerbIfExists(verb).isPresent() && findNounIfExists(noun).isPresent()) {
+        if (findVerbIfExists(verb).isPresent() && findNounIfExists(noun).isPresent()) {
             verbId = verbRepository.findByWord(verb).get().getId();
             nounId = nounRepository.findByWord(noun).get().getId();
 
             // Check if adverb and preposition exist and retrieve their ids or add nullvalue id from Constants
-            if(adverb != null && findAdverbIfExists(adverb).isPresent()) {
+            if (adverb != null && findAdverbIfExists(adverb).isPresent()) {
                 adverbId = adverbRepository.findByWord(adverb).get().getId();
             } else {
                 adverbId = Constants.NULL_VALUE_ID;
             }
-            if(preposition != null && findPrepositionIfExists(verb).isPresent()) {
+            if (preposition != null && findPrepositionIfExists(verb).isPresent()) {
                 prepositionId = prepositionRepository.findByWord(preposition).get().getId();
             } else {
                 prepositionId = Constants.NULL_VALUE_ID;
@@ -102,22 +102,24 @@ public class PhraseServiceImpl implements PhraseService {
         return reviewedPhraseId;
     }
 
+    public Optional<Adverb> findAdverbIfExists(String adverb) {
+        return this.adverbRepository.findByWord(adverb);
+    }
+
     public Optional<Verb> findVerbIfExists(String verb) {
         return this.verbRepository.findByWord(verb);
+    }
+
+    public Optional<Preposition> findPrepositionIfExists(String preposition) {
+        return this.prepositionRepository.findByWord(preposition);
+
     }
 
     public Optional<Noun> findNounIfExists(String noun) {
         return this.nounRepository.findByWord(noun);
     }
 
-    public Optional<Adverb> findAdverbIfExists(String adverb) {
-        return this.adverbRepository.findByWord(adverb);
-    }
-
-    public Optional<Preposition> findPrepositionIfExists(String preposition) {
-        return this.prepositionRepository.findByWord(preposition);
-    }
-
+    
     @Override
     public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long userId) {
 

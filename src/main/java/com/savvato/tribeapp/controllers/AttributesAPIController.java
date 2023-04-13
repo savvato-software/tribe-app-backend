@@ -45,7 +45,7 @@ public class AttributesAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
         if (phraseService.isPhraseValid(req.noun, req.verb, req.preposition, req.adverb)) {
-            phraseService.applyPhraseToUser(req.noun, req.verb, req.preposition, req.adverb);
+            phraseService.applyPhraseToUser(req.id, req.noun, req.verb, req.preposition, req.adverb); // added id
             rtn = true; // added
         }
 

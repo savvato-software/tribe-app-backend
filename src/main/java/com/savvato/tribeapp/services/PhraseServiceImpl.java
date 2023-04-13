@@ -52,7 +52,7 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     @Override
-    public void applyPhraseToUser(String verb, String noun, String adverb, String preposition) {
+    public void applyPhraseToUser(Long userId, String verb, String noun, String adverb, String preposition) {
         Optional<Long> reviewedPhraseId = checkIfPhraseHasBeenReviewed(verb, noun, adverb, preposition);
 
         if (reviewedPhraseId.isPresent()) {

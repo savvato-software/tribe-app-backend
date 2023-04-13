@@ -23,23 +23,23 @@ public class PhraseServiceImpl implements PhraseService {
     AdverbRepository adverbRepository;
 
     @Autowired
-    NounRepository nounRepository;
+    VerbRepository verbRepository;
 
     @Autowired
     PrepositionRepository prepositionRepository;
 
     @Autowired
-    VerbRepository verbRepository;
+    NounRepository nounRepository;
 
     @Autowired
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
 
-    public boolean isPhraseValid(String verb, String noun, String adverb, String preposition) {
+    public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) {
         boolean rtn = true;
-        rtn = rtn && isWordPreviouslyRejected(verb);
-        rtn = rtn && isWordPreviouslyRejected(noun);
         rtn = rtn && isWordPreviouslyRejected(adverb);
+        rtn = rtn && isWordPreviouslyRejected(verb);
         rtn = rtn && isWordPreviouslyRejected(preposition);
+        rtn = rtn && isWordPreviouslyRejected(noun);
 
         return rtn;
     }
@@ -48,8 +48,8 @@ public class PhraseServiceImpl implements PhraseService {
         return this.rejectedNonEnglishWordRepository.findByWord(word).isPresent();
     }
 
-    public void applyPhraseToUser(String verb, String noun, String adverb, String preposition) {
-        boolean rtn = hasPhraseBeenReviewed(verb, noun, adverb, preposition);
+    public void applyPhraseToUser(String adverb, String verb, String preposition, String noun) {
+        boolean rtn = hasPhraseBeenReviewed(adverb, verb, preposition, noun);
 
         if (rtn) {
             // we have seen this before
@@ -61,32 +61,32 @@ public class PhraseServiceImpl implements PhraseService {
         }
     }
 
-    public boolean hasPhraseBeenReviewed(String verb, String noun, String adverb, String preposition) {
+    public boolean hasPhraseBeenReviewed(String adverb, String verb, String preposition, String noun) {
         boolean rtn = true;
-        rtn = rtn && isGivenVerbFound(verb);
-        rtn = rtn && isGivenNounFound(noun);
-        rtn = rtn && isGivenAdverbFound(adverb);
-        rtn = rtn && isGivenPrepositionFound(preposition);
+        rtn = rtn && isGivenVerbFound(adverb);
+        rtn = rtn && isGivenNounFound(verb);
+        rtn = rtn && isGivenAdverbFound(preposition);
+        rtn = rtn && isGivenPrepositionFound(noun);
 
         return rtn;
-    }
-
-    public boolean isGivenVerbFound(String verb) {
-        return this.verbRepository.findByWord(verb).isPresent();
-    }
-
-    public boolean isGivenNounFound(String noun) {
-        return this.nounRepository.findByWord(noun).isPresent();
     }
 
     public boolean isGivenAdverbFound(String adverb) {
         return this.adverbRepository.findByWord(adverb).isPresent();
     }
 
+    public boolean isGivenVerbFound(String verb) {
+        return this.verbRepository.findByWord(verb).isPresent();
+    }
+
     public boolean isGivenPrepositionFound(String preposition) {
         return this.prepositionRepository.findByWord(preposition).isPresent();
     }
 
+    public boolean isGivenNounFound(String noun) {
+        return this.nounRepository.findByWord(noun).isPresent();
+    }
+    
     @Override
     public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long userId) {
 

@@ -18,7 +18,11 @@
 	<include file="changelog-202303161405.xml" 	relativeToChangelogFile="true"/>
 	<include file="changelog-202303281903.xml" 	relativeToChangelogFile="true"/>
 	<include file="changelog-202304021000.xml" 	relativeToChangelogFile="true"/>
-	<include file="changelog-202304021328.xml" 	relativeToChangelogFile="true"/>
+	<include file="changelog-202304131016.xml" 	relativeToChangelogFile="true"/> <!-- moved before auto-increment change -->
+	<include file="changelog-202304111842.xml" 	relativeToChangelogFile="true"/> <!-- moved before test data -->
+	<include file="changelog-202304121346.xml" 	relativeToChangelogFile="true"/> <!-- test data -->
+
+	<!-- <include file="changelog-202304021328.xml" 	relativeToChangelogFile="true"/> --> <!-- replaced with 202304121346 -->
 
 </databaseChangeLog>
 

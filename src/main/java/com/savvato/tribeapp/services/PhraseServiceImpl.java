@@ -34,12 +34,12 @@ public class PhraseServiceImpl implements PhraseService {
     @Autowired
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
 
-    public boolean isPhraseValid(String verb, String noun, String adverb, String preposition) {
+    public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) {
         boolean rtn = true;
-        rtn = rtn && isWordPreviouslyRejected(verb);
-        rtn = rtn && isWordPreviouslyRejected(noun);
         rtn = rtn && isWordPreviouslyRejected(adverb);
+        rtn = rtn && isWordPreviouslyRejected(verb);
         rtn = rtn && isWordPreviouslyRejected(preposition);
+        rtn = rtn && isWordPreviouslyRejected(noun);
 
         return rtn;
     }

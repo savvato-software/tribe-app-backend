@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.dto.PhraseDTO;
 import com.savvato.tribeapp.entities.*;
 import com.savvato.tribeapp.repositories.*;
@@ -80,12 +81,16 @@ public class PhraseServiceImpl implements PhraseService {
             verbId = verbRepository.findByWord(verb).get().getId();
             nounId = nounRepository.findByWord(noun).get().getId();
 
-            // Check if adverb and preposition exist and retrieve their ids
+            // Check if adverb and preposition exist and retrieve their ids or add nullvalue id from Constants
             if(adverb != null && findAdverbIfExists(adverb).isPresent()) {
                 adverbId = adverbRepository.findByWord(adverb).get().getId();
+            } else {
+                adverbId = Constants.NULL_VALUE_ID;
             }
             if(preposition != null && findPrepositionIfExists(verb).isPresent()) {
                 prepositionId = prepositionRepository.findByWord(preposition).get().getId();
+            } else {
+                prepositionId = Constants.NULL_VALUE_ID;
             }
 
             // check phrase repo to see if this combination of ids exists as a phrase

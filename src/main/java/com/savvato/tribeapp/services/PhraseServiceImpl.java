@@ -49,7 +49,7 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     public void applyPhraseToUser(String adverb, String verb, String preposition, String noun) {
-        boolean rtn = hasPhraseBeenReviewed(verb, noun, adverb, preposition);
+        boolean rtn = hasPhraseBeenReviewed(adverb, verb, preposition, noun);
 
         if (rtn) {
             // we have seen this before
@@ -61,12 +61,12 @@ public class PhraseServiceImpl implements PhraseService {
         }
     }
 
-    public boolean hasPhraseBeenReviewed(String verb, String noun, String adverb, String preposition) {
+    public boolean hasPhraseBeenReviewed(String adverb, String verb, String preposition, String noun) {
         boolean rtn = true;
-        rtn = rtn && isGivenVerbFound(verb);
-        rtn = rtn && isGivenNounFound(noun);
-        rtn = rtn && isGivenAdverbFound(adverb);
-        rtn = rtn && isGivenPrepositionFound(preposition);
+        rtn = rtn && isGivenVerbFound(adverb);
+        rtn = rtn && isGivenNounFound(verb);
+        rtn = rtn && isGivenAdverbFound(preposition);
+        rtn = rtn && isGivenPrepositionFound(noun);
 
         return rtn;
     }

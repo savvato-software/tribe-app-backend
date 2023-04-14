@@ -51,10 +51,9 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     @Override
-    //public void applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun) {
-        public void applyPhraseToUser(String adverb, String verb, String preposition, String noun) {
+    public void applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun) {
+        //public void applyPhraseToUser(String adverb, String verb, String preposition, String noun) {
         Optional<Long> reviewedPhraseId = checkIfPhraseHasBeenReviewed(adverb, verb, preposition, noun);
-
 
         if (reviewedPhraseId.isPresent()) {
             System.out.println("phrase exists: " + reviewedPhraseId.get());

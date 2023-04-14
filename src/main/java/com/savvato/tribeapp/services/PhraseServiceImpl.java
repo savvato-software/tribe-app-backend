@@ -24,25 +24,24 @@ public class PhraseServiceImpl implements PhraseService {
     AdverbRepository adverbRepository;
 
     @Autowired
-    NounRepository nounRepository;
+    VerbRepository verbRepository;
 
     @Autowired
     PrepositionRepository prepositionRepository;
 
     @Autowired
-    VerbRepository verbRepository;
+    NounRepository nounRepository;
 
     @Autowired
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
 
     @Override
-    public boolean isPhraseValid(String verb, String noun, String adverb, String preposition) {
-
+    public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) {
         boolean rtn = true;
-        rtn = rtn && !isWordPreviouslyRejected(verb);
-        rtn = rtn && !isWordPreviouslyRejected(noun);
         rtn = rtn && !isWordPreviouslyRejected(adverb);
+        rtn = rtn && !isWordPreviouslyRejected(verb);
         rtn = rtn && !isWordPreviouslyRejected(preposition);
+        rtn = rtn && !isWordPreviouslyRejected(noun);
 
         return rtn;
     }
@@ -52,7 +51,7 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     @Override
-    public void applyPhraseToUser(String verb, String noun, String adverb, String preposition) {
+    public void applyPhraseToUser(String adverb, String verb, String preposition, String noun) {
         Optional<Long> reviewedPhraseId = checkIfPhraseHasBeenReviewed(verb, noun, adverb, preposition);
 
         if (reviewedPhraseId.isPresent()) {
@@ -117,7 +116,7 @@ public class PhraseServiceImpl implements PhraseService {
     public Optional<Preposition> findPrepositionIfExists(String preposition) {
         return this.prepositionRepository.findByWord(preposition);
     }
-
+    
     @Override
     public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long userId) {
 

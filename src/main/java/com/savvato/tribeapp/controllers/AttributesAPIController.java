@@ -48,6 +48,7 @@ public class AttributesAPIController {
             //phraseService.applyPhraseToUser(req.id, req.adverb, req.verb, req.preposition, req.noun);
             phraseService.applyPhraseToUser(req.adverb, req.verb, req.preposition, req.noun);
             rtn = true; // added
+
         }
 
         if (rtn)

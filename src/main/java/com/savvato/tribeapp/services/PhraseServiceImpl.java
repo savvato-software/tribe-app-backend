@@ -55,6 +55,7 @@ public class PhraseServiceImpl implements PhraseService {
         public void applyPhraseToUser(String adverb, String verb, String preposition, String noun) {
         Optional<Long> reviewedPhraseId = checkIfPhraseHasBeenReviewed(adverb, verb, preposition, noun);
 
+
         if (reviewedPhraseId.isPresent()) {
             System.out.println("phrase exists: " + reviewedPhraseId.get());
             // we have seen this before
@@ -120,7 +121,6 @@ public class PhraseServiceImpl implements PhraseService {
     public Optional<Noun> findNounIfExists(String noun) {
         return this.nounRepository.findByWord(noun);
     }
-
     
     @Override
     public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long userId) {

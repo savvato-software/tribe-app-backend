@@ -13,7 +13,7 @@
     <changeSet author="audra" id="202304131016-01" context="test">  <!-- context test ?? -->
         <sql dbms="mysql">
             INSERT INTO adverb (word) VALUES ('nullvalue');
-            INSERT INTO preposition (word)  VALUES ('nullvalue');
+            INSERT INTO preposition (word) VALUES ('nullvalue');
         </sql>
     </changeSet>
 

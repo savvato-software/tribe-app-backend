@@ -6,12 +6,21 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <!--
-    updates haxwell test data to match new auto-increment values for words
-    see 202304111842 for auto_increment settings
-    see 202304021328 for original test data (removed from changelog-master)
+    updates 202304021328 test data to match new auto-increment values for words
     -->
 
     <changeSet author="audra" id="202304121346-01" context="test">
+        <sql dbms="mysql">
+            DELETE FROM user_phrase;
+            DELETE FROM phrase;
+            DELETE FROM adverb WHERE word='competitively';
+            DELETE FROM verb;
+            DELETE FROM preposition WHERE word='with';
+            DELETE FROM noun;
+        </sql>
+    </changeSet>
+
+    <changeSet author="audra" id="202304121346-02" context="test">
         <sql dbms="mysql">
             INSERT INTO adverb (word) VALUES ('competitively');
             INSERT INTO verb (word) VALUES ('writes');
@@ -27,7 +36,7 @@
     </changeSet>
 
     <!-- adverb and preposition ids of "1" indicate nullvalue -->
-    <changeSet author="audra" id="202304121346-02" context="test">
+    <changeSet author="audra" id="202304121346-03" context="test">
         <sql dbms="mysql">
             INSERT INTO phrase (id, adverb_id, verb_id, preposition_id, noun_id) VALUES (1, 100, 100, 1, 100);
             INSERT INTO phrase (id, adverb_id, verb_id, preposition_id, noun_id) VALUES (2, 1, 101, 1, 101);
@@ -35,7 +44,7 @@
         </sql>
     </changeSet>
 
-    <changeSet author="audra" id="202304121346-03" context="test">
+    <changeSet author="audra" id="202304121346-04" context="test">
         <sql dbms="mysql">
             INSERT INTO user_phrase (user_id, phrase_id) VALUES (1, 1);
             INSERT INTO user_phrase (user_id, phrase_id) VALUES (1, 2);
@@ -43,7 +52,5 @@
             INSERT INTO user_phrase (user_id, phrase_id) VALUES (2, 3);
         </sql>
     </changeSet>
-
-
 
 </databaseChangeLog>

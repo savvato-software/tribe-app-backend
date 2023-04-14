@@ -133,4 +133,25 @@ public class UserRoleMapServiceImplTest extends AbstractServiceImplTest {
 
         assertThat(returnedFalse).isFalse();
     }
+
+    @Test
+    public void testRemoveOneRoleAccountHolder() {
+        // create a new array list with ADMIN, ACCOUNT_HOLDER, PHRASE_REVIEWER in it
+        ArrayList<String> expectedRoles = new ArrayList<String>(List.of("ACCOUNTHOLDER"));
+
+        // Setting up user object
+        User user = getUser1();
+        // setting up role to be account holder
+        user.setRoles(getUserRoles_AccountHolder());
+
+        // call userRoleMapService.addRolesToUser() with parameters userRequest.userId and the array list
+        boolean returnedFalse = userRoleMapService.removeRolesFromUser(user.getId(), expectedRoles);
+        // Does assert to false
+        assertThat(returnedFalse).isFalse();
+
+        ArgumentCaptor<UserRoleMap> arg1 = ArgumentCaptor.forClass(UserRoleMap.class);
+        verify(userRoleMapRepository, times(0)).delete(arg1.capture());
+    }
+
+
 }

@@ -5,19 +5,13 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <!--
-    sets auto_increment for word database columns
-    placed before any test data is added in changelog-master
-    -->
-
-    <changeSet author="audra" id="202304111842-01">
+    <!-- Alters phrase table to NOT accept null values -->
+    <changeSet author="audra" id="202304141226-01">
         <sql dbms="mysql">
-
-            ALTER TABLE adverb AUTO_INCREMENT=100;
-            ALTER TABLE verb AUTO_INCREMENT=100;
-            ALTER TABLE preposition AUTO_INCREMENT=100;
-            ALTER TABLE noun AUTO_INCREMENT=100;
-
+            ALTER TABLE phrase MODIFY adverb_id BIGINT(20) NOT NULL;
+            ALTER TABLE phrase MODIFY verb_id BIGINT(20) NOT NULL;
+            ALTER TABLE phrase MODIFY preposition_id BIGINT(20) NOT NULL;
+            ALTER TABLE phrase MODIFY noun_id BIGINT(20) NOT NULL;
         </sql>
     </changeSet>
 

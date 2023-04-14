@@ -5,15 +5,19 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <!--
-    inserts word "nullvalue" into optional adverb and preposition tables
-    id will be "1"
-    -->
-
-    <changeSet author="audra" id="202304131016-01" context="test">  <!-- context test ?? -->
+    <!-- inserts word "nullvalue" into adverb and preposition tables to be used when no word in phrase -->
+    <changeSet author="audra" id="202304141136-01" >
         <sql dbms="mysql">
             INSERT INTO adverb (word) VALUES ('nullvalue');
             INSERT INTO preposition (word) VALUES ('nullvalue');
+        </sql>
+    </changeSet>
+
+    <!-- sets "nullvalue" id to "1" in adverb and preposition tables -->
+    <changeSet author="audra" id="202304141136-02" >
+        <sql dbms="mysql">
+            UPDATE adverb SET id = 1 WHERE word = 'nullvalue';
+            UPDATE preposition SET id = 1 WHERE word = 'nullvalue';
         </sql>
     </changeSet>
 

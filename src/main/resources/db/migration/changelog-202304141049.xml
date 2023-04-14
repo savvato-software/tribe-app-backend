@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Alters phrase table to accept null values so that words can be removed for following scripts -->
+    <changeSet author="audra" id="202304141049-01">
+        <sql dbms="mysql">
+            ALTER TABLE phrase MODIFY adverb_id BIGINT(20);
+            ALTER TABLE phrase MODIFY verb_id BIGINT(20);
+            ALTER TABLE phrase MODIFY preposition_id BIGINT(20);
+            ALTER TABLE phrase MODIFY noun_id BIGINT(20);
+        </sql>
+    </changeSet>
+
+    <!-- Removes words from test data phrases temporarily for following scripts to alter ids -->
+    <changeSet author="audra" id="202304141049-02" context="test">
+        <sql dbms="mysql">
+            UPDATE phrase SET adverb_id = null, verb_id = null, noun_id = null WHERE id = 1;
+            UPDATE phrase SET verb_id = null, noun_id = null WHERE id = 2;
+            UPDATE phrase SET verb_id = null, preposition_id = null, noun_id = null WHERE id = 3;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

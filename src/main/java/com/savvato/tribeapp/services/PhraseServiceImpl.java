@@ -18,6 +18,9 @@ public class PhraseServiceImpl implements PhraseService {
     UserPhraseService userPhraseService;
 
     @Autowired
+    UserPhraseRepository userPhraseRepository;
+
+    @Autowired
     PhraseRepository phraseRepository;
 
     @Autowired
@@ -55,6 +58,10 @@ public class PhraseServiceImpl implements PhraseService {
         Optional<Long> reviewedPhraseId = checkIfPhraseHasBeenReviewed(adverb, verb, preposition, noun);
 
         if (reviewedPhraseId.isPresent()) {
+            UserPhrase userPhrase = new UserPhrase();
+            userPhrase.setUserId(userId);
+            userPhrase.setPhraseId(reviewedPhraseId.get());
+            userPhraseRepository.save(userPhrase);
             System.out.println("phrase exists: " + reviewedPhraseId.get());
             // we have seen this before
             // associate it with the user

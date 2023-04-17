@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface UserPhraseRepository extends CrudRepository<Phrase, Long> {
     @Query(nativeQuery = true, value = "select phrase_id from user_phrase where user_id = ?")
     Optional<List<Long>> findPhraseIdsByUserId(Long Id);
+
 }

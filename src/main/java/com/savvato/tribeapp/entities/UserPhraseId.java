@@ -5,6 +5,4 @@ public class UserPhraseId implements Serializable {
     private Long userId;
     private Long phraseId;
 
-    // getters and setters...
-    // equals and hashCode...
 }

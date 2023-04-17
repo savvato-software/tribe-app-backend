@@ -136,7 +136,7 @@ public class UserRoleMapServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void testRemoveOneRoleAccountHolder() {
-        // create a new array list with ADMIN, ACCOUNT_HOLDER, PHRASE_REVIEWER in it
+        // create a new array list ACCOUNT_HOLDER in it
         ArrayList<String> expectedRoles = new ArrayList<String>(List.of("ACCOUNTHOLDER"));
 
         // Setting up user object

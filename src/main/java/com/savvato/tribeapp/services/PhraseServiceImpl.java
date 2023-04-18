@@ -58,11 +58,19 @@ public class PhraseServiceImpl implements PhraseService {
         Optional<Long> reviewedPhraseId = checkIfPhraseHasBeenReviewed(adverb, verb, preposition, noun);
 
         if (reviewedPhraseId.isPresent()) {
+            System.out.println("phrase exists in the system: phrase id is " + reviewedPhraseId.get());
             UserPhrase userPhrase = new UserPhrase();
             userPhrase.setUserId(userId);
             userPhrase.setPhraseId(reviewedPhraseId.get());
-            userPhraseRepository.save(userPhrase);
-            System.out.println("phrase exists: " + reviewedPhraseId.get());
+            UserPhraseId userPhraseId = new UserPhraseId();
+            userPhraseId.setUserId(userId);
+            userPhraseId.setPhraseId(reviewedPhraseId.get());
+            if(userPhraseRepository.existsById(userPhraseId)) {
+                System.out.println("phrase already applied to user " + userId);
+            } else {
+                userPhraseRepository.save(userPhrase);
+                System.out.println("phrase added to user " + userId);
+            }
             // we have seen this before
             // associate it with the user
         } else {
@@ -78,33 +86,36 @@ public class PhraseServiceImpl implements PhraseService {
         // Dev note: do not check for null verb or noun values passed in. API controller does this.
         Long phraseId = null;
         Long adverbId = null;
-        Long verbId = null;
+        Long verbId = findVerbIfExists(verb).isPresent() ? verbRepository.findByWord(verb).get().getId() : null;
+        System.out.println("The verb id is: " + verbId); ////////
         Long prepositionId = null;
-        Long nounId = null;
+        Long nounId = findNounIfExists(noun).isPresent() ? nounRepository.findByWord(noun).get().getId() : null;
+        System.out.println("The noun id is: " + nounId); ////////
 
-        // Check if the verb and noun already exist in their respective repos and retrieve ids
-        if (findVerbIfExists(verb).isPresent() && findNounIfExists(noun).isPresent()) {
-            verbId = verbRepository.findByWord(verb).get().getId();
-            nounId = nounRepository.findByWord(noun).get().getId();
+        if (adverb.equals("")) {
+            adverbId = Constants.NULL_VALUE_ID;
+            System.out.println("The nullvalue adverb id is: " + adverbId); ////////
+        } else if (findAdverbIfExists(adverb).isPresent()) {
+            adverbId = adverbRepository.findByWord(adverb).get().getId();
+            System.out.println("The adverb id is: " + adverbId); ////////
+        }
 
-            // Check if adverb and preposition exist and retrieve their ids or add nullvalue id from Constants
-            if (adverb != null && findAdverbIfExists(adverb).isPresent()) {
-                adverbId = adverbRepository.findByWord(adverb).get().getId();
-            } else {
-                adverbId = Constants.NULL_VALUE_ID;
-            }
-            if (preposition != null && findPrepositionIfExists(preposition).isPresent()) {
-                prepositionId = prepositionRepository.findByWord(preposition).get().getId();
-            } else {
-                prepositionId = Constants.NULL_VALUE_ID;
-            }
+        if (preposition.equals("")) {
+            prepositionId = Constants.NULL_VALUE_ID;
+            System.out.println("The nullvalue preposition id is: " + prepositionId); ////////
+        } else if (findPrepositionIfExists(preposition).isPresent()) {
+            prepositionId = prepositionRepository.findByWord(preposition).get().getId();
+            System.out.println("The preposition id is: " + prepositionId); ////////
+        }
 
+        if(adverbId == null || verbId == null || preposition == null || noun == null){
+            System.out.println("Phrase has not been reviewed."); ////////
+        } else {
             // check phrase repo to see if this combination of ids exists as a phrase
             Optional<Phrase> reviewedPhrase = phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(adverbId, verbId, prepositionId, nounId);
-            if(reviewedPhrase.isPresent()) {
+            if (reviewedPhrase.isPresent()) {
                 phraseId = reviewedPhrase.get().getId();
             }
-
         }
 
         return Optional.ofNullable(phraseId);

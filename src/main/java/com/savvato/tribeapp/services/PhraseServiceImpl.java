@@ -93,7 +93,7 @@ public class PhraseServiceImpl implements PhraseService {
             } else {
                 adverbId = Constants.NULL_VALUE_ID;
             }
-            if (preposition != null && findPrepositionIfExists(verb).isPresent()) {
+            if (preposition != null && findPrepositionIfExists(preposition).isPresent()) {
                 prepositionId = prepositionRepository.findByWord(preposition).get().getId();
             } else {
                 prepositionId = Constants.NULL_VALUE_ID;

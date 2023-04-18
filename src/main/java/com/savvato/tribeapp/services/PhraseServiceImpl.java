@@ -58,11 +58,19 @@ public class PhraseServiceImpl implements PhraseService {
         Optional<Long> reviewedPhraseId = checkIfPhraseHasBeenReviewed(adverb, verb, preposition, noun);
 
         if (reviewedPhraseId.isPresent()) {
+            System.out.println("phrase exists in the system: phrase id is " + reviewedPhraseId.get());
             UserPhrase userPhrase = new UserPhrase();
             userPhrase.setUserId(userId);
             userPhrase.setPhraseId(reviewedPhraseId.get());
-            userPhraseRepository.save(userPhrase);
-            System.out.println("phrase exists: " + reviewedPhraseId.get());
+            UserPhraseId userPhraseId = new UserPhraseId();
+            userPhraseId.setUserId(userId);
+            userPhraseId.setPhraseId(reviewedPhraseId.get());
+            if(userPhraseRepository.existsById(userPhraseId)) {
+                System.out.println("phrase already applied to user " + userId);
+            } else {
+                userPhraseRepository.save(userPhrase);
+                System.out.println("phrase added to user " + userId);
+            }
             // we have seen this before
             // associate it with the user
         } else {
@@ -93,7 +101,7 @@ public class PhraseServiceImpl implements PhraseService {
             } else {
                 adverbId = Constants.NULL_VALUE_ID;
             }
-            if (preposition != null && findPrepositionIfExists(verb).isPresent()) {
+            if (preposition != null && findPrepositionIfExists(preposition).isPresent()) {
                 prepositionId = prepositionRepository.findByWord(preposition).get().getId();
             } else {
                 prepositionId = Constants.NULL_VALUE_ID;

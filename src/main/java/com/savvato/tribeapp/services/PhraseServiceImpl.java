@@ -107,7 +107,7 @@ public class PhraseServiceImpl implements PhraseService {
 
         }
 
-        return Optional.of(phraseId);
+        return Optional.ofNullable(phraseId);
     }
 
     public Optional<Adverb> findAdverbIfExists(String adverb) {

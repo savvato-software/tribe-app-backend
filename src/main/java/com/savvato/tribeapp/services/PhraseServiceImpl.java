@@ -62,15 +62,8 @@ public class PhraseServiceImpl implements PhraseService {
             UserPhrase userPhrase = new UserPhrase();
             userPhrase.setUserId(userId);
             userPhrase.setPhraseId(reviewedPhraseId.get());
-            UserPhraseId userPhraseId = new UserPhraseId();
-            userPhraseId.setUserId(userId);
-            userPhraseId.setPhraseId(reviewedPhraseId.get());
-            if(userPhraseRepository.existsById(userPhraseId)) {
-                System.out.println("phrase already applied to user " + userId);
-            } else {
-                userPhraseRepository.save(userPhrase);
-                System.out.println("phrase added to user " + userId);
-            }
+            userPhraseRepository.save(userPhrase);
+            System.out.println("phrase added to user " + userId);
             // we have seen this before
             // associate it with the user
         } else {

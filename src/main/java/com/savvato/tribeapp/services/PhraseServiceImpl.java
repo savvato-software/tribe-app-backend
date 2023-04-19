@@ -85,7 +85,7 @@ public class PhraseServiceImpl implements PhraseService {
         Long nounId = findNounIfExists(noun).isPresent() ? nounRepository.findByWord(noun).get().getId() : null;
         System.out.println("The noun id is: " + nounId); ////////
 
-        if (adverb.equals("")) {
+        if (adverb.trim().isEmpty()) {
             adverbId = Constants.NULL_VALUE_ID;
             System.out.println("The nullvalue adverb id is: " + adverbId); ////////
         } else if (findAdverbIfExists(adverb).isPresent()) {
@@ -93,7 +93,7 @@ public class PhraseServiceImpl implements PhraseService {
             System.out.println("The adverb id is: " + adverbId); ////////
         }
 
-        if (preposition.equals("")) {
+        if (preposition.trim().isEmpty()) {
             prepositionId = Constants.NULL_VALUE_ID;
             System.out.println("The nullvalue preposition id is: " + prepositionId); ////////
         } else if (findPrepositionIfExists(preposition).isPresent()) {

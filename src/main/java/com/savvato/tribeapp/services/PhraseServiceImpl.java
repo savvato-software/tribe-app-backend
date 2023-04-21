@@ -85,7 +85,7 @@ public class PhraseServiceImpl implements PhraseService {
         Long nounId = findNounIfExists(noun).isPresent() ? nounRepository.findByWord(noun).get().getId() : null;
         System.out.println("The noun id is: " + nounId); ////////
 
-        if (adverb == null && adverb.trim().isEmpty()) {
+        if (adverb == null || adverb.trim().isEmpty()) {
             adverbId = Constants.NULL_VALUE_ID;
             System.out.println("The nullvalue adverb id is: " + adverbId); ////////
         } else if (findAdverbIfExists(adverb).isPresent()) {
@@ -93,7 +93,7 @@ public class PhraseServiceImpl implements PhraseService {
             System.out.println("The adverb id is: " + adverbId); ////////
         }
 
-        if (preposition == null && preposition.trim().isEmpty()) {
+        if (preposition == null || preposition.trim().isEmpty()) {
             prepositionId = Constants.NULL_VALUE_ID;
             System.out.println("The nullvalue preposition id is: " + prepositionId); ////////
         } else if (findPrepositionIfExists(preposition).isPresent()) {
@@ -101,7 +101,7 @@ public class PhraseServiceImpl implements PhraseService {
             System.out.println("The preposition id is: " + prepositionId); ////////
         }
 
-        if(adverbId == null || verbId == null || preposition == null || noun == null){
+        if(adverbId == null || verbId == null || prepositionId == null || nounId == null){
             System.out.println("Phrase has not been reviewed."); ////////
         } else {
             // check phrase repo to see if this combination of ids exists as a phrase

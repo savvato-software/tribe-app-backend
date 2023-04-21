@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PhraseService {
 
-    boolean isPhraseValid(String adverb, String verb, String preposition, String noun);
+    boolean isEveryWordValid(String adverb, String verb, String preposition, String noun);
 
     void applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun);
 

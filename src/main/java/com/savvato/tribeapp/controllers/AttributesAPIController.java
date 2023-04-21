@@ -44,7 +44,7 @@ public class AttributesAPIController {
         if (req.noun == null || req.verb == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
-        if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
+        if (phraseService.isEveryWordValid(req.adverb, req.verb, req.preposition, req.noun)) {
             phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
             rtn = true; // added
 

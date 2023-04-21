@@ -39,7 +39,7 @@ public class PhraseServiceImpl implements PhraseService {
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
 
     @Override
-    public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) { //rename
+    public boolean isEveryWordValid(String adverb, String verb, String preposition, String noun) { //rename
         boolean rtn = true;
         rtn = rtn && !isWordPreviouslyRejected(adverb);
         rtn = rtn && !isWordPreviouslyRejected(verb);

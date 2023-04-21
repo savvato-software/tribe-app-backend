@@ -41,7 +41,11 @@ public class AttributesAPIController {
     public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
         boolean rtn = false;
 
-        if (req.noun == null || req.verb == null)
+        if (req.noun == null || req.noun.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        if (req.verb == null || req.verb.trim().isEmpty())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
         if (phraseService.isEveryWordValid(req.adverb, req.verb, req.preposition, req.noun)) {

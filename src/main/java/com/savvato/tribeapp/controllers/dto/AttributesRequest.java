@@ -4,6 +4,7 @@ package com.savvato.tribeapp.controllers.dto;
 public class AttributesRequest {
 
     public Long userId;
+    public Long id;
     public String noun;
     public String preposition;
     public String verb;

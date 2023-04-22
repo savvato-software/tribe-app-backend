@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Alters phrase table to NOT accept null values -->
+    <changeSet author="audra" id="202304141226-01">
+        <sql dbms="mysql">
+            ALTER TABLE phrase MODIFY adverb_id BIGINT(20) NOT NULL;
+            ALTER TABLE phrase MODIFY verb_id BIGINT(20) NOT NULL;
+            ALTER TABLE phrase MODIFY preposition_id BIGINT(20) NOT NULL;
+            ALTER TABLE phrase MODIFY noun_id BIGINT(20) NOT NULL;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class PhraseServiceImpl implements PhraseService {
+
+    static final Logger LOGGER = Logger.getLogger(PhraseServiceImpl.class.getName());
 
     @Autowired
     PhraseRepository phraseRepository;
@@ -53,6 +56,7 @@ public class PhraseServiceImpl implements PhraseService {
         if(isMissingVerbOrNoun(verbLowerCase,nounLowerCase) ||
                 isAnyWordRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase) ||
                 isPhrasePreviouslyRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase)) {
+            LOGGER.warning("Phrase is not valid.");
             return false;
         }
 
@@ -68,28 +72,24 @@ public class PhraseServiceImpl implements PhraseService {
 
     public boolean isMissingVerbOrNoun(String verb, String noun) {
         if (verb == null || verb.trim().isEmpty()) {
-            System.out.println("It has no verb."); ///////
-            return true;
+            throw new IllegalArgumentException("Phrase is missing a verb.");
         }
         if (noun == null || noun.trim().isEmpty()) {
-            System.out.println("It has no noun."); ///////
-            return true;
+            throw new IllegalArgumentException("Phrase is missing a noun.");
         }
-        System.out.println("The phrase has a verb and noun"); //////
         return false;
     }
 
-    //change to is any word rejected -- will need to work through logic.
     public boolean isAnyWordRejected(String adverb, String verb, String preposition, String noun) { //rename
 
         List<String> words = Arrays.asList(adverb, verb, preposition, noun);
         for(String word: words) {
             if(isWordPreviouslyRejected(word)){
-                System.out.println(word + " was rejected."); ///////
+                LOGGER.warning(word + " exists in rejected words.");
                 return true;
             }
         }
-        System.out.println("no words were rejected");////////
+
         return false;
     }
 
@@ -98,25 +98,23 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     public boolean isPhrasePreviouslyRejected(String adverb, String verb, String preposition, String noun) {
-        StringBuilder rejectedPhraseString = new StringBuilder();
+        StringBuilder rejectedPhraseSB = new StringBuilder();
 
-        if(adverb != null && !adverb.trim().isEmpty()) {
-            rejectedPhraseString.append(adverb + " ");
-        }
-        rejectedPhraseString.append(verb + " ");
-        if(preposition != null && !preposition.trim().isEmpty()) {
-            rejectedPhraseString.append(preposition + " ");
-        }
-        rejectedPhraseString.append(noun + " ");
+        if(adverb != null && !adverb.trim().isEmpty()) { rejectedPhraseSB.append(adverb + " "); }
+        rejectedPhraseSB.append(verb + " ");
+        if(preposition != null && !preposition.trim().isEmpty()) { rejectedPhraseSB.append(preposition + " "); }
+        rejectedPhraseSB.append(noun);
 
-        System.out.println("Possible Rejected Phrase: " + rejectedPhraseString.toString()); //////
-        Optional<RejectedPhrase> rejectedPhrase = rejectedPhraseRepository.findByRejectedPhrase(rejectedPhraseString.toString().trim());
+        String rejectedPhraseString = rejectedPhraseSB.toString().trim();
+
+        Optional<RejectedPhrase> rejectedPhrase = rejectedPhraseRepository.findByRejectedPhrase(rejectedPhraseString);
+
         if(rejectedPhrase.isPresent()) {
-            System.out.println("phrase has been rejected"); /////////
-        } else {
-            System.out.println("phrase has not been rejected"); ///////////
+            LOGGER.warning(rejectedPhraseString + " exits in rejected phrases.");
+            return true;
         }
-        return rejectedPhrase.isPresent();
+
+        return false;
     }
 
     @Override
@@ -134,12 +132,11 @@ public class PhraseServiceImpl implements PhraseService {
             userPhrase.setUserId(userId);
             userPhrase.setPhraseId(previouslyReviewedPhraseId.get());
             userPhraseRepository.save(userPhrase);
-            System.out.println("phrase added to user " + userId);
+            LOGGER.info("Phrase added to user.");
             // we have seen this before
             // associate it with the user
 
         } else {
-            System.out.println(("phrase does NOT exist!"));
             // we have not seen this before
             // add it to the database
             // associate it with the user
@@ -156,36 +153,28 @@ public class PhraseServiceImpl implements PhraseService {
 
         if(findVerbIfExists(verb).isPresent()) {
             verbId = verbRepository.findByWord(verb).get().getId();
-            System.out.println("The verb id is: " + verbId); ////////
         } else {
-            System.out.println("That verb has not been approved yet."); ///////
             return Optional.empty();
         }
 
         if(findNounIfExists(noun).isPresent()) {
             nounId = nounRepository.findByWord(noun).get().getId();
-            System.out.println("The noun id is: " + nounId); ////////
         } else {
-            System.out.println("That noun has not been approved yet."); ///////
             return Optional.empty();
         }
 
         if (adverb == null || adverb.trim().isEmpty()) {
             adverbId = Constants.NULL_VALUE_ID;
-            System.out.println("The nullvalue adverb id is: " + adverbId); ////////
         } else if (findAdverbIfExists(adverb).isPresent()) {
             adverbId = adverbRepository.findByWord(adverb).get().getId();
-            System.out.println("The adverb id is: " + adverbId); ////////
         } else {
             return Optional.empty();
         }
 
         if (preposition == null || preposition.trim().isEmpty()) {
             prepositionId = Constants.NULL_VALUE_ID;
-            System.out.println("The nullvalue preposition id is: " + prepositionId); ////////
         } else if (findPrepositionIfExists(preposition).isPresent()) {
             prepositionId = prepositionRepository.findByWord(preposition).get().getId();
-            System.out.println("The preposition id is: " + prepositionId); ////////
         } else {
             return Optional.empty();
         }
@@ -193,10 +182,8 @@ public class PhraseServiceImpl implements PhraseService {
         Optional<Phrase> reviewedPhrase = phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(adverbId, verbId, prepositionId, nounId);
 
         if (reviewedPhrase.isPresent()) {
-            System.out.println("Found a reviewed phrase");////////
             return Optional.of(reviewedPhrase.get().getId());
         }
-
         return Optional.empty();
     }
 

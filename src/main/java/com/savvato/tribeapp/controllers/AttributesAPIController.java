@@ -42,7 +42,6 @@ public class AttributesAPIController {
         boolean rtn = false;
 
         if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
-            System.out.println("Controller: phrase is valid"); //////
             phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
             rtn = true;
         }

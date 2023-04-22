@@ -80,7 +80,7 @@ public class PhraseServiceImpl implements PhraseService {
         return false;
     }
 
-    public boolean isAnyWordRejected(String adverb, String verb, String preposition, String noun) { //rename
+    public boolean isAnyWordRejected(String adverb, String verb, String preposition, String noun) {
 
         List<String> words = Arrays.asList(adverb, verb, preposition, noun);
         for(String word: words) {
@@ -133,8 +133,6 @@ public class PhraseServiceImpl implements PhraseService {
             userPhrase.setPhraseId(previouslyReviewedPhraseId.get());
             userPhraseRepository.save(userPhrase);
             LOGGER.info("Phrase added to user.");
-            // we have seen this before
-            // associate it with the user
 
         } else {
             // we have not seen this before
@@ -197,7 +195,6 @@ public class PhraseServiceImpl implements PhraseService {
 
     public Optional<Preposition> findPrepositionIfExists(String preposition) {
         return this.prepositionRepository.findByWord(preposition);
-
     }
 
     public Optional<Noun> findNounIfExists(String noun) {

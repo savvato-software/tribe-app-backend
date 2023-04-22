@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,52 +42,55 @@ public class PhraseServiceImpl implements PhraseService {
     @Autowired
     UserPhraseRepository userPhraseRepository;
 
-
-    //isPhraseValid (call following methods)
-    //does it have verb and noun
-    //has any word been rejected
-    //has the phrase been rejected
-    //has the phrase been already been approved
-    //apply phrase to user
-    //build phrase from words
-    //build string from phrase
-    //build phrase from words
-    //eventual: send phrase to review
-
     @Override
     public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) {
-        boolean rtn = true;
-        rtn = rtn && hasVerbAndNoun(verb, noun);
-        rtn = rtn && isEveryWordApproved(adverb, verb, preposition, noun);
-        rtn = rtn && !isPhrasePreviouslyRejected(adverb, verb, preposition, noun);
-        return rtn;
-    }
 
-    public boolean hasVerbAndNoun(String verb, String noun) {
-        if (noun == null || noun.trim().isEmpty()) {
-            System.out.println("It has no noun."); ///////
+        String adverbLowerCase = changeToLowerCase(adverb);
+        String verbLowerCase = changeToLowerCase(verb);
+        String prepositionLowerCase = changeToLowerCase(preposition);
+        String nounLowerCase = changeToLowerCase(noun);
+
+        if(isMissingVerbOrNoun(verbLowerCase,nounLowerCase) ||
+                isAnyWordRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase) ||
+                isPhrasePreviouslyRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase)) {
             return false;
         }
-        if (verb == null || verb.trim().isEmpty()) {
-            System.out.println("It has no verb."); ///////
-            return false;
-        }
-        System.out.println("The phrase has a verb and noun"); //////
+
         return true;
     }
 
+    public String changeToLowerCase(String word) {
+        if(word != null && !word.trim().isEmpty()){
+            return word.toLowerCase();
+        }
+        return word;
+    }
+
+    public boolean isMissingVerbOrNoun(String verb, String noun) {
+        if (verb == null || verb.trim().isEmpty()) {
+            System.out.println("It has no verb."); ///////
+            return true;
+        }
+        if (noun == null || noun.trim().isEmpty()) {
+            System.out.println("It has no noun."); ///////
+            return true;
+        }
+        System.out.println("The phrase has a verb and noun"); //////
+        return false;
+    }
+
     //change to is any word rejected -- will need to work through logic.
-    public boolean isEveryWordApproved(String adverb, String verb, String preposition, String noun) { //rename
-        boolean rtn = true;
-        rtn = rtn && !isWordPreviouslyRejected(adverb);
-        rtn = rtn && !isWordPreviouslyRejected(verb);
-        rtn = rtn && !isWordPreviouslyRejected(preposition);
-        rtn = rtn && !isWordPreviouslyRejected(noun);
-        if(rtn) {
-            System.out.println("No words were rejected.");///////
-        } else
-            System.out.println("some words were rejected");////////
-        return rtn;
+    public boolean isAnyWordRejected(String adverb, String verb, String preposition, String noun) { //rename
+
+        List<String> words = Arrays.asList(adverb, verb, preposition, noun);
+        for(String word: words) {
+            if(isWordPreviouslyRejected(word)){
+                System.out.println(word + " was rejected."); ///////
+                return true;
+            }
+        }
+        System.out.println("no words were rejected");////////
+        return false;
     }
 
     public boolean isWordPreviouslyRejected(String word) {
@@ -117,7 +121,13 @@ public class PhraseServiceImpl implements PhraseService {
 
     @Override
     public void applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun) {
-        Optional<Long> previouslyReviewedPhraseId = findPreviouslyApprovedPhraseId(adverb, verb, preposition, noun);
+
+        String adverbLowerCase = changeToLowerCase(adverb);
+        String verbLowerCase = changeToLowerCase(verb);
+        String prepositionLowerCase = changeToLowerCase(preposition);
+        String nounLowerCase = changeToLowerCase(noun);
+
+        Optional<Long> previouslyReviewedPhraseId = findPreviouslyApprovedPhraseId(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase);
 
         if (previouslyReviewedPhraseId.isPresent()) {
             UserPhrase userPhrase = new UserPhrase();
@@ -139,13 +149,26 @@ public class PhraseServiceImpl implements PhraseService {
     @Override
     public Optional<Long> findPreviouslyApprovedPhraseId(String adverb, String verb, String preposition, String noun) {
 
-        Long phraseId = null;
-        Long adverbId = null;
-        Long verbId = findVerbIfExists(verb).isPresent() ? verbRepository.findByWord(verb).get().getId() : null;
-        System.out.println("The verb id is: " + verbId); ////////
-        Long prepositionId = null;
-        Long nounId = findNounIfExists(noun).isPresent() ? nounRepository.findByWord(noun).get().getId() : null;
-        System.out.println("The noun id is: " + nounId); ////////
+        Long adverbId;
+        Long verbId;
+        Long prepositionId;
+        Long nounId;
+
+        if(findVerbIfExists(verb).isPresent()) {
+            verbId = verbRepository.findByWord(verb).get().getId();
+            System.out.println("The verb id is: " + verbId); ////////
+        } else {
+            System.out.println("That verb has not been approved yet."); ///////
+            return Optional.empty();
+        }
+
+        if(findNounIfExists(noun).isPresent()) {
+            nounId = nounRepository.findByWord(noun).get().getId();
+            System.out.println("The noun id is: " + nounId); ////////
+        } else {
+            System.out.println("That noun has not been approved yet."); ///////
+            return Optional.empty();
+        }
 
         if (adverb == null || adverb.trim().isEmpty()) {
             adverbId = Constants.NULL_VALUE_ID;
@@ -153,6 +176,8 @@ public class PhraseServiceImpl implements PhraseService {
         } else if (findAdverbIfExists(adverb).isPresent()) {
             adverbId = adverbRepository.findByWord(adverb).get().getId();
             System.out.println("The adverb id is: " + adverbId); ////////
+        } else {
+            return Optional.empty();
         }
 
         if (preposition == null || preposition.trim().isEmpty()) {
@@ -161,21 +186,18 @@ public class PhraseServiceImpl implements PhraseService {
         } else if (findPrepositionIfExists(preposition).isPresent()) {
             prepositionId = prepositionRepository.findByWord(preposition).get().getId();
             System.out.println("The preposition id is: " + prepositionId); ////////
-        }
-
-        if(adverbId == null || verbId == null || prepositionId == null || nounId == null){
-            System.out.println("Phrase has not been reviewed."); ////////
         } else {
-            // check phrase repo to see if this combination of ids exists as a phrase
-            Optional<Phrase> reviewedPhrase = phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(adverbId, verbId, prepositionId, nounId);
-
-            if (reviewedPhrase.isPresent()) {
-                phraseId = reviewedPhrase.get().getId();
-                System.out.println("Found a reviewed phrase: " + phraseId);////////
-            }
+            return Optional.empty();
         }
 
-        return Optional.ofNullable(phraseId);
+        Optional<Phrase> reviewedPhrase = phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(adverbId, verbId, prepositionId, nounId);
+
+        if (reviewedPhrase.isPresent()) {
+            System.out.println("Found a reviewed phrase");////////
+            return Optional.of(reviewedPhrase.get().getId());
+        }
+
+        return Optional.empty();
     }
 
     public Optional<Adverb> findAdverbIfExists(String adverb) {

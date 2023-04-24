@@ -13,5 +13,8 @@ public interface PhraseRepository extends CrudRepository<Phrase, Long> {
 
     @Query(nativeQuery = true, value = "select * from phrase where id = ?")
     Optional<Phrase> findPhraseByPhraseId(Long Id);
+
+    Optional<Phrase> findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(Long AdverbId, Long VerbId, Long PrepositionId, Long NounId);
+
 }
 

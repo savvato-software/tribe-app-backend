@@ -13,5 +13,6 @@ public interface UserService {
 	Optional<User> update(UserRequest request);
 
 	User changePassword(String pw, String phoneNumber, String challengeCode);
-	
+
+	Iterable<User> getAllUsers();
 }

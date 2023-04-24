@@ -21,9 +21,6 @@ public class UserServiceImpl implements UserService {
 	UserRepository userRepo;
 
 	@Autowired
-	UserRoleMapService userRoleMapService;
-
-	@Autowired
 	PasswordEncoder passwordEncoder;
 
 	@Autowired
@@ -146,4 +143,10 @@ public class UserServiceImpl implements UserService {
 
 		return rtn;
 	}
+
+	public Iterable<User> getAllUsers() {
+		return userRepo.findAll();
+	}
+
+
 }

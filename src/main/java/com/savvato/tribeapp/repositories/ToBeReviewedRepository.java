@@ -16,4 +16,6 @@ public interface ToBeReviewedRepository extends CrudRepository<ToBeReviewed, Lon
     List<ToBeReviewed> getAllUngroomed();
     void deleteById(Long id);
 
+    Optional<ToBeReviewed> findByAdverbAndVerbAndNounAndPreposition(String adverb, String verb, String noun, String preposition);
+
 }

@@ -101,6 +101,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         assertFalse(phraseService.isPhraseValid("test", "test", "test", "test"));
     }
 
+    // test that logger message matches when method is called with a valid, previously reviewed phrase
     @Test
     public void testLogMessage(CapturedOutput output) {
 

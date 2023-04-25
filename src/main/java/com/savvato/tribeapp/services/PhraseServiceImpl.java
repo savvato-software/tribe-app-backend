@@ -45,6 +45,13 @@ public class PhraseServiceImpl implements PhraseService {
     @Autowired
     UserPhraseRepository userPhraseRepository;
 
+    @Autowired
+    ToBeReviewedRepository toBeReviewedRepository;
+
+    @Autowired
+    ReviewSubmittingUserRepository reviewSubmittingUserRepository;
+
+
     @Override
     public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) {
 
@@ -138,7 +145,36 @@ public class PhraseServiceImpl implements PhraseService {
             // we have not seen this before
             // add it to the database
             // associate it with the user
+
+            // we have already checked if it is valid and if it was already approved
+            // check to_be_reviewed table for phrase and get ID
+            Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverb, verb, noun, preposition); //test order
+            // if so, get phrase id
+            if (toBeReviewedPhrase.isPresent()) {
+                addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhrase.get().getId());
+                //logger.info("ToBeReviewed phrase has been mapped to user");
+            } else {
+                // if not, add phrase to to_be_reviewed table and get phrase id
+                // map user id and phrase id in review_submitting_user table
+
+                ToBeReviewed toBeReviewed = new ToBeReviewed();
+                toBeReviewed.setHasBeenGroomed(false);
+                toBeReviewed.setAdverb(adverb);
+                toBeReviewed.setVerb(verb);
+                toBeReviewed.setPreposition(preposition);
+                toBeReviewed.setNoun(noun);
+                toBeReviewedRepository.save(toBeReviewed);
+                //logger.info("phrase added to to_be_reviewed table")
+
+                // what kind of exceptions or errors should I be throwing if something goes wrong with saving to database, or retrieving something I know should be there?
+
+                Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverb, verb, noun, preposition); //test order
+
+                addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
+                //logger.info("ToBeReviewed phrase has been mapped to user");
+            }
         }
+
     }
 
     @Override
@@ -200,7 +236,15 @@ public class PhraseServiceImpl implements PhraseService {
     public Optional<Noun> findNounIfExists(String noun) {
         return this.nounRepository.findByWord(noun);
     }
-    
+
+    public void addUserAndPhraseToReviewSubmittingUserRepository(Long userId, Long toBeReviewedId) {
+        ReviewSubmittingUser reviewSubmittingUser = new ReviewSubmittingUser(userId, toBeReviewedId);
+//        reviewSubmittingUser.setUserId(userId);
+//        reviewSubmittingUser.setToBeReviewedId(toBeReviewedId);
+        //reviewSubmittingUserRepository.save(reviewSubmittingUser);
+        reviewSubmittingUserRepository.saveUserAndReview(userId, toBeReviewedId);
+    }
+
     @Override
     public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long userId) {
 

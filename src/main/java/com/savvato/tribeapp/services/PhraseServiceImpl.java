@@ -143,21 +143,12 @@ public class PhraseServiceImpl implements PhraseService {
             logger.info("Phrase added to user.");
 
         } else {
-            // we have not seen this before
-            // add it to the database
-            // associate it with the user
+            Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverb, verb, noun, preposition);
 
-            // we have already checked if it is valid and if it was already approved
-            // check to_be_reviewed table for phrase and get ID
-            Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverb, verb, noun, preposition); //test order
-            // if so, get phrase id
             if (toBeReviewedPhrase.isPresent()) {
                 addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhrase.get().getId());
-                //logger.info("ToBeReviewed phrase has been mapped to user");
+                logger.info("ToBeReviewed phrase has been mapped to user");
             } else {
-                // if not, add phrase to to_be_reviewed table and get phrase id
-                // map user id and phrase id in review_submitting_user table
-
                 ToBeReviewed toBeReviewed = new ToBeReviewed();
                 toBeReviewed.setHasBeenGroomed(false);
                 toBeReviewed.setAdverb(adverb);
@@ -165,14 +156,14 @@ public class PhraseServiceImpl implements PhraseService {
                 toBeReviewed.setPreposition(preposition);
                 toBeReviewed.setNoun(noun);
                 toBeReviewedRepository.save(toBeReviewed);
-                //logger.info("phrase added to to_be_reviewed table")
+                logger.info("phrase added to to_be_reviewed table");
 
-                // what kind of exceptions or errors should I be throwing if something goes wrong with saving to database, or retrieving something I know should be there?
-
-                Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverb, verb, noun, preposition); //test order
+                Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverb, verb, noun, preposition);
 
                 addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
-                //logger.info("ToBeReviewed phrase has been mapped to user");
+                logger.info("ToBeReviewed phrase has been mapped to user");
+
+                // what kind of exceptions or errors should I be throwing if something goes wrong with saving to database, or retrieving something I know should be there?
             }
         }
 
@@ -240,7 +231,7 @@ public class PhraseServiceImpl implements PhraseService {
 
     public void addUserAndPhraseToReviewSubmittingUserRepository(Long userId, Long toBeReviewedId) {
         ReviewSubmittingUser reviewSubmittingUser = new ReviewSubmittingUser();
-        reviewSubmittingUser.setToBeReviewedId(userId);
+        reviewSubmittingUser.setUserId(userId);
         reviewSubmittingUser.setToBeReviewedId(toBeReviewedId);
         reviewSubmittingUserRepository.save(reviewSubmittingUser);
     }

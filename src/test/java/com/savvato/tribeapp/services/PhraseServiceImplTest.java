@@ -60,6 +60,12 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
     @MockBean
     UserPhraseRepository userPhraseRepository;
 
+    @MockBean
+    ToBeReviewedRepository toBeReviewedRepository;
+
+    @MockBean
+    ReviewSubmittingUserRepository reviewSubmittingUserRepository;
+
     // test that illegal argument is thrown when method is called with a null verb or noun
     @Test
     public void testIsMissingVerbOrNounHappyPath() {

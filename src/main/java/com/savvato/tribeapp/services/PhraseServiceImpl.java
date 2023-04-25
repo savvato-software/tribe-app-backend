@@ -13,16 +13,11 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 @Service
 public class PhraseServiceImpl implements PhraseService {
 
-    /////private static final Log logger = LogFactory.getLog(PhraseServiceImpl.class.getName());
-    Logger logger = LoggerFactory.getLogger(PhraseServiceImpl.class);
-
+    private static final Log logger = LogFactory.getLog(PhraseServiceImpl.class.getName());
 
     @Autowired
     PhraseRepository phraseRepository;
@@ -62,7 +57,6 @@ public class PhraseServiceImpl implements PhraseService {
         if(isMissingVerbOrNoun(verbLowerCase,nounLowerCase) ||
                 isAnyWordRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase) ||
                 isPhrasePreviouslyRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase)) {
-            ////////////////logger.warn("Phrase is not valid.");
             logger.warn("Phrase is not valid.");
 
             return false;
@@ -93,7 +87,6 @@ public class PhraseServiceImpl implements PhraseService {
         List<String> words = Arrays.asList(adverb, verb, preposition, noun);
         for(String word: words) {
             if(isWordPreviouslyRejected(word)){
-                ///////////logger.warn(word + " exists in rejected words.");
                 logger.warn(word + " exists in rejected words.");
                 return true;
             }
@@ -119,7 +112,6 @@ public class PhraseServiceImpl implements PhraseService {
         Optional<RejectedPhrase> rejectedPhrase = rejectedPhraseRepository.findByRejectedPhrase(rejectedPhraseString);
 
         if(rejectedPhrase.isPresent()) {
-            ////////////////logger.warn(rejectedPhraseString + " exits in rejected phrases.");
             logger.warn(rejectedPhraseString + " exits in rejected phrases.");
             return true;
         }
@@ -142,7 +134,6 @@ public class PhraseServiceImpl implements PhraseService {
             userPhrase.setUserId(userId);
             userPhrase.setPhraseId(previouslyReviewedPhraseId.get());
             userPhraseRepository.save(userPhrase);
-            ///////////////logger.info("Phrase added to user.");
             logger.info("Phrase added to user.");
 
         } else {

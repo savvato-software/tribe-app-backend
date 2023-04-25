@@ -239,11 +239,10 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     public void addUserAndPhraseToReviewSubmittingUserRepository(Long userId, Long toBeReviewedId) {
-        ReviewSubmittingUser reviewSubmittingUser = new ReviewSubmittingUser(userId, toBeReviewedId);
-//        reviewSubmittingUser.setUserId(userId);
-//        reviewSubmittingUser.setToBeReviewedId(toBeReviewedId);
-        //reviewSubmittingUserRepository.save(reviewSubmittingUser);
-        reviewSubmittingUserRepository.saveUserAndReview(userId, toBeReviewedId);
+        ReviewSubmittingUser reviewSubmittingUser = new ReviewSubmittingUser();
+        reviewSubmittingUser.setToBeReviewedId(userId);
+        reviewSubmittingUser.setToBeReviewedId(toBeReviewedId);
+        reviewSubmittingUserRepository.save(reviewSubmittingUser);
     }
 
     @Override

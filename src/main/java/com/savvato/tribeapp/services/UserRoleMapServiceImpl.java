@@ -7,12 +7,23 @@ import com.savvato.tribeapp.entities.UserRoleMap;
 import com.savvato.tribeapp.repositories.UserRoleMapRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserRoleMapServiceImpl implements UserRoleMapService {
 	@Autowired
 	UserRoleMapRepository userRoleMapRepo;
-	
+
+	public List<String> getRoles() {
+		ArrayList<String> rtn = new ArrayList<>();
+
+		for (ROLES role : ROLES.values()) {
+			rtn.add(role.name());
+		}
+
+		return rtn;
+	}
+
 	public void addRoleToUser(Long userId, ROLES role) {
 		userRoleMapRepo.save(new UserRoleMap(userId, Long.valueOf(role.ordinal()+1+"") ));
 	}

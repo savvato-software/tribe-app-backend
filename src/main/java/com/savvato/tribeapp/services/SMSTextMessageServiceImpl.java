@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 @Service
 public class SMSTextMessageServiceImpl implements SMSTextMessageService {
 
-	// private static final Log logger = LogFactory.getLog(SMSTextMessageServiceImpl.class);
 	private Logger logger;
 
 	@Autowired

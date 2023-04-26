@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 @Service
 public class CacheServiceImpl implements CacheService {
 
-	//private static final Log logger = LogFactory.getLog(CacheServiceImpl.class);
 	private Logger logger;
 	
 	HashMap<String, Cache<String, String>> mapCacheNameToCacheOfStringKtoStringV = new HashMap<>();

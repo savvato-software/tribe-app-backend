@@ -11,8 +11,6 @@ import org.slf4j.Logger;
 @Service
 public class SMSChallengeCodeServiceImpl implements SMSChallengeCodeService {
 
-	//private static final Log logger = LogFactory.getLog(SMSChallengeCodeServiceImpl.class);
-
 	private Logger logger;
 	
 	@Autowired

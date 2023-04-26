@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
-
+import org.slf4j.Logger;
 
 @Service
 public class SMSChallengeCodeServiceImpl implements SMSChallengeCodeService {
 
-	private static final Log logger = LogFactory.getLog(SMSChallengeCodeServiceImpl.class);
+	//private static final Log logger = LogFactory.getLog(SMSChallengeCodeServiceImpl.class);
+
+	private Logger logger;
 	
 	@Autowired
 	CacheService cache;

@@ -8,11 +8,13 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
 
 @Service
 public class SMSTextMessageServiceImpl implements SMSTextMessageService {
 
-	private static final Log logger = LogFactory.getLog(SMSTextMessageServiceImpl.class);
+	// private static final Log logger = LogFactory.getLog(SMSTextMessageServiceImpl.class);
+	private Logger logger;
 
 	@Autowired
 	CacheService cache;

@@ -102,6 +102,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
     }
 
     // test that logger message matches when method is called with a valid, previously reviewed phrase
+    //////refactor to mock the call to the repo and count if it was called. Don't do log.
     @Test
     public void testLogMessage(CapturedOutput output) {
 

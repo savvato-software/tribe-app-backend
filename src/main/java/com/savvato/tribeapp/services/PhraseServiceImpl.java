@@ -141,7 +141,6 @@ public class PhraseServiceImpl implements PhraseService {
             userPhrase.setPhraseId(previouslyReviewedPhraseId.get());
             userPhraseRepository.save(userPhrase);
             logger.info("Phrase added to user.");
-
         } else {
             Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverb, verb, noun, preposition);
 
@@ -162,11 +161,8 @@ public class PhraseServiceImpl implements PhraseService {
 
                 addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
                 logger.info("ToBeReviewed phrase has been mapped to user");
-
-                // what kind of exceptions or errors should I be throwing if something goes wrong with saving to database, or retrieving something I know should be there?
             }
         }
-
     }
 
     @Override

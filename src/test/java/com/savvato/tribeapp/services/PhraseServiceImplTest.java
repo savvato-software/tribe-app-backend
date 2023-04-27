@@ -2,14 +2,12 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.entities.*;
 import com.savvato.tribeapp.repositories.*;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,9 +17,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
-@ExtendWith({ SpringExtension.class, OutputCaptureExtension.class })
+@ExtendWith({SpringExtension.class, OutputCaptureExtension.class})
 public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
     @TestConfiguration
@@ -101,50 +101,52 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         assertFalse(phraseService.isPhraseValid("test", "test", "test", "test"));
     }
 
-    // test that logger message matches when method is called with a valid, previously reviewed phrase
-    //////refactor to mock the call to the repo and count if it was called. Don't do log.
+    // Test that UserPhraseRepository is called once when calling ApplyPhraseToUser
     @Test
-    public void testLogMessage(CapturedOutput output) {
+    public void testApplyPhraseToUserForOneCallToUserPhraseRepository() {
 
-        Long tesId = 1L;
+        Long testId = 1L;
         String testWord = "test";
 
         Adverb testAdverb = new Adverb();
-        testAdverb.setId(tesId);
+        testAdverb.setId(testId);
         testAdverb.setWord(testWord);
 
         Verb testVerb = new Verb();
-        testVerb.setId(tesId);
+        testVerb.setId(testId);
         testVerb.setWord(testWord);
 
         Preposition testPreposition = new Preposition();
-        testPreposition.setId(tesId);
+        testPreposition.setId(testId);
         testPreposition.setWord(testWord);
 
         Noun testNoun = new Noun();
-        testNoun.setId(tesId);
+        testNoun.setId(testId);
         testNoun.setWord(testWord);
 
         Phrase testPhrase = new Phrase();
-        testPhrase.setId(tesId);
-        testPhrase.setAdverbId(testAdverb.getId());
-        testPhrase.setVerbId(testVerb.getId());
-        testPhrase.setPrepositionId(testPreposition.getId());
-        testPhrase.setNounId(testNoun.getId());
+        testPhrase.setId(testId);
+        testPhrase.setAdverbId(testId);
+        testPhrase.setVerbId(testId);
+        testPhrase.setPrepositionId(testId);
+        testPhrase.setNounId(testId);
 
-        String logMessage = "Phrase added to user.";
+        UserPhrase userPhrase = new UserPhrase();
+        userPhrase.setUserId(testId);
+        userPhrase.setPhraseId(testId);
 
         Mockito.when(adverbRepository.findByWord(anyString())).thenReturn(Optional.of(testAdverb));
         Mockito.when(verbRepository.findByWord(anyString())).thenReturn(Optional.of(testVerb));
         Mockito.when(prepositionRepository.findByWord(anyString())).thenReturn(Optional.of(testPreposition));
         Mockito.when(nounRepository.findByWord(anyString())).thenReturn(Optional.of(testNoun));
 
-        Mockito.when(phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(any(Long.class),any(Long.class),any(Long.class),any(Long.class))).thenReturn(Optional.of(testPhrase));
+        Mockito.when(phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(any(Long.class), any(Long.class), any(Long.class), any(Long.class))).thenReturn(Optional.of(testPhrase));
 
-        phraseService.applyPhraseToUser(tesId, testWord, testWord, testWord, testWord);
-        Mockito.verify(phraseService).applyPhraseToUser(tesId, testWord, testWord, testWord, testWord);
+        Mockito.when(userPhraseRepository.save(Mockito.any())).thenReturn(userPhrase);
 
-//        phraseService.applyPhraseToUser(tesId, testWord, testWord, testWord, testWord);
-//        Assertions.assertTrue(output.getOut().contains(logMessage));
+        phraseService.applyPhraseToUser(testId, testWord, testWord, testWord, testWord);
+
+        verify(userPhraseRepository, times(1)).save(Mockito.any());
+
     }
 }

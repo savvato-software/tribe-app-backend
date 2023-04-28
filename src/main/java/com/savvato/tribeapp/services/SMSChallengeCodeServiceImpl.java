@@ -1,18 +1,15 @@
 package com.savvato.tribeapp.services;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
-import org.slf4j.Logger;
 
 @Service
+@Slf4j
 public class SMSChallengeCodeServiceImpl implements SMSChallengeCodeService {
 
-	private Logger logger;
-	
 	@Autowired
 	CacheService cache;
 	
@@ -22,7 +19,7 @@ public class SMSChallengeCodeServiceImpl implements SMSChallengeCodeService {
 	public String sendSMSChallengeCodeToPhoneNumber(String phoneNumber) {
 		String rtn = "";
 		String challengeCode = getRandomStringOfNDigits(6);
-		logger.debug("SMS Challenge Code is:" + challengeCode);
+		log.debug("SMS Challenge Code is:" + challengeCode);
 		if (smss.sendSMS(phoneNumber, challengeCode + " <--- Your Tribe App Challenge Code")) {
 			cache.put("SMSChallengeCodesByPhoneNumber", phoneNumber, challengeCode);
             rtn = challengeCode;
@@ -42,7 +39,7 @@ public class SMSChallengeCodeServiceImpl implements SMSChallengeCodeService {
 		String sentCode = cache.get("SMSChallengeCodesByPhoneNumber", phoneNumber);
 		rtn = sentCode != null && sentCode.equals(code);
 		
-		logger.debug("isAValidSMSChallengeCode(), for ph# " + phoneNumber + " and user-supplied code " + code + " returns " + rtn);
+		log.debug("isAValidSMSChallengeCode(), for ph# " + phoneNumber + " and user-supplied code " + code + " returns " + rtn);
 		
 		return rtn;
 	}

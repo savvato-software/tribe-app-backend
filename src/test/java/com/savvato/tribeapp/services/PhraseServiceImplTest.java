@@ -106,34 +106,18 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
     public void testApplyPhraseToUserForOneCallToUserPhraseRepository() {
 
         Long testId = 1L;
-        String testWord = "test";
+        String testWord = "testWord";
 
-        Adverb testAdverb = new Adverb();
-        testAdverb.setId(testId);
-        testAdverb.setWord(testWord);
+        Adverb testAdverb = getTestAdverb();
+        Verb testVerb = getTestVerb();
+        Preposition testPreposition = getTestPreposition();
+        Noun testNoun = getTestNoun();
 
-        Verb testVerb = new Verb();
-        testVerb.setId(testId);
-        testVerb.setWord(testWord);
-
-        Preposition testPreposition = new Preposition();
-        testPreposition.setId(testId);
-        testPreposition.setWord(testWord);
-
-        Noun testNoun = new Noun();
-        testNoun.setId(testId);
-        testNoun.setWord(testWord);
-
-        Phrase testPhrase = new Phrase();
-        testPhrase.setId(testId);
-        testPhrase.setAdverbId(testId);
-        testPhrase.setVerbId(testId);
-        testPhrase.setPrepositionId(testId);
-        testPhrase.setNounId(testId);
+        Phrase testPhrase = getTestPhrase();
 
         UserPhrase userPhrase = new UserPhrase();
-        userPhrase.setUserId(testId);
-        userPhrase.setPhraseId(testId);
+        userPhrase.setUserId(getUser1().getId());
+        userPhrase.setPhraseId(testPhrase.getId());
 
         Mockito.when(adverbRepository.findByWord(anyString())).thenReturn(Optional.of(testAdverb));
         Mockito.when(verbRepository.findByWord(anyString())).thenReturn(Optional.of(testVerb));

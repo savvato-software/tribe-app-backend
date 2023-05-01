@@ -1,8 +1,7 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
-import com.savvato.tribeapp.entities.User;
-import com.savvato.tribeapp.entities.UserRole;
+import com.savvato.tribeapp.entities.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -89,5 +88,40 @@ public abstract class AbstractServiceImplTest {
         rtn.password = user.getPassword();
 
         return rtn;
+    }
+
+    public Adverb getTestAdverb() {
+        Adverb testAdverb = new Adverb();
+        testAdverb.setId(100L);
+        testAdverb.setWord("testAdverb");
+        return testAdverb;
+    }
+    public Verb getTestVerb() {
+        Verb testVerb = new Verb();
+        testVerb.setId(100L);
+        testVerb.setWord("testVerb");
+        return testVerb;
+    }
+    public Preposition getTestPreposition() {
+        Preposition testPreposition = new Preposition();
+        testPreposition.setId(100L);
+        testPreposition.setWord("testPreposition");
+        return testPreposition;
+    }
+    public Noun getTestNoun() {
+        Noun testNoun = new Noun();
+        testNoun.setId(100L);
+        testNoun.setWord("testNoun");
+        return testNoun;
+    }
+
+    public Phrase getTestPhrase() {
+        Phrase testPhrase = new Phrase();
+        testPhrase.setId(1L);
+        testPhrase.setAdverbId(1L);
+        testPhrase.setVerbId(1L);
+        testPhrase.setPrepositionId(1L);
+        testPhrase.setNounId(1L);
+        return testPhrase;
     }
 }

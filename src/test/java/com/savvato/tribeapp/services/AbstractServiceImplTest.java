@@ -24,7 +24,7 @@ public abstract class AbstractServiceImplTest {
     public static String USER2_NAME = "Fake R. User"; // the R stand for Regular
 
     // Phrase1 and matching word ids
-    public static long WORD_ID_PHRASE1 = 100L;
+    public static long WORD_TABLE_INITIAL_ID = 100L;
     public static long PHRASE1_ID = 1L;
 
     public Set<UserRole> getUserRoles_AccountHolder() {
@@ -96,25 +96,25 @@ public abstract class AbstractServiceImplTest {
 
     public Adverb getTestAdverb1() {
         Adverb testAdverb = new Adverb();
-        testAdverb.setId(WORD_ID_PHRASE1);
+        testAdverb.setId(WORD_TABLE_INITIAL_ID);
         testAdverb.setWord("testAdverb");
         return testAdverb;
     }
     public Verb getTestVerb1() {
         Verb testVerb = new Verb();
-        testVerb.setId(WORD_ID_PHRASE1);
+        testVerb.setId(WORD_TABLE_INITIAL_ID);
         testVerb.setWord("testVerb");
         return testVerb;
     }
     public Preposition getTestPreposition1() {
         Preposition testPreposition = new Preposition();
-        testPreposition.setId(WORD_ID_PHRASE1);
+        testPreposition.setId(WORD_TABLE_INITIAL_ID);
         testPreposition.setWord("testPreposition");
         return testPreposition;
     }
     public Noun getTestNoun1() {
         Noun testNoun = new Noun();
-        testNoun.setId(WORD_ID_PHRASE1);
+        testNoun.setId(WORD_TABLE_INITIAL_ID);
         testNoun.setWord("testNoun");
         return testNoun;
     }
@@ -122,10 +122,10 @@ public abstract class AbstractServiceImplTest {
     public Phrase getTestPhrase1() {
         Phrase testPhrase = new Phrase();
         testPhrase.setId(PHRASE1_ID);
-        testPhrase.setAdverbId(WORD_ID_PHRASE1);
-        testPhrase.setVerbId(WORD_ID_PHRASE1);
-        testPhrase.setPrepositionId(WORD_ID_PHRASE1);
-        testPhrase.setNounId(WORD_ID_PHRASE1);
+        testPhrase.setAdverbId(WORD_TABLE_INITIAL_ID);
+        testPhrase.setVerbId(WORD_TABLE_INITIAL_ID);
+        testPhrase.setPrepositionId(WORD_TABLE_INITIAL_ID);
+        testPhrase.setNounId(WORD_TABLE_INITIAL_ID);
         return testPhrase;
     }
 }

@@ -23,6 +23,10 @@ public abstract class AbstractServiceImplTest {
     public static String USER1_NAME = "Fake A. Admin";
     public static String USER2_NAME = "Fake R. User"; // the R stand for Regular
 
+    // Phrase1 and matching word ids
+    public static long WORD_ID_PHRASE1 = 100L;
+    public static long PHRASE1_ID = 1L;
+
     public Set<UserRole> getUserRoles_AccountHolder() {
         Set<UserRole> rtn = new HashSet<>();
         rtn.add(UserRole.ROLE_ACCOUNTHOLDER);
@@ -90,38 +94,38 @@ public abstract class AbstractServiceImplTest {
         return rtn;
     }
 
-    public Adverb getTestAdverb() {
+    public Adverb getTestAdverb1() {
         Adverb testAdverb = new Adverb();
-        testAdverb.setId(100L);
+        testAdverb.setId(WORD_ID_PHRASE1);
         testAdverb.setWord("testAdverb");
         return testAdverb;
     }
-    public Verb getTestVerb() {
+    public Verb getTestVerb1() {
         Verb testVerb = new Verb();
-        testVerb.setId(100L);
+        testVerb.setId(WORD_ID_PHRASE1);
         testVerb.setWord("testVerb");
         return testVerb;
     }
-    public Preposition getTestPreposition() {
+    public Preposition getTestPreposition1() {
         Preposition testPreposition = new Preposition();
-        testPreposition.setId(100L);
+        testPreposition.setId(WORD_ID_PHRASE1);
         testPreposition.setWord("testPreposition");
         return testPreposition;
     }
-    public Noun getTestNoun() {
+    public Noun getTestNoun1() {
         Noun testNoun = new Noun();
-        testNoun.setId(100L);
+        testNoun.setId(WORD_ID_PHRASE1);
         testNoun.setWord("testNoun");
         return testNoun;
     }
 
-    public Phrase getTestPhrase() {
+    public Phrase getTestPhrase1() {
         Phrase testPhrase = new Phrase();
-        testPhrase.setId(1L);
-        testPhrase.setAdverbId(1L);
-        testPhrase.setVerbId(1L);
-        testPhrase.setPrepositionId(1L);
-        testPhrase.setNounId(1L);
+        testPhrase.setId(PHRASE1_ID);
+        testPhrase.setAdverbId(WORD_ID_PHRASE1);
+        testPhrase.setVerbId(WORD_ID_PHRASE1);
+        testPhrase.setPrepositionId(WORD_ID_PHRASE1);
+        testPhrase.setNounId(WORD_ID_PHRASE1);
         return testPhrase;
     }
 }

@@ -106,7 +106,6 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
     public void testApplyPhraseToUserForOneCallToUserPhraseRepository() {
 
         Long testId = 1L;
-        String testWord = "testWord";
 
         Adverb testAdverb = getTestAdverb();
         Verb testVerb = getTestVerb();
@@ -128,7 +127,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(userPhraseRepository.save(Mockito.any())).thenReturn(userPhrase);
 
-        phraseService.applyPhraseToUser(testId, testWord, testWord, testWord, testWord);
+        phraseService.applyPhraseToUser(testId, "testAdverb", "testVerb", "testPreposition", "testNoun");
 
         verify(userPhraseRepository, times(1)).save(Mockito.any());
 

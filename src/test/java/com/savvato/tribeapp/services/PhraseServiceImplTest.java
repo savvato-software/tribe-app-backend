@@ -21,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
-@ExtendWith({SpringExtension.class, OutputCaptureExtension.class})
+@ExtendWith({SpringExtension.class})
 public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
     @TestConfiguration

@@ -109,7 +109,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
     // Test that UserPhraseRepository is called once when calling ApplyPhraseToUser and phrase has been approved
     @Test
-    public void testApplyPhraseToUserForOneCallToUserPhraseRepository() {
+    public void testApplyPhraseToUserWhenPhraseHasBeenPreviouslyApproved() {
 
         User user1 = getUser1();
 

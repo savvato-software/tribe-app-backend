@@ -107,7 +107,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         assertFalse(phraseService.isPhraseValid("test", "test", "test", "test"));
     }
 
-    // Test that UserPhraseRepository is called once when calling ApplyPhraseToUser
+    // Test that UserPhraseRepository is called once when calling ApplyPhraseToUser and phrase has been approved
     @Test
     public void testApplyPhraseToUserForOneCallToUserPhraseRepository() {
 
@@ -138,4 +138,6 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         verify(userPhraseRepository, times(1)).save(Mockito.any());
 
     }
+
+    // Test that UserPhraseRepository is called once when calling ApplyPhraseToUser and phrase has not been approved
 }

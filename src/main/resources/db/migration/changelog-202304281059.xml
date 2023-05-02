@@ -6,7 +6,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet author="loretdemolas" id="202304281059-01">
-        <createTable tableName="Notifications">
+        <createTable tableName="notifications">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -35,7 +35,7 @@
     </changeSet>
 
     <changeSet author="loretdemolas" id="202304281059-02">
-        <createTable tableName="Notification_Type">
+        <createTable tableName="notification_type">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -50,41 +50,34 @@
 
     <changeSet author="loretdemolas" id="202304281059-03">
         <addForeignKeyConstraint
-                baseTableName="Notifications"
+                baseTableName="notifications"
                 baseColumnNames="type_id"
-                referencedTableName="Notification_Type"
+                referencedTableName="notification_type"
                 referencedColumnNames="id"
                 constraintName="notifications_type_id_fk"
         />
     </changeSet>
 
-    <changeSet author="loretdemolas" id="202304281059-04" context="test">
-        <insert tableName="Notification_Type">
+    <changeSet author="loretdemolas" id="202304281059-04">
+        <insert tableName="=notification_type">
             <column name="id" value="1"/>
-            <column name="name" value="Request Review"/>
-            <column name="icon_url" value="notifications-outline"/>
+            <column name="name" value="Attribute request approved"/>
+            <column name="icon_url" value="thumbs-up-outline"/>
         </insert>
-        <insert tableName="Notification_Type">
+        <insert tableName="notification_type">
             <column name="id" value="2"/>
-            <column name="name" value="Job Started"/>
-            <column name="icon_url" value="mail-outline"/>
+            <column name="name" value="Attribute request rejected"/>
+            <column name="icon_url" value="thumbs-down-outline"/>
         </insert>
-        <insert tableName="Notification_Type">
-            <column name="id" value="3"/>
-            <column name="name" value="Message"/>
-            <column name="icon_url" value="chatbubble-outline"/>
-        </insert>
-        <insert tableName="Notification_Type">
-            <column name="id" value="4"/>
-            <column name="name" value="Zoom Call"/>
-            <column name="icon_url" value="alarm-outline"/>
-        </insert>
+    </changeSet>
+
+    <changeSet author="loretdemolas" id="202304281059-05" context="test">
         <insert tableName="Notifications">
             <column name="id" value="1"/>
             <column name="user_id" value="1"/>
             <column name="type_id" value="1"/>
-            <column name="description" value="Request Review from John"/>
-            <column name="body" value=""/>
+            <column name="description" value="Attribute request approved"/>
+            <column name="body" value="Your attribute &quot;Vegan&quot; was approved"/>
             <column name="isRead" valueNumeric="0"/>
             <column name="created_date" valueComputed="NOW()"/>
             <column name="last_updated_date" valueComputed="NOW()"/>
@@ -93,38 +86,8 @@
             <column name="id" value="2"/>
             <column name="user_id" value="1"/>
             <column name="type_id" value="2"/>
-            <column name="description" value="Job Started by John"/>
-            <column name="body" value=""/>
-            <column name="isRead" valueNumeric="0"/>
-            <column name="created_date" valueComputed="NOW()"/>
-            <column name="last_updated_date" valueComputed="NOW()"/>
-        </insert>
-        <insert tableName="Notifications">
-            <column name="id" value="3"/>
-            <column name="user_id" value="2"/>
-            <column name="type_id" value="3"/>
-            <column name="description" value="Message from John: &quot;What is a div?&quot;"/>
-            <column name="body" value=""/>
-            <column name="isRead" valueNumeric="0"/>
-            <column name="created_date" valueComputed="NOW()"/>
-            <column name="last_updated_date" valueComputed="NOW()"/>
-        </insert>
-        <insert tableName="Notifications">
-            <column name="id" value="4"/>
-            <column name="user_id" value="2"/>
-            <column name="type_id" value="4"/>
-            <column name="description" value="Zoom call with John at 8:00pm est"/>
-            <column name="body" value=""/>
-            <column name="isRead" valueNumeric="0"/>
-            <column name="created_date" valueComputed="NOW()"/>
-            <column name="last_updated_date" valueComputed="NOW()"/>
-        </insert>
-        <insert tableName="Notifications">
-            <column name="id" value="5"/>
-            <column name="user_id" value="2"/>
-            <column name="type_id" value="3"/>
-            <column name="description" value="Message from John: &quot;Hello, My name is John and I am an expert code writer&quot;"/>
-            <column name="body" value=""/>
+            <column name="description" value="Attribute request rejected"/>
+            <column name="body" value="Your attribute &quot; aosiudh &quot; was rejected due to being a non english word"/>
             <column name="isRead" valueNumeric="0"/>
             <column name="created_date" valueComputed="NOW()"/>
             <column name="last_updated_date" valueComputed="NOW()"/>

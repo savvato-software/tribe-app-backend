@@ -65,6 +65,7 @@ public class PhraseServiceImpl implements PhraseService {
                 isAnyWordRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase) ||
                 isPhrasePreviouslyRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase)) {
             logger.warn("Phrase is not valid.");
+
             return false;
         }
 

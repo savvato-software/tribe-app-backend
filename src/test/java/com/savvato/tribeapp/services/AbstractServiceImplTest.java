@@ -1,8 +1,7 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
-import com.savvato.tribeapp.entities.User;
-import com.savvato.tribeapp.entities.UserRole;
+import com.savvato.tribeapp.entities.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +22,10 @@ public abstract class AbstractServiceImplTest {
 
     public static String USER1_NAME = "Fake A. Admin";
     public static String USER2_NAME = "Fake R. User"; // the R stand for Regular
+
+    // Phrase1 and matching word ids
+    public static long WORD_TABLE_INITIAL_ID = 100L;
+    public static long PHRASE1_ID = 1L;
 
     public Set<UserRole> getUserRoles_AccountHolder() {
         Set<UserRole> rtn = new HashSet<>();
@@ -89,5 +92,40 @@ public abstract class AbstractServiceImplTest {
         rtn.password = user.getPassword();
 
         return rtn;
+    }
+
+    public Adverb getTestAdverb1() {
+        Adverb testAdverb = new Adverb();
+        testAdverb.setId(WORD_TABLE_INITIAL_ID);
+        testAdverb.setWord("testAdverb");
+        return testAdverb;
+    }
+    public Verb getTestVerb1() {
+        Verb testVerb = new Verb();
+        testVerb.setId(WORD_TABLE_INITIAL_ID);
+        testVerb.setWord("testVerb");
+        return testVerb;
+    }
+    public Preposition getTestPreposition1() {
+        Preposition testPreposition = new Preposition();
+        testPreposition.setId(WORD_TABLE_INITIAL_ID);
+        testPreposition.setWord("testPreposition");
+        return testPreposition;
+    }
+    public Noun getTestNoun1() {
+        Noun testNoun = new Noun();
+        testNoun.setId(WORD_TABLE_INITIAL_ID);
+        testNoun.setWord("testNoun");
+        return testNoun;
+    }
+
+    public Phrase getTestPhrase1() {
+        Phrase testPhrase = new Phrase();
+        testPhrase.setId(PHRASE1_ID);
+        testPhrase.setAdverbId(WORD_TABLE_INITIAL_ID);
+        testPhrase.setVerbId(WORD_TABLE_INITIAL_ID);
+        testPhrase.setPrepositionId(WORD_TABLE_INITIAL_ID);
+        testPhrase.setNounId(WORD_TABLE_INITIAL_ID);
+        return testPhrase;
     }
 }

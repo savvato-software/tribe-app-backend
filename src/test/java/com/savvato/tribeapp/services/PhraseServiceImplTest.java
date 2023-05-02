@@ -8,16 +8,20 @@ import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith({SpringExtension.class})
 public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
     @TestConfiguration
@@ -97,4 +101,35 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         assertFalse(phraseService.isPhraseValid("test", "test", "test", "test"));
     }
 
+    // Test that UserPhraseRepository is called once when calling ApplyPhraseToUser
+    @Test
+    public void testApplyPhraseToUserForOneCallToUserPhraseRepository() {
+
+        User user1 = getUser1();
+
+        Adverb testAdverb = getTestAdverb1();
+        Verb testVerb = getTestVerb1();
+        Preposition testPreposition = getTestPreposition1();
+        Noun testNoun = getTestNoun1();
+
+        Phrase testPhrase = getTestPhrase1();
+
+        UserPhrase userPhrase = new UserPhrase();
+        userPhrase.setUserId(user1.getId());
+        userPhrase.setPhraseId(testPhrase.getId());
+
+        Mockito.when(adverbRepository.findByWord(anyString())).thenReturn(Optional.of(testAdverb));
+        Mockito.when(verbRepository.findByWord(anyString())).thenReturn(Optional.of(testVerb));
+        Mockito.when(prepositionRepository.findByWord(anyString())).thenReturn(Optional.of(testPreposition));
+        Mockito.when(nounRepository.findByWord(anyString())).thenReturn(Optional.of(testNoun));
+
+        Mockito.when(phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(any(Long.class), any(Long.class), any(Long.class), any(Long.class))).thenReturn(Optional.of(testPhrase));
+
+        Mockito.when(userPhraseRepository.save(Mockito.any())).thenReturn(userPhrase);
+
+        phraseService.applyPhraseToUser(user1.getId(), "testAdverb", "testVerb", "testPreposition", "testNoun");
+
+        verify(userPhraseRepository, times(1)).save(Mockito.any());
+
+    }
 }

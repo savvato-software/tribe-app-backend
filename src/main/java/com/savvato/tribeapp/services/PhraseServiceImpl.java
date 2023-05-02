@@ -143,7 +143,7 @@ public class PhraseServiceImpl implements PhraseService {
             userPhraseRepository.save(userPhrase);
             logger.info("Phrase added to user.");
         } else {
-            Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverb, verb, noun, preposition);
+            Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
 
             if (toBeReviewedPhrase.isPresent()) {
                 addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhrase.get().getId());
@@ -151,14 +151,14 @@ public class PhraseServiceImpl implements PhraseService {
             } else {
                 ToBeReviewed toBeReviewed = new ToBeReviewed();
                 toBeReviewed.setHasBeenGroomed(false);
-                toBeReviewed.setAdverb(adverb);
-                toBeReviewed.setVerb(verb);
-                toBeReviewed.setPreposition(preposition);
-                toBeReviewed.setNoun(noun);
+                toBeReviewed.setAdverb(adverbLowerCase);
+                toBeReviewed.setVerb(verbLowerCase);
+                toBeReviewed.setPreposition(prepositionLowerCase);
+                toBeReviewed.setNoun(nounLowerCase);
                 toBeReviewedRepository.save(toBeReviewed);
                 logger.info("phrase added to to_be_reviewed table");
 
-                Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverb, verb, noun, preposition);
+                Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
 
                 addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
                 logger.info("ToBeReviewed phrase has been mapped to user");

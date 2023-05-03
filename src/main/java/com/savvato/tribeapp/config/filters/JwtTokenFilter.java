@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.services.UserPrincipalService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,9 +29,8 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
 @Component
+@Slf4j
 public class JwtTokenFilter extends OncePerRequestFilter {
-
-	private static final Log logger = LogFactory.getLog(JwtTokenFilter.class);
 	
 	@Autowired
     UserPrincipalService userPrincipalService;
@@ -79,15 +78,15 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             Jwts.parser().setSigningKey(Constants.JWT_SECRET).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
-            logger.error("Invalid JWT signature - " + ex.getMessage());
+            log.error("Invalid JWT signature - " + ex.getMessage());
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token - " + ex.getMessage());
+            log.error("Invalid JWT token - " + ex.getMessage());
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token - " + ex.getMessage());
+            log.error("Expired JWT token - " + ex.getMessage());
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token - " + ex.getMessage());
+            log.error("Unsupported JWT token - " + ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty - " + ex.getMessage());
+            log.error("JWT claims string is empty - " + ex.getMessage());
         }
         return false;
     }

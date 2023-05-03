@@ -72,7 +72,7 @@
     </changeSet>
 
     <changeSet author="loretdemolas" id="202304281059-05" context="test">
-        <insert tableName="Notifications">
+        <insert tableName="notifications">
             <column name="id" value="1"/>
             <column name="user_id" value="1"/>
             <column name="type_id" value="1"/>
@@ -82,7 +82,7 @@
             <column name="created_date" valueComputed="NOW()"/>
             <column name="last_updated_date" valueComputed="NOW()"/>
         </insert>
-        <insert tableName="Notifications">
+        <insert tableName="notifications">
             <column name="id" value="2"/>
             <column name="user_id" value="1"/>
             <column name="type_id" value="2"/>

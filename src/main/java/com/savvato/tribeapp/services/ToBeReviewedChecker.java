@@ -5,15 +5,16 @@ import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.RejectedPhraseRepository;
 import com.savvato.tribeapp.repositories.ReviewSubmittingUserRepository;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
+@Slf4j
 public class ToBeReviewedChecker {
     @Autowired
     ToBeReviewedRepository toBeReviewedRepository;
@@ -22,11 +23,10 @@ public class ToBeReviewedChecker {
 
     @Autowired
     ReviewSubmittingUserRepository reviewSubmittingUserRepository;
-    static final Logger LOGGER = Logger.getLogger(ToBeReviewedChecker.class.getName());
 
     @Scheduled(fixedDelayString = "PT10M")
     public void updateUngroomedPhrases() {
-        LOGGER.info("Beginning updateUngroomedPhrases process...");
+        log.info("Beginning updateUngroomedPhrases process...");
         List<ToBeReviewed> ungroomedPhrases = toBeReviewedRepository.getAllUngroomed();
 
         for (ToBeReviewed tbr : ungroomedPhrases) {
@@ -35,7 +35,7 @@ public class ToBeReviewedChecker {
                 // contact wordsApi...
             }
             else {
-                LOGGER.warning("Phrase has already been rejected!");
+                log.error("Phrase has already been rejected!");
                 reviewSubmittingUserRepository.deleteByToBeReviewedId(tbr.getId());
                 toBeReviewedRepository.deleteById(tbr.getId());
             }

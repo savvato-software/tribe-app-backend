@@ -1,9 +1,8 @@
 package com.savvato.tribeapp.controllers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import com.savvato.tribeapp.controllers.dto.SMSChallengeRequest;
 import com.savvato.tribeapp.services.SMSChallengeCodeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,10 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
+@Slf4j
 public class SMSChallengeCodeAPIController {
-
-    private static final Log logger = LogFactory.getLog(SMSChallengeCodeAPIController.class);
-
     @Autowired
     SMSChallengeCodeService smsccs;
 
@@ -30,7 +27,7 @@ public class SMSChallengeCodeAPIController {
             phoneNumber = "1" + phoneNumber;
 
         String rtn = smsccs.sendSMSChallengeCodeToPhoneNumber(phoneNumber);
-        logger.debug("Sent challenge code to " + phoneNumber + ". " + rtn);
+        log.debug("Sent challenge code to " + phoneNumber + ". " + rtn);
         return rtn;
     }
 

@@ -10,4 +10,7 @@ public class ReviewSubmittingUserId implements Serializable {
         this.userId = userId;
         this.toBeReviewedId = toBeReviewedId;
     }
+
+    public ReviewSubmittingUserId() {
+    }
 }

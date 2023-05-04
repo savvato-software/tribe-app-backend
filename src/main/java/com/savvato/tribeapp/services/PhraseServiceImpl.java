@@ -47,6 +47,13 @@ public class PhraseServiceImpl implements PhraseService {
     @Autowired
     UserPhraseRepository userPhraseRepository;
 
+    @Autowired
+    ToBeReviewedRepository toBeReviewedRepository;
+
+    @Autowired
+    ReviewSubmittingUserRepository reviewSubmittingUserRepository;
+
+
     @Override
     public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) {
 
@@ -136,11 +143,27 @@ public class PhraseServiceImpl implements PhraseService {
             userPhrase.setPhraseId(previouslyReviewedPhraseId.get());
             userPhraseRepository.save(userPhrase);
             logger.info("Phrase added to user.");
-
         } else {
-            // we have not seen this before
-            // add it to the database
-            // associate it with the user
+            Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
+
+            if (toBeReviewedPhrase.isPresent()) {
+                addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhrase.get().getId());
+                logger.info("ToBeReviewed phrase has been mapped to user");
+            } else {
+                ToBeReviewed toBeReviewed = new ToBeReviewed();
+                toBeReviewed.setHasBeenGroomed(false);
+                toBeReviewed.setAdverb(adverbLowerCase);
+                toBeReviewed.setVerb(verbLowerCase);
+                toBeReviewed.setPreposition(prepositionLowerCase);
+                toBeReviewed.setNoun(nounLowerCase);
+                toBeReviewedRepository.save(toBeReviewed);
+                logger.info("phrase added to to_be_reviewed table");
+
+                Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
+
+                addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
+                logger.info("ToBeReviewed phrase has been mapped to user");
+            }
         }
     }
 
@@ -203,7 +226,14 @@ public class PhraseServiceImpl implements PhraseService {
     public Optional<Noun> findNounIfExists(String noun) {
         return this.nounRepository.findByWord(noun);
     }
-    
+
+    public void addUserAndPhraseToReviewSubmittingUserRepository(Long userId, Long toBeReviewedId) {
+        ReviewSubmittingUser reviewSubmittingUser = new ReviewSubmittingUser();
+        reviewSubmittingUser.setUserId(userId);
+        reviewSubmittingUser.setToBeReviewedId(toBeReviewedId);
+        reviewSubmittingUserRepository.save(reviewSubmittingUser);
+    }
+
     @Override
     public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long userId) {
 

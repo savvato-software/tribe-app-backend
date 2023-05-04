@@ -64,6 +64,12 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
     @MockBean
     UserPhraseRepository userPhraseRepository;
 
+    @MockBean
+    ToBeReviewedRepository toBeReviewedRepository;
+
+    @MockBean
+    ReviewSubmittingUserRepository reviewSubmittingUserRepository;
+
     // test that illegal argument is thrown when method is called with a null verb or noun
     @Test
     public void testIsMissingVerbOrNounHappyPath() {
@@ -101,9 +107,9 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         assertFalse(phraseService.isPhraseValid("test", "test", "test", "test"));
     }
 
-    // Test that UserPhraseRepository is called once when calling ApplyPhraseToUser
+    // Test that UserPhraseRepository is called once when calling ApplyPhraseToUser and phrase has been approved
     @Test
-    public void testApplyPhraseToUserForOneCallToUserPhraseRepository() {
+    public void testApplyPhraseToUserWhenPhraseHasBeenPreviouslyApproved() {
 
         User user1 = getUser1();
 
@@ -131,5 +137,65 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         verify(userPhraseRepository, times(1)).save(Mockito.any());
 
+    }
+
+    // Test that reviewSubmittingUserRepository is called once when calling ApplyPhraseToUser and conditions:
+    // phrase has not been approved
+    // phrase exists in to_be_reviewed
+    @Test
+    public void testApplyPhraseToUserWhenPhraseExistsInToBeReviewed() {
+        User user1 = getUser1();
+
+        String testWord = "test";
+        ToBeReviewed toBeReviewed = new ToBeReviewed();
+        toBeReviewed.setId(1L);
+        toBeReviewed.setHasBeenGroomed(false);
+        toBeReviewed.setAdverb(testWord);
+        toBeReviewed.setVerb(testWord);
+        toBeReviewed.setPreposition(testWord);
+        toBeReviewed.setNoun(testWord);
+
+        Mockito.when(adverbRepository.findByWord(anyString())).thenReturn(Optional.empty());
+        Mockito.when(verbRepository.findByWord(anyString())).thenReturn(Optional.empty());
+        Mockito.when(prepositionRepository.findByWord(anyString())).thenReturn(Optional.empty());
+        Mockito.when(nounRepository.findByWord(anyString())).thenReturn(Optional.empty());
+
+        Mockito.when(phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(any(Long.class), any(Long.class), any(Long.class), any(Long.class))).thenReturn(Optional.empty());
+
+        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.of(toBeReviewed));
+
+        phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
+
+        verify(reviewSubmittingUserRepository, times(1)).save(Mockito.any());
+    }
+
+    // Test that reviewSubmittingUserRepository is called once when calling ApplyPhraseToUser and conditions:
+    // phrase has not been approved
+    // phrase does not exist in to_be_reviewed
+    @Test
+    public void testApplyPhraseToUserWhenPhraseDoesNotExistInToBeReviewed() {
+        User user1 = getUser1();
+
+        String testWord = "test";
+        ToBeReviewed toBeReviewed = new ToBeReviewed();
+        toBeReviewed.setId(1L);
+        toBeReviewed.setHasBeenGroomed(false);
+        toBeReviewed.setAdverb(testWord);
+        toBeReviewed.setVerb(testWord);
+        toBeReviewed.setPreposition(testWord);
+        toBeReviewed.setNoun(testWord);
+
+        Mockito.when(adverbRepository.findByWord(anyString())).thenReturn(Optional.empty());
+        Mockito.when(verbRepository.findByWord(anyString())).thenReturn(Optional.empty());
+        Mockito.when(prepositionRepository.findByWord(anyString())).thenReturn(Optional.empty());
+        Mockito.when(nounRepository.findByWord(anyString())).thenReturn(Optional.empty());
+
+        Mockito.when(phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(any(Long.class), any(Long.class), any(Long.class), any(Long.class))).thenReturn(Optional.empty());
+
+        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.empty()).thenReturn(Optional.of(toBeReviewed));
+
+        phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
+
+        verify(reviewSubmittingUserRepository, times(1)).save(Mockito.any());
     }
 }

@@ -3,8 +3,14 @@ package com.savvato.tribeapp.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import com.savvato.tribeapp.models.NotificationType;
 import com.savvato.tribeapp.models.Notification;
 import com.savvato.tribeapp.repositories.NotificationRepository;
+import com.savvato.tribeapp.repositories.NotificationTypeRepository;
+import com.savvato.tribeapp.dto.NotificationDTO;
+
+
+
 
 @Service
 public class NotificationService {
@@ -26,13 +32,5 @@ public class NotificationService {
                     iconUrl);
         }
         return null;
-    }
-
-    public Notification save(Notification notification) {
-        return notificationRepository.save(notification);
-    }
-
-    public void deleteById(Long id) {
-        notificationRepository.deleteById(id);
     }
 }

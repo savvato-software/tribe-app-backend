@@ -1,3 +1,8 @@
+package com.savvato.tribeapp.dto;
+
+import java.time.LocalDateTime;
+
+
 public class NotificationDTO {
     private String description;
     private String body;
@@ -11,5 +16,36 @@ public class NotificationDTO {
         this.iconUrl = iconUrl;
     }
 
-    // getters and setters
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public LocalDateTime getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+// getters and setters
 }

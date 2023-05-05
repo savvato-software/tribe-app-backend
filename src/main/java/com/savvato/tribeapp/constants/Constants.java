@@ -10,6 +10,8 @@ public class Constants {
 	public static final String PHOTO_SIZE_THUMBNAIL = "thumbnail";
 	public static final String PHOTO_SIZE_ORIGINAL = "original";
 
+	public static final String NULL_VALUE_WORD = "nullvalue";
+	public static final Long NULL_VALUE_ID = 1L;
 
 	/////
 	// Testing Related

@@ -1,18 +1,9 @@
 package com.savvato.tribeapp.entities;
+import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-
-@Entity
-@IdClass(UserPhraseId.class)
-public class UserPhrase {
-
-    @Id
-    public Long userId;
-
-    @Id
-    public Long phraseId;
+public class UserPhraseId implements Serializable {
+    private Long userId;
+    private Long phraseId;
 
     public Long getUserId() {
         return userId;

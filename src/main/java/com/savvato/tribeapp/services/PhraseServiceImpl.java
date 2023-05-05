@@ -1,21 +1,24 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.dto.PhraseDTO;
-import com.savvato.tribeapp.entities.Phrase;
+import com.savvato.tribeapp.entities.*;
 import com.savvato.tribeapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 @Service
 public class PhraseServiceImpl implements PhraseService {
 
-    @Autowired
-    UserPhraseService userPhraseService;
+    private static final Log logger = LogFactory.getLog(PhraseServiceImpl.class.getName());
 
     @Autowired
     PhraseRepository phraseRepository;
@@ -33,61 +36,204 @@ public class PhraseServiceImpl implements PhraseService {
     NounRepository nounRepository;
 
     @Autowired
+    RejectedPhraseRepository rejectedPhraseRepository;
+
+    @Autowired
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
 
-    public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) {
-        boolean rtn = true;
-        rtn = rtn && isWordPreviouslyRejected(adverb);
-        rtn = rtn && isWordPreviouslyRejected(verb);
-        rtn = rtn && isWordPreviouslyRejected(preposition);
-        rtn = rtn && isWordPreviouslyRejected(noun);
+    @Autowired
+    UserPhraseService userPhraseService;
 
-        return rtn;
+    @Autowired
+    UserPhraseRepository userPhraseRepository;
+
+    @Autowired
+    ToBeReviewedRepository toBeReviewedRepository;
+
+    @Autowired
+    ReviewSubmittingUserRepository reviewSubmittingUserRepository;
+
+
+    @Override
+    public boolean isPhraseValid(String adverb, String verb, String preposition, String noun) {
+
+        String adverbLowerCase = changeToLowerCase(adverb);
+        String verbLowerCase = changeToLowerCase(verb);
+        String prepositionLowerCase = changeToLowerCase(preposition);
+        String nounLowerCase = changeToLowerCase(noun);
+
+        if(isMissingVerbOrNoun(verbLowerCase,nounLowerCase) ||
+                isAnyWordRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase) ||
+                isPhrasePreviouslyRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase)) {
+            logger.warn("Phrase is not valid.");
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public String changeToLowerCase(String word) {
+        if(word != null && !word.trim().isEmpty()){
+            return word.toLowerCase();
+        }
+        return word;
+    }
+
+    public boolean isMissingVerbOrNoun(String verb, String noun) {
+        if (verb == null || verb.trim().isEmpty()) {
+            throw new IllegalArgumentException("Phrase is missing a verb.");
+        }
+        if (noun == null || noun.trim().isEmpty()) {
+            throw new IllegalArgumentException("Phrase is missing a noun.");
+        }
+        return false;
+    }
+
+    public boolean isAnyWordRejected(String adverb, String verb, String preposition, String noun) {
+
+        List<String> words = Arrays.asList(adverb, verb, preposition, noun);
+        for(String word: words) {
+            if(isWordPreviouslyRejected(word)){
+                logger.warn(word + " exists in rejected words.");
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean isWordPreviouslyRejected(String word) {
         return this.rejectedNonEnglishWordRepository.findByWord(word).isPresent();
     }
 
-    public void applyPhraseToUser(String adverb, String verb, String preposition, String noun) {
-        boolean rtn = hasPhraseBeenReviewed(adverb, verb, preposition, noun);
+    public boolean isPhrasePreviouslyRejected(String adverb, String verb, String preposition, String noun) {
+        StringBuilder rejectedPhraseSB = new StringBuilder();
 
-        if (rtn) {
-            // we have seen this before
-            // associate it with the user
+        if(adverb != null && !adverb.trim().isEmpty()) { rejectedPhraseSB.append(adverb + " "); }
+        rejectedPhraseSB.append(verb + " ");
+        if(preposition != null && !preposition.trim().isEmpty()) { rejectedPhraseSB.append(preposition + " "); }
+        rejectedPhraseSB.append(noun);
+
+        String rejectedPhraseString = rejectedPhraseSB.toString().trim();
+
+        Optional<RejectedPhrase> rejectedPhrase = rejectedPhraseRepository.findByRejectedPhrase(rejectedPhraseString);
+
+        if(rejectedPhrase.isPresent()) {
+            logger.warn(rejectedPhraseString + " exits in rejected phrases.");
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun) {
+
+        String adverbLowerCase = changeToLowerCase(adverb);
+        String verbLowerCase = changeToLowerCase(verb);
+        String prepositionLowerCase = changeToLowerCase(preposition);
+        String nounLowerCase = changeToLowerCase(noun);
+
+        Optional<Long> previouslyReviewedPhraseId = findPreviouslyApprovedPhraseId(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase);
+
+        if (previouslyReviewedPhraseId.isPresent()) {
+            UserPhrase userPhrase = new UserPhrase();
+            userPhrase.setUserId(userId);
+            userPhrase.setPhraseId(previouslyReviewedPhraseId.get());
+            userPhraseRepository.save(userPhrase);
+            logger.info("Phrase added to user.");
         } else {
-            // we have not seen this before
-            // add it to the database
-            // associate it with the user
+            Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
+
+            if (toBeReviewedPhrase.isPresent()) {
+                addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhrase.get().getId());
+                logger.info("ToBeReviewed phrase has been mapped to user");
+            } else {
+                ToBeReviewed toBeReviewed = new ToBeReviewed();
+                toBeReviewed.setHasBeenGroomed(false);
+                toBeReviewed.setAdverb(adverbLowerCase);
+                toBeReviewed.setVerb(verbLowerCase);
+                toBeReviewed.setPreposition(prepositionLowerCase);
+                toBeReviewed.setNoun(nounLowerCase);
+                toBeReviewedRepository.save(toBeReviewed);
+                logger.info("phrase added to to_be_reviewed table");
+
+                Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
+
+                addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
+                logger.info("ToBeReviewed phrase has been mapped to user");
+            }
         }
     }
 
-    public boolean hasPhraseBeenReviewed(String adverb, String verb, String preposition, String noun) {
-        boolean rtn = true;
-        rtn = rtn && isGivenVerbFound(adverb);
-        rtn = rtn && isGivenNounFound(verb);
-        rtn = rtn && isGivenAdverbFound(preposition);
-        rtn = rtn && isGivenPrepositionFound(noun);
+    @Override
+    public Optional<Long> findPreviouslyApprovedPhraseId(String adverb, String verb, String preposition, String noun) {
 
-        return rtn;
+        Long adverbId;
+        Long verbId;
+        Long prepositionId;
+        Long nounId;
+
+        if(findVerbIfExists(verb).isPresent()) {
+            verbId = verbRepository.findByWord(verb).get().getId();
+        } else {
+            return Optional.empty();
+        }
+
+        if(findNounIfExists(noun).isPresent()) {
+            nounId = nounRepository.findByWord(noun).get().getId();
+        } else {
+            return Optional.empty();
+        }
+
+        if (adverb == null || adverb.trim().isEmpty()) {
+            adverbId = Constants.NULL_VALUE_ID;
+        } else if (findAdverbIfExists(adverb).isPresent()) {
+            adverbId = adverbRepository.findByWord(adverb).get().getId();
+        } else {
+            return Optional.empty();
+        }
+
+        if (preposition == null || preposition.trim().isEmpty()) {
+            prepositionId = Constants.NULL_VALUE_ID;
+        } else if (findPrepositionIfExists(preposition).isPresent()) {
+            prepositionId = prepositionRepository.findByWord(preposition).get().getId();
+        } else {
+            return Optional.empty();
+        }
+
+        Optional<Phrase> reviewedPhrase = phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(adverbId, verbId, prepositionId, nounId);
+
+        if (reviewedPhrase.isPresent()) {
+            return Optional.of(reviewedPhrase.get().getId());
+        }
+        return Optional.empty();
     }
 
-    public boolean isGivenAdverbFound(String adverb) {
-        return this.adverbRepository.findByWord(adverb).isPresent();
+    public Optional<Adverb> findAdverbIfExists(String adverb) {
+        return this.adverbRepository.findByWord(adverb);
     }
 
-    public boolean isGivenVerbFound(String verb) {
-        return this.verbRepository.findByWord(verb).isPresent();
+    public Optional<Verb> findVerbIfExists(String verb) {
+        return this.verbRepository.findByWord(verb);
     }
 
-    public boolean isGivenPrepositionFound(String preposition) {
-        return this.prepositionRepository.findByWord(preposition).isPresent();
+    public Optional<Preposition> findPrepositionIfExists(String preposition) {
+        return this.prepositionRepository.findByWord(preposition);
     }
 
-    public boolean isGivenNounFound(String noun) {
-        return this.nounRepository.findByWord(noun).isPresent();
+    public Optional<Noun> findNounIfExists(String noun) {
+        return this.nounRepository.findByWord(noun);
     }
-    
+
+    public void addUserAndPhraseToReviewSubmittingUserRepository(Long userId, Long toBeReviewedId) {
+        ReviewSubmittingUser reviewSubmittingUser = new ReviewSubmittingUser();
+        reviewSubmittingUser.setUserId(userId);
+        reviewSubmittingUser.setToBeReviewedId(toBeReviewedId);
+        reviewSubmittingUserRepository.save(reviewSubmittingUser);
+    }
+
     @Override
     public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long userId) {
 
@@ -146,4 +292,5 @@ public class PhraseServiceImpl implements PhraseService {
         }
 
     }
+
 }

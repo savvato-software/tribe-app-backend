@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.constants.Constants;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-@Service
-public class PictureServiceImpl implements PictureService {
 
-    private static final Log logger = LogFactory.getLog(PictureServiceImpl.class);
+@Service
+@Slf4j
+public class PictureServiceImpl implements PictureService {
 
     @Autowired
     ResourceTypeService resourceTypeService;
@@ -32,25 +33,25 @@ public class PictureServiceImpl implements PictureService {
         long delay = 2;
 
         while (!done && retryCount++ < 3) {
-            logger.debug("Sleeping.... " + delay);
+            log.debug("Sleeping.... " + delay);
             try {
                 TimeUnit.SECONDS.sleep(delay);
             } catch (InterruptedException ie) {
 
             }
-            logger.debug("Woke up!");
+            log.debug("Woke up!");
 
             delay *= 2;
 
             try {
-                logger.debug("Just about to get the file " + dir + "/" + filename);
+                log.debug("Just about to get the file " + dir + "/" + filename);
                 InputStream is = new FileSystemResource(dir + "/" + filename).getInputStream();
 
                 BufferedImage originalImage = ImageIO.read(is);
 
                 if (originalImage != null) {
 
-                    logger.debug("YES! Found the file.. doing the resize... " + dir + "/" + filename);
+                    log.debug("YES! Found the file.. doing the resize... " + dir + "/" + filename);
                     BufferedImage resizedImage = resizeImage(originalImage, 250, 250);
 
                     File out = new File(dir + "/" + filename + "_thumbnail");
@@ -58,7 +59,7 @@ public class PictureServiceImpl implements PictureService {
 
                     done = true;
                 } else {
-                    logger.debug("nooo... the file wasn't there yet."+ dir + "/" + filename);
+                    log.debug("nooo... the file wasn't there yet."+ dir + "/" + filename);
                 }
             } catch (IOException ioe) {
                 throw new IOException("Expected the file " + dir + "/" + filename + " to be in place, but we got this exception instead!.", ioe);

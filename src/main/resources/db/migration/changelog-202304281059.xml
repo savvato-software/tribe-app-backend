@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="loretdemolas" id="202304281059-01">
+        <createTable tableName="notifications">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="body" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isRead" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_updated_date" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="loretdemolas" id="202304281059-02">
+        <createTable tableName="notification_type">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="icon_url" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="loretdemolas" id="202304281059-03">
+        <addForeignKeyConstraint
+                baseTableName="notifications"
+                baseColumnNames="type_id"
+                referencedTableName="notification_type"
+                referencedColumnNames="id"
+                constraintName="notifications_type_id_fk"
+        />
+    </changeSet>
+
+    <changeSet author="loretdemolas" id="202304281059-04">
+        <insert tableName="=notification_type">
+            <column name="id" value="1"/>
+            <column name="name" value="Attribute request approved"/>
+            <column name="icon_url" value="thumbs-up-outline"/>
+        </insert>
+        <insert tableName="notification_type">
+            <column name="id" value="2"/>
+            <column name="name" value="Attribute request rejected"/>
+            <column name="icon_url" value="thumbs-down-outline"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="loretdemolas" id="202304281059-05" context="test">
+        <insert tableName="notifications">
+            <column name="id" value="1"/>
+            <column name="user_id" value="1"/>
+            <column name="type_id" value="1"/>
+            <column name="description" value="Attribute request approved"/>
+            <column name="body" value="Your attribute &quot;Vegan&quot; was approved"/>
+            <column name="isRead" valueNumeric="0"/>
+            <column name="created_date" valueComputed="NOW()"/>
+            <column name="last_updated_date" valueComputed="NOW()"/>
+        </insert>
+        <insert tableName="notifications">
+            <column name="id" value="2"/>
+            <column name="user_id" value="1"/>
+            <column name="type_id" value="2"/>
+            <column name="description" value="Attribute request rejected"/>
+            <column name="body" value="Your attribute &quot; aosiudh &quot; was rejected due to being a non english word"/>
+            <column name="isRead" valueNumeric="0"/>
+            <column name="created_date" valueComputed="NOW()"/>
+            <column name="last_updated_date" valueComputed="NOW()"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "afb5a3d7-203e-47d9-9e4d-44e8b4077d88",
+		"_postman_id": "5287ec83-213c-4342-b33d-86aee8c30717",
 		"name": "Tribe App",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "5124293"
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"admin@tribeapp.com\",\n    \"password\": \"admin\"\n}",
+					"raw": "{\n    \"email\": \"admin@votingapp.com\",\n    \"password\": \"admin\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -244,6 +244,52 @@
 					"path": [
 						"api",
 						"attributes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/attributes",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "/api/permissions/users",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "/api/permissions/user-roles",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{current-jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{api-url}}/api/permissions/user-roles",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{api-url}}"
+					],
+					"path": [
+						"api",
+						"permissions",
+						"user-roles"
 					]
 				}
 			},

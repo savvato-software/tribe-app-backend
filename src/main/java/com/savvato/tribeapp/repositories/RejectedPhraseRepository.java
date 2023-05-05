@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface RejectedPhraseRepository extends CrudRepository<RejectedPhrase, Long> {
     Optional<RejectedPhrase> findById(Long id);
+
+    Optional<RejectedPhrase> findByRejectedPhrase(String rejectedPhrase);
 }

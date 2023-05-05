@@ -24,7 +24,7 @@ public class Notification {
     @Column(name = "body", nullable = false)
     private String body;
 
-    @Column(name = "isRead", nullable = false)
+    @Column(name = "is_read", nullable = false)
     private boolean isRead;
 
     @Column(name = "created_date", nullable = false)
@@ -75,11 +75,11 @@ public class Notification {
     }
 
     public boolean isRead() {
-        return isRead;
+       return isRead;
     }
 
     public void setRead(boolean read) {
-        isRead = read;
+       isRead = read;
     }
 
     public LocalDateTime getCreatedDate() {

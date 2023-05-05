@@ -84,20 +84,16 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         assertEquals(rtn.get(), expectedToBeReviewed);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());
 
-        ToBeReviewed expectedToBeReviewedTwo = new ToBeReviewed();
-        expectedToBeReviewed.setId(1L);
+        expectedToBeReviewed.setId(2L);
         expectedToBeReviewed.setHasBeenGroomed(true);
         expectedToBeReviewed.setAdverb("uncompetitively");
         expectedToBeReviewed.setVerb("codes");
         expectedToBeReviewed.setPreposition("without");
         expectedToBeReviewed.setNoun("Scala");
 
-        Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.of(expectedToBeReviewed));
-
         Optional<ToBeReviewed> rtnTwo = toBeReviewedService.getReviewPhrase();
 
         assertEquals(rtnTwo.get(), expectedToBeReviewed);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());
-
     }
 }

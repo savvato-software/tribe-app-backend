@@ -22,7 +22,7 @@
             <column name="body" type="VARCHAR(1000)">
                 <constraints nullable="false"/>
             </column>
-            <column name="isRead" type="BOOLEAN" defaultValueBoolean="false">
+            <column name="is_read" type="TINYINT" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
@@ -59,7 +59,7 @@
     </changeSet>
 
     <changeSet author="loretdemolas" id="202304281059-04">
-        <insert tableName="=notification_type">
+        <insert tableName="notification_type">
             <column name="id" value="1"/>
             <column name="name" value="Attribute request approved"/>
             <column name="icon_url" value="thumbs-up-outline"/>
@@ -78,7 +78,7 @@
             <column name="type_id" value="1"/>
             <column name="description" value="Attribute request approved"/>
             <column name="body" value="Your attribute &quot;Vegan&quot; was approved"/>
-            <column name="isRead" valueNumeric="0"/>
+            <column name="is_read" valueNumeric="0"/>
             <column name="created_date" valueComputed="NOW()"/>
             <column name="last_updated_date" valueComputed="NOW()"/>
         </insert>
@@ -88,7 +88,7 @@
             <column name="type_id" value="2"/>
             <column name="description" value="Attribute request rejected"/>
             <column name="body" value="Your attribute &quot; aosiudh &quot; was rejected due to being a non english word"/>
-            <column name="isRead" valueNumeric="0"/>
+            <column name="is_read" valueNumeric="0"/>
             <column name="created_date" valueComputed="NOW()"/>
             <column name="last_updated_date" valueComputed="NOW()"/>
         </insert>

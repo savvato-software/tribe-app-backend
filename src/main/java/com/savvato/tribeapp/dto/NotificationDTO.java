@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 public class NotificationDTO {
     private String description;
     private String body;
-    private LocalDateTime lastUpdatedDate;
+    private String lastUpdatedDate;
     private String iconUrl;
 
-    public NotificationDTO(String description, String body, LocalDateTime lastUpdatedDate, String iconUrl) {
+    public NotificationDTO(String description, String body, String lastUpdatedDate, String iconUrl) {
         this.description = description;
         this.body = body;
         this.lastUpdatedDate = lastUpdatedDate;
@@ -32,11 +32,11 @@ public class NotificationDTO {
         this.body = body;
     }
 
-    public LocalDateTime getLastUpdatedDate() {
+    public String getLastUpdatedDate() {
         return lastUpdatedDate;
     }
 
-    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
+    public void setLastUpdatedDate(String lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
     }
 

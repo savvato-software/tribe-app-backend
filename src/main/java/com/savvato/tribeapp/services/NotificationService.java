@@ -11,6 +11,9 @@ import com.savvato.tribeapp.dto.NotificationDTO;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.Duration;
+
 
 @Service
 public class NotificationService {
@@ -21,20 +24,21 @@ public class NotificationService {
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
 
-
     public NotificationDTO getNotificationDTOById(Long id) {
         Optional<Notification> notification = notificationRepository.findById(id);
         if (notification.isPresent()) {
             NotificationType type = notification.get().getType();
             String iconUrl = type != null ? type.getIconUrl() : null;
 
-            // Code to find ms since last update (not working)
-            Instant instant = notification.get().getLastUpdatedDate().atZone(ZoneOffset.UTC).toInstant();
-            LocalDateTime lastUpdatedDate = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+            Instant lastUpdatedInstant = notification.get().getLastUpdatedDate().atZone(ZoneOffset.UTC).toInstant();
+            Instant currentInstant = Instant.now();
+            long ageInMilliseconds = Duration.between(lastUpdatedInstant, currentInstant).toMillis();
+
+            String formattedLastUpdatedDate = String.valueOf(ageInMilliseconds);
 
             return new NotificationDTO(notification.get().getDescription(),
                     notification.get().getBody(),
-                    lastUpdatedDate,  // Replace with formatted lastUpdatedDate
+                    formattedLastUpdatedDate,
                     iconUrl);
         }
         return null;

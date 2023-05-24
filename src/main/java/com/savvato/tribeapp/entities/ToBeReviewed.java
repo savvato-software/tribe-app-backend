@@ -8,7 +8,17 @@ public class ToBeReviewed {
     public Long getId() {
         return id;
     }
+    public ToBeReviewed(Long id, Boolean hasBeenGroomed, String adverb, String verb, String preposition, String noun) {
+        this.id = id;
+        this.hasBeenGroomed = hasBeenGroomed;
+        this.adverb = adverb;
+        this.verb = verb;
+        this.preposition = preposition;
+        this.noun = noun;
+    }
 
+    public ToBeReviewed() {
+    }
     public Boolean isHasBeenGroomed() {
         return hasBeenGroomed;
     }
@@ -52,7 +62,18 @@ public class ToBeReviewed {
     public void setNoun(String noun) {
         this.noun = noun;
     }
-
+    @Override
+    public String toString() {
+        String rtn = this.getVerb();
+        if (this.getPreposition() != "") {
+            rtn += " " + this.getPreposition();
+        }
+        rtn += " " + this.getNoun();
+        if (this.getAdverb() != "") {
+            rtn += " " + this.getAdverb();
+        }
+        return rtn;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

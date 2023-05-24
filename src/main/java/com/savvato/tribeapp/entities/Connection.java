@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.entities;
 
 import javax.persistence.*;
+import java.util.Calendar;
 
 @Entity
 @Table(name="connections")
@@ -11,7 +12,7 @@ public class Connection {
 
     private Long requestingUserId;
     private Long toBeConnectedWithUserId;
-    private String qrcodePhrase;
+    private java.sql.Timestamp createTimestamp;
 
     public Long getId() {
         return id;
@@ -37,21 +38,24 @@ public class Connection {
         this.toBeConnectedWithUserId = toBeConnectedWithUserId;
     }
 
-    public String getQrcodePhrase() {
-        return qrcodePhrase;
+    public java.sql.Timestamp getCreated() {
+        return createTimestamp;
     }
 
-    public void setQrcodePhrase(String qrcodePhrase) {
-        this.qrcodePhrase = qrcodePhrase;
+    public void setCreated() {
+        this.createTimestamp = java.sql.Timestamp.from(Calendar.getInstance().toInstant());
     }
 
-    public Connection(Long id, Long requestingUserId, Long toBeConnectedWithUserId, String qrcodePhrase) {
+    public Connection(Long id, Long requestingUserId, Long toBeConnectedWithUserId) {
         this.id = id;
         this.requestingUserId = requestingUserId;
         this.toBeConnectedWithUserId = toBeConnectedWithUserId;
-        this.qrcodePhrase = qrcodePhrase;
+
+        setCreated();
     }
     public Connection() {
+
+        setCreated();
 
     }
 }

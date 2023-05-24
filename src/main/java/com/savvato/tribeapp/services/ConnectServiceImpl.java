@@ -43,4 +43,9 @@ public class ConnectServiceImpl implements ConnectService {
         }
         return new String(digits);
     }
+
+    public boolean connect(Long requestingUserId, Long toBeConnectedWithUserId, String qrcodePhrase) {
+
+        return false;
+    }
 }

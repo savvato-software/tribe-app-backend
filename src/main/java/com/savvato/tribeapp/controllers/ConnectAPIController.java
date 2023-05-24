@@ -36,7 +36,8 @@ public class ConnectAPIController {
     }
 
     @RequestMapping(value = {"/api/connect/"}, method=RequestMethod.POST)
-    public void connect(@Valid ConnectRequest connectRequest){
-
+    public boolean connect(@Valid ConnectRequest connectRequest){
+        boolean rtn = connectService.connect(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId, connectRequest.qrcodePhrase);
+        return rtn;
     }
 }

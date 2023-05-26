@@ -46,8 +46,7 @@ public class Connection {
         this.createTimestamp = java.sql.Timestamp.from(Calendar.getInstance().toInstant());
     }
 
-    public Connection(Long id, Long requestingUserId, Long toBeConnectedWithUserId) {
-        this.id = id;
+    public Connection(Long requestingUserId, Long toBeConnectedWithUserId) {
         this.requestingUserId = requestingUserId;
         this.toBeConnectedWithUserId = toBeConnectedWithUserId;
 

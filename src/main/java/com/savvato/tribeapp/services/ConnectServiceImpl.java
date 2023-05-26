@@ -1,5 +1,7 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.entities.Connection;
+import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,9 @@ public class ConnectServiceImpl implements ConnectService {
 
     @Autowired
     CacheService cache;
+
+    @Autowired
+    ConnectionsRepository connectionsRepository;
 
     private static final Log logger = LogFactory.getLog(ConnectServiceImpl.class);
 
@@ -46,6 +51,11 @@ public class ConnectServiceImpl implements ConnectService {
 
     public boolean connect(Long requestingUserId, Long toBeConnectedWithUserId, String qrcodePhrase) {
 
+        Optional<Connection> opt = Optional.of(connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId)));
+
+        if(opt.isPresent()) {
+            return true;
+        }
         return false;
     }
 }

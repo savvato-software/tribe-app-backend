@@ -93,5 +93,5 @@
             <column name="last_updated_date" valueComputed="NOW()"/>
         </insert>
     </changeSet>
-
+  
 </databaseChangeLog>

@@ -12,7 +12,7 @@ public class Connection {
 
     private Long requestingUserId;
     private Long toBeConnectedWithUserId;
-    private java.sql.Timestamp createTimestamp;
+    private java.sql.Timestamp createdTimestamp;
 
     public Long getId() {
         return id;
@@ -39,11 +39,11 @@ public class Connection {
     }
 
     public java.sql.Timestamp getCreated() {
-        return createTimestamp;
+        return createdTimestamp;
     }
 
     public void setCreated() {
-        this.createTimestamp = java.sql.Timestamp.from(Calendar.getInstance().toInstant());
+        this.createdTimestamp = java.sql.Timestamp.from(Calendar.getInstance().toInstant());
     }
 
     public Connection(Long requestingUserId, Long toBeConnectedWithUserId) {

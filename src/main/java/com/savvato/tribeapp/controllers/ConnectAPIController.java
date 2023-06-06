@@ -25,8 +25,8 @@ public class ConnectAPIController {
 
     @RequestMapping(value = {"/api/connect/{userId}"}, method=RequestMethod.GET)
     public ResponseEntity getQrCodeString(@PathVariable Long userId){
-        connectService.storeQRCodeString(userId);
-        Optional<String> opt = connectService.getQRCodeString(userId);
+
+        Optional<String> opt =  connectService.storeQRCodeString(userId);
 
         if (opt.isPresent()){
             return ResponseEntity.status(HttpStatus.OK).body(opt.get());

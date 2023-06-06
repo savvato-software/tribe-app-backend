@@ -21,7 +21,7 @@ public class ConnectServiceImpl implements ConnectService {
 
     private static final Log logger = LogFactory.getLog(ConnectServiceImpl.class);
 
-    private int qrCodeStringLength = 12;
+    private final int QRCODE_STRING_LENGTH = 12;
 
     public Optional<String> getQRCodeString(long userId){
         String userIdToCacheKey = String.valueOf(userId);
@@ -31,12 +31,12 @@ public class ConnectServiceImpl implements ConnectService {
 
     }
 
-    public void storeQRCodeString(long userId){
-        String generatedQRCodeString = generateRandomString(qrCodeStringLength);
+    public Optional<String> storeQRCodeString(long userId){
+        String generatedQRCodeString = generateRandomString(QRCODE_STRING_LENGTH);
         String userIdToCacheKey = String.valueOf(userId);
         cache.put("ConnectQRCodeString", userIdToCacheKey, generatedQRCodeString);
         logger.debug("User ID: " + userId + " ConnectQRCodeString: " + generatedQRCodeString);
-
+        return Optional.of(generatedQRCodeString);
     }
 
     private String generateRandomString(int length){

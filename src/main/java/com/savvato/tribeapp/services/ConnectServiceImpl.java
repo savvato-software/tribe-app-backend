@@ -50,12 +50,16 @@ public class ConnectServiceImpl implements ConnectService {
     }
 
     public boolean connect(Long requestingUserId, Long toBeConnectedWithUserId, String qrcodePhrase) {
+        if (qrcodePhrase == getQRCodeString(toBeConnectedWithUserId).get()) {
+            Optional<Connection> opt = Optional.of(connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId)));
 
-        Optional<Connection> opt = Optional.of(connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId)));
-
-        if(opt.isPresent()) {
-            return true;
+            if (opt.isPresent()) {
+                return true;
+            }
+            return false;
         }
-        return false;
+        else {
+            return false;
+        }
     }
 }

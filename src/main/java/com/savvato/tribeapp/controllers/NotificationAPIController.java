@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.dto.NotificationDTO;
+import com.savvato.tribeapp.dto.NotificationUpdateDTO;
 import com.savvato.tribeapp.models.Notification;
 import com.savvato.tribeapp.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,5 +22,14 @@ public class NotificationAPIController {
         NotificationDTO notification = notificationService.getNotificationDTOById(id);
         return notification != null ? ResponseEntity.ok(notification) : ResponseEntity.notFound().build();
     }
-
+    @PutMapping
+    public ResponseEntity<String> updateNotification(@RequestBody Long id) {
+        boolean isRead = notificationService.checkNotificationReadStatus(id);
+        if (isRead) {
+            return ResponseEntity.ok("Notification is already read");
+        } else {
+            notificationService.updateNotificationReadStatus(id, true);
+            return ResponseEntity.ok("Notification read status updated");
+        }
+    }
 }

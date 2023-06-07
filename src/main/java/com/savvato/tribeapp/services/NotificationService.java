@@ -43,4 +43,20 @@ public class NotificationService {
         }
         return null;
     }
+
+    public boolean checkNotificationReadStatus(Long id) {
+        Optional<Notification> optionalNotification = notificationRepository.findById(id);
+        return optionalNotification.map(Notification::isRead).orElse(false);
+    }
+
+    public boolean updateNotificationReadStatus(Long id, boolean isRead) {
+        Optional<Notification> optionalNotification = notificationRepository.findById(id);
+        if (optionalNotification.isPresent()) {
+            Notification notification = optionalNotification.get();
+            notification.setRead(isRead);
+            notificationRepository.save(notification);
+            return true;
+        }
+        return false;
+    }
 }

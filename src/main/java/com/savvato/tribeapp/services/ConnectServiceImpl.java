@@ -1,5 +1,7 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.entities.Connection;
+import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,12 @@ public class ConnectServiceImpl implements ConnectService {
     @Autowired
     CacheService cache;
 
+    @Autowired
+    ConnectionsRepository connectionsRepository;
+
     private static final Log logger = LogFactory.getLog(ConnectServiceImpl.class);
 
-    private int qrCodeStringLength = 12;
+    private final int QRCODE_STRING_LENGTH = 12;
 
     public Optional<String> getQRCodeString(long userId){
         String userIdToCacheKey = String.valueOf(userId);
@@ -26,12 +31,12 @@ public class ConnectServiceImpl implements ConnectService {
 
     }
 
-    public void storeQRCodeString(long userId){
-        String generatedQRCodeString = generateRandomString(qrCodeStringLength);
+    public Optional<String> storeQRCodeString(long userId){
+        String generatedQRCodeString = generateRandomString(QRCODE_STRING_LENGTH);
         String userIdToCacheKey = String.valueOf(userId);
         cache.put("ConnectQRCodeString", userIdToCacheKey, generatedQRCodeString);
         logger.debug("User ID: " + userId + " ConnectQRCodeString: " + generatedQRCodeString);
-
+        return Optional.of(generatedQRCodeString);
     }
 
     private String generateRandomString(int length){
@@ -42,5 +47,19 @@ public class ConnectServiceImpl implements ConnectService {
             digits[i] = (char) (random.nextInt(10) + '0');
         }
         return new String(digits);
+    }
+
+    public boolean connect(Long requestingUserId, Long toBeConnectedWithUserId, String qrcodePhrase) {
+        if (qrcodePhrase == getQRCodeString(toBeConnectedWithUserId).get()) {
+            Optional<Connection> opt = Optional.of(connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId)));
+
+            if (opt.isPresent()) {
+                return true;
+            }
+            return false;
+        }
+        else {
+            return false;
+        }
     }
 }

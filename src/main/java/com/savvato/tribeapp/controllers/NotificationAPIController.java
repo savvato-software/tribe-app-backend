@@ -28,7 +28,7 @@ public class NotificationAPIController {
         if (isRead) {
             return ResponseEntity.ok("Notification is already read");
         } else {
-            notificationService.updateNotificationReadStatus(id, true);
+            notificationService.updateNotificationReadStatus(id);
             return ResponseEntity.ok("Notification read status updated");
         }
     }

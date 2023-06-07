@@ -49,11 +49,11 @@ public class NotificationService {
         return optionalNotification.map(Notification::isRead).orElse(false);
     }
 
-    public boolean updateNotificationReadStatus(Long id, boolean isRead) {
+    public boolean updateNotificationReadStatus(Long id) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         if (optionalNotification.isPresent()) {
             Notification notification = optionalNotification.get();
-            notification.setRead(isRead);
+            notification.setRead(true);
             notificationRepository.save(notification);
             return true;
         }

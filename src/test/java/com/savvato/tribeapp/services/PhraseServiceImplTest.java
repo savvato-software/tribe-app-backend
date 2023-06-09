@@ -59,9 +59,6 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
     RejectedNonEnglishWordRepository rejectedNonEnglishWordRepository;
 
     @MockBean
-    UserPhraseService userPhraseService;
-
-    @MockBean
     UserPhraseRepository userPhraseRepository;
 
     @MockBean

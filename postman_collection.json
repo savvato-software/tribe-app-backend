@@ -98,7 +98,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/public/user/isEmailAvailable?q=admin@votingapp.com",
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/public/user/isEmailAvailable?q=admin@tribeapp.com",
 					"protocol": "{{http-protocol}}",
 					"host": [
 						"{{tribe-app-api-url}}"
@@ -112,7 +112,7 @@
 					"query": [
 						{
 							"key": "q",
-							"value": "admin@votingapp.com"
+							"value": "admin@tribeapp.com"
 						}
 					]
 				}

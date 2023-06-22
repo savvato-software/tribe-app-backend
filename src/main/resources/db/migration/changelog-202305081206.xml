@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="audra" id="202305081206-01">
+        <sql dbms="mysql">
+            ALTER TABLE review_decision RENAME COLUMN reviewId TO to_be_reviewed_id;
+            ALTER TABLE review_decision RENAME COLUMN userId TO user_id;
+            ALTER TABLE review_decision RENAME COLUMN reviewDecisionReasonId TO review_decision_reason_id;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

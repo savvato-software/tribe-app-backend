@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="audra" id="202305090846-01">
+        <sql dbms="mysql">
+            ALTER TABLE user_user_role_map ADD PRIMARY KEY(user_id, user_role_id);
+            ALTER TABLE review_submitting_user ADD PRIMARY KEY(user_id, to_be_reviewed_id);
+            ALTER TABLE review_decision ADD PRIMARY KEY(user_id, to_be_reviewed_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

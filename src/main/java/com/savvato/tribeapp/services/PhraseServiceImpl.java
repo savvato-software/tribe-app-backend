@@ -11,14 +11,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
+@Slf4j
 public class PhraseServiceImpl implements PhraseService {
-
-    private static final Log logger = LogFactory.getLog(PhraseServiceImpl.class.getName());
 
     @Autowired
     PhraseRepository phraseRepository;
@@ -65,7 +63,7 @@ public class PhraseServiceImpl implements PhraseService {
         if(isMissingVerbOrNoun(verbLowerCase,nounLowerCase) ||
                 isAnyWordRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase) ||
                 isPhrasePreviouslyRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase)) {
-            logger.warn("Phrase is not valid.");
+            log.warn("Phrase is not valid.");
 
             return false;
         }
@@ -95,7 +93,7 @@ public class PhraseServiceImpl implements PhraseService {
         List<String> words = Arrays.asList(adverb, verb, preposition, noun);
         for(String word: words) {
             if(isWordPreviouslyRejected(word)){
-                logger.warn(word + " exists in rejected words.");
+                log.warn(word + " exists in rejected words.");
                 return true;
             }
         }
@@ -120,7 +118,7 @@ public class PhraseServiceImpl implements PhraseService {
         Optional<RejectedPhrase> rejectedPhrase = rejectedPhraseRepository.findByRejectedPhrase(rejectedPhraseString);
 
         if(rejectedPhrase.isPresent()) {
-            logger.warn(rejectedPhraseString + " exits in rejected phrases.");
+            log.warn(rejectedPhraseString + " exits in rejected phrases.");
             return true;
         }
 
@@ -142,13 +140,13 @@ public class PhraseServiceImpl implements PhraseService {
             userPhrase.setUserId(userId);
             userPhrase.setPhraseId(previouslyReviewedPhraseId.get());
             userPhraseRepository.save(userPhrase);
-            logger.info("Phrase added to user.");
+            log.info("Phrase added to user.");
         } else {
             Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
 
             if (toBeReviewedPhrase.isPresent()) {
                 addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhrase.get().getId());
-                logger.info("ToBeReviewed phrase has been mapped to user");
+                log.info("ToBeReviewed phrase has been mapped to user");
             } else {
                 ToBeReviewed toBeReviewed = new ToBeReviewed();
                 toBeReviewed.setHasBeenGroomed(false);
@@ -157,12 +155,12 @@ public class PhraseServiceImpl implements PhraseService {
                 toBeReviewed.setPreposition(prepositionLowerCase);
                 toBeReviewed.setNoun(nounLowerCase);
                 toBeReviewedRepository.save(toBeReviewed);
-                logger.info("phrase added to to_be_reviewed table");
+                log.info("phrase added to to_be_reviewed table");
 
                 Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
 
                 addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
-                logger.info("ToBeReviewed phrase has been mapped to user");
+                log.info("ToBeReviewed phrase has been mapped to user");
             }
         }
     }

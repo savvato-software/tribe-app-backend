@@ -1,10 +1,13 @@
-package com.savvato.tribeapp.models;
+package com.savvato.tribeapp.entities;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "notification_type")
 public class NotificationType {
+
+    public static final NotificationType ATTRIBUTE_REQUEST_APPROVED = new NotificationType(1L, "Attribute request approved", null);
+    public static final NotificationType ATTRIBUTE_REQUEST_REJECTED = new NotificationType(1L, "Attribute request approved", null);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,5 +43,15 @@ public class NotificationType {
 
     public void setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
+    }
+
+    public NotificationType() {
+
+    }
+
+    public NotificationType(Long id, String name, String iconUrl) {
+    	this.id = id;
+    	this.name = name;
+    	this.iconUrl = iconUrl;
     }
 }

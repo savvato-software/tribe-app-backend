@@ -1,9 +1,9 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.entities.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
-import com.savvato.tribeapp.models.NotificationType;
 import com.savvato.tribeapp.models.Notification;
 import com.savvato.tribeapp.repositories.NotificationRepository;
 import com.savvato.tribeapp.repositories.NotificationTypeRepository;

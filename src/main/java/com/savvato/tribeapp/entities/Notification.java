@@ -1,4 +1,4 @@
-package com.savvato.tribeapp.models;
+package com.savvato.tribeapp.entities;
 
 import com.savvato.tribeapp.entities.NotificationType;
 

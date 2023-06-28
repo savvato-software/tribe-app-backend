@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5287ec83-213c-4342-b33d-86aee8c30717",
+		"_postman_id": "00daa0da-327c-4ea9-b48d-f909fae7b700",
 		"name": "Tribe App",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "5124293"
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"admin@votingapp.com\",\n    \"password\": \"admin\"\n}",
+					"raw": "{\n    \"email\": \"admin@tribeapp.com\",\n    \"password\": \"admin\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,10 +21,10 @@
 					}
 				},
 				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/public/login",
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/public/login",
 					"protocol": "{{http-protocol}}",
 					"host": [
-						"{{api-url}}"
+						"{{tribe-app-api-url}}"
 					],
 					"path": [
 						"api",
@@ -50,10 +50,10 @@
 					}
 				},
 				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/new",
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/public/user/new",
 					"protocol": "{{http-protocol}}",
 					"host": [
-						"{{api-url}}"
+						"{{tribe-app-api-url}}"
 					],
 					"path": [
 						"api",
@@ -71,10 +71,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/isUsernameAvailable?q=admin",
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/public/user/isUsernameAvailable?q=admin",
 					"protocol": "{{http-protocol}}",
 					"host": [
-						"{{api-url}}"
+						"{{tribe-app-api-url}}"
 					],
 					"path": [
 						"api",
@@ -98,10 +98,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/isEmailAvailable?q=admin@votingapp.com",
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/public/user/isEmailAvailable?q=admin@tribeapp.com",
 					"protocol": "{{http-protocol}}",
 					"host": [
-						"{{api-url}}"
+						"{{tribe-app-api-url}}"
 					],
 					"path": [
 						"api",
@@ -112,7 +112,7 @@
 					"query": [
 						{
 							"key": "q",
-							"value": "admin@votingapp.com"
+							"value": "admin@tribeapp.com"
 						}
 					]
 				}
@@ -125,10 +125,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/isPhoneNumberAvailable?q=3035213115",
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/public/user/isPhoneNumberAvailable?q=3035213115",
 					"protocol": "{{http-protocol}}",
 					"host": [
-						"{{api-url}}"
+						"{{tribe-app-api-url}}"
 					],
 					"path": [
 						"api",
@@ -152,10 +152,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/public/user/isUserInformationUnique?name=adminsss&phone=3035213177&email=haxwell@gmail.com33",
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/public/user/isUserInformationUnique?name=adminsss&phone=3035213177&email=haxwell@gmail.com33",
 					"protocol": "{{http-protocol}}",
 					"host": [
-						"{{api-url}}"
+						"{{tribe-app-api-url}}"
 					],
 					"path": [
 						"api",
@@ -197,10 +197,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/profile/1",
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/profile/1",
 					"protocol": "{{http-protocol}}",
 					"host": [
-						"{{api-url}}"
+						"{{tribe-app-api-url}}"
 					],
 					"path": [
 						"api",
@@ -250,18 +250,32 @@
 			"response": []
 		},
 		{
-			"name": "/api/attributes",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
 			"name": "/api/permissions/users",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{current-jwt}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/permissions/users",
+					"protocol": "{{http-protocol}}",
+					"host": [
+						"{{tribe-app-api-url}}"
+					],
+					"path": [
+						"api",
+						"permissions",
+						"users"
+					]
+				}
 			},
 			"response": []
 		},
@@ -281,10 +295,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{http-protocol}}://{{api-url}}/api/permissions/user-roles",
+					"raw": "{{http-protocol}}://{{tribe-app-api-url}}/api/permissions/user-roles",
 					"protocol": "{{http-protocol}}",
 					"host": [
-						"{{api-url}}"
+						"{{tribe-app-api-url}}"
 					],
 					"path": [
 						"api",

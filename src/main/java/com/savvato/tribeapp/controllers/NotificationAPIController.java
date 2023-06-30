@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationAPIController {
 
     @Autowired
-    private NotificationServiceImpl notificationService;
+    private NotificationService notificationService;
 
     @GetMapping("/{id}")
     public ResponseEntity<NotificationDTO> getNotificationById(@PathVariable Long id) {

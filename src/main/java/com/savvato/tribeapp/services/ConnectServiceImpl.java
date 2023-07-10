@@ -101,29 +101,27 @@ public class ConnectServiceImpl implements ConnectService {
         if (connectionIntent == "") {
             List<Long> recipients = new ArrayList<>(Arrays.asList(toBeConnectedWithUserId));
             return ConnectOutgoingMessageDTO.builder().message("Please confirm that you wish to connect.").to(recipients).build();
-        } else {
-            if (connectionIntent == "confirmed") {
-                Boolean connectionStatus = saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
-
-                List<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
-                if (connectionStatus) {
-                    return ConnectOutgoingMessageDTO.builder()
-                            .connectionSuccess(true)
-                            .to(recipients)
-                            .message("Successfully saved connection!").build();
-                } else {
-                    return ConnectOutgoingMessageDTO.builder()
-                            .connectionError(true)
-                            .to(recipients)
-                            .message("Failed to save connection to database.").build();
-                }
-            } else if (connectionIntent == "denied") {
-                List<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
+        } else if (connectionIntent == "confirmed") {
+            Boolean connectionStatus = saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
+            List<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
+            if (connectionStatus) {
+                return ConnectOutgoingMessageDTO.builder()
+                        .connectionSuccess(true)
+                        .to(recipients)
+                        .message("Successfully saved connection!").build();
+            } else {
                 return ConnectOutgoingMessageDTO.builder()
                         .connectionError(true)
                         .to(recipients)
-                        .message("Connection request denied.").build();
+                        .message("Failed to save connection to database.").build();
             }
+        } else if (connectionIntent == "denied") {
+            List<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
+            return ConnectOutgoingMessageDTO.builder()
+                    .connectionError(true)
+                    .to(recipients)
+                    .message("Connection request denied.").build();
+
         }
         return null;
     }

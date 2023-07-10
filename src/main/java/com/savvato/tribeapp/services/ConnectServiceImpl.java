@@ -64,12 +64,14 @@ public class ConnectServiceImpl implements ConnectService {
     }
 
     public boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
-        Optional<Connection> opt = Optional.ofNullable(connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId)));
-
-        if (opt.isPresent()) {
+        Optional<Connection> opt;
+        try {
+            connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId));
             return true;
+        } catch (Exception e) {
+            return false;
         }
-        return false;
+
     }
 
     public Boolean validateQRCode(String qrcodePhrase, Long toBeConnectedWithUserId) {

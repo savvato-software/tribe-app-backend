@@ -72,7 +72,7 @@ public class ConnectServiceImpl implements ConnectService {
         return false;
     }
 
-    private Boolean validateQRCode(String qrcodePhrase, Long toBeConnectedWithUserId) {
+    public Boolean validateQRCode(String qrcodePhrase, Long toBeConnectedWithUserId) {
         return qrcodePhrase.equals(getQRCodeString(toBeConnectedWithUserId).get());
     }
 

@@ -16,5 +16,6 @@ public interface ConnectService {
     Boolean validateQRCode(String qrcodePhrase, Long toBeConnectedWithUserId);
     void connect(ConnectIncomingMessageDTO incoming, UserPrincipal user);
 
+    boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId);
     ConnectOutgoingMessageDTO handleConnectionIntent(String connectionIntent, Long requestingUserId, Long toBeRequestedWithUserId);
 }

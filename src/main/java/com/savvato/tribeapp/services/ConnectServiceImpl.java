@@ -63,7 +63,7 @@ public class ConnectServiceImpl implements ConnectService {
         return new String(digits);
     }
 
-    private boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
+    public boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
         Optional<Connection> opt = Optional.of(connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId)));
 
         if (opt.isPresent()) {

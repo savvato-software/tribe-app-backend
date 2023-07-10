@@ -171,4 +171,36 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         assertEquals(connectionArg.getValue().getRequestingUserId(), requestingUserId);
         assertThat(expectedOutgoingMsg.equals(outgoing));
     }
+
+    @Test
+    public void handleConnectionIntentWhenConnectionIntentConfirmedAndDatabaseSaveUnsuccessful() {
+        Long requestingUserId = 1L;
+        Long toBeConnectedWithUserId = 2L;
+        String connectionIntent = "confirmed";
+        ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
+        ConnectOutgoingMessageDTO expectedOutgoingMsg = ConnectOutgoingMessageDTO.builder().connectionSuccess(true).to(recipients).message("Successfully saved connection!").build();;
+        Mockito.when(connectionsRepository.save(Mockito.any())).thenReturn(null);
+        ConnectOutgoingMessageDTO outgoing = connectService.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
+
+        ArgumentCaptor<Connection> connectionArg = ArgumentCaptor.forClass(Connection.class);
+        verify(connectionsRepository, times(1)).save(connectionArg.capture());
+        assertEquals(connectionArg.getValue().getToBeConnectedWithUserId(), toBeConnectedWithUserId);
+        assertEquals(connectionArg.getValue().getRequestingUserId(), requestingUserId);
+        assertThat(expectedOutgoingMsg.equals(outgoing));
+    }
+
+    @Test
+    public void handleConnectionIntentWhenConnectionIntentDenied() {
+        Long requestingUserId = 1L;
+        Long toBeConnectedWithUserId = 2L;
+        String connectionIntent = "denied";
+        ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(toBeConnectedWithUserId));
+        ConnectOutgoingMessageDTO expectedOutgoingMsg = ConnectOutgoingMessageDTO.builder().message("Please confirm that you wish to connect.").to(recipients).build();
+        ConnectService connectServiceSpy = spy(connectService);
+        ConnectOutgoingMessageDTO outgoing = connectServiceSpy.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
+
+        assertThat(expectedOutgoingMsg.equals(outgoing));
+        verify(connectServiceSpy, never()).saveConnectionDetails(Mockito.any(), Mockito.any());
+        verify(connectionsRepository, never()).save(Mockito.any());
+    }
 }

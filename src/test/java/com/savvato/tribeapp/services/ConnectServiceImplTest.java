@@ -86,12 +86,12 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         Long requestingUserId = 1L;
         Long toBeConnectedWithUserId = 2L;
         String qrcodePhrase = "invalid code";
-        String expectedDestination = "/connect/user/queue/specific-user";
         String connectionIntent = "";
+        String expectedDestination = "/connect/user/queue/specific-user";
         ConnectIncomingMessageDTO incoming = ConnectIncomingMessageDTO.builder().requestingUserId(requestingUserId).toBeConnectedWithUserId(toBeConnectedWithUserId).qrcodePhrase(qrcodePhrase).connectionIntent(connectionIntent).build();
         ConnectOutgoingMessageDTO outgoing = ConnectOutgoingMessageDTO.builder().connectionError(true).message("Invalid QR code; failed to connect.").build();
         ConnectService connectServiceSpy = spy(connectService);
-        Mockito.when(cacheService.get(Mockito.any(), Mockito.any())).thenReturn("valid code");
+        doReturn(false).when(connectServiceSpy).validateQRCode(Mockito.any(), Mockito.any());
 
         connectServiceSpy.connect(incoming, user);
 

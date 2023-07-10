@@ -135,9 +135,79 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         ArgumentCaptor<String> destinationArg = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<ConnectOutgoingMessageDTO> outgoingMsgArg = ArgumentCaptor.forClass(ConnectOutgoingMessageDTO.class);
         verify(simpMessagingTemplate, times(1)).convertAndSendToUser(recipientArg.capture(), destinationArg.capture(), outgoingMsgArg.capture());
-        assertEquals(recipientArg.getValue(), String.valueOf(toBeConnectedWithUserId));
+        assertEquals(recipientArg.getValue(), String.valueOf(outgoing.to.get(0)));
         assertEquals(destinationArg.getValue(), expectedDestination);
         assertThat(outgoingMsgArg.getValue()).isEqualToComparingFieldByField(outgoing);
     }
 
+    @Test
+    public void connectWhenQrCodeIsValidAndConnectionIntentDenied() {
+        UserPrincipal user = new UserPrincipal(getUser1());
+        Long requestingUserId = 1L;
+        Long toBeConnectedWithUserId = 2L;
+        String qrcodePhrase = "valid code";
+        String connectionIntent = "denied";
+        ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
+        String expectedDestination = "/connect/user/queue/specific-user";
+        ConnectIncomingMessageDTO incoming = ConnectIncomingMessageDTO.builder().requestingUserId(requestingUserId).toBeConnectedWithUserId(toBeConnectedWithUserId).qrcodePhrase(qrcodePhrase).connectionIntent(connectionIntent).build();
+        ConnectOutgoingMessageDTO outgoing = ConnectOutgoingMessageDTO.builder().connectionError(true).message("Connection request denied.").to(recipients).build();
+        ConnectService connectServiceSpy = spy(connectService);
+        doReturn(true).when(connectServiceSpy).validateQRCode(Mockito.any(), Mockito.any());
+        doReturn(outgoing).when(connectServiceSpy).handleConnectionIntent(Mockito.any(), Mockito.any(), Mockito.any());
+
+        connectServiceSpy.connect(incoming, user);
+
+        ArgumentCaptor<String> connectionIntentArg = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Long> requestingUserIdArg = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> toBeConnectedWithUserIdArg = ArgumentCaptor.forClass(Long.class);
+        verify(connectServiceSpy, times(1)).handleConnectionIntent(connectionIntentArg.capture(), requestingUserIdArg.capture(), toBeConnectedWithUserIdArg.capture());
+        assertEquals(connectionIntentArg.getValue(), connectionIntent);
+        assertEquals(requestingUserIdArg.getValue(), requestingUserId);
+        assertEquals(toBeConnectedWithUserIdArg.getValue(), toBeConnectedWithUserId);
+
+        ArgumentCaptor<String> recipientArg = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> destinationArg = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<ConnectOutgoingMessageDTO> outgoingMsgArg = ArgumentCaptor.forClass(ConnectOutgoingMessageDTO.class);
+        verify(simpMessagingTemplate, times(2)).convertAndSendToUser(recipientArg.capture(), destinationArg.capture(), outgoingMsgArg.capture());
+        assertEquals(recipientArg.getAllValues().get(0), String.valueOf(recipients.get(0)));
+        assertEquals(recipientArg.getAllValues().get(1), String.valueOf(recipients.get(1)));
+        assertEquals(destinationArg.getValue(), expectedDestination);
+        assertThat(outgoingMsgArg.getValue()).isEqualToComparingFieldByField(outgoing);
+    }
+
+    @Test
+    public void connectWhenConnectionIntentConfirmedAndDatabaseSaveSuccessful() {
+        UserPrincipal user = new UserPrincipal(getUser1());
+        Long requestingUserId = 1L;
+        Long toBeConnectedWithUserId = 2L;
+        String qrcodePhrase = "valid code";
+        String connectionIntent = "confirmed";
+        ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
+        String expectedDestination = "/connect/user/queue/specific-user";
+        ConnectIncomingMessageDTO incoming = ConnectIncomingMessageDTO.builder().requestingUserId(requestingUserId).toBeConnectedWithUserId(toBeConnectedWithUserId).qrcodePhrase(qrcodePhrase).connectionIntent(connectionIntent).build();
+        ConnectOutgoingMessageDTO outgoing = ConnectOutgoingMessageDTO.builder().connectionError(false).message("Successfully saved connection!").to(recipients).build();
+        ConnectService connectServiceSpy = spy(connectService);
+        doReturn(true).when(connectServiceSpy).validateQRCode(Mockito.any(), Mockito.any());
+        doReturn(outgoing).when(connectServiceSpy).handleConnectionIntent(Mockito.any(), Mockito.any(), Mockito.any());
+        doReturn(true).when(connectServiceSpy).saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
+
+        connectServiceSpy.connect(incoming, user);
+
+        ArgumentCaptor<String> connectionIntentArg = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Long> requestingUserIdArg = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> toBeConnectedWithUserIdArg = ArgumentCaptor.forClass(Long.class);
+        verify(connectServiceSpy, times(1)).handleConnectionIntent(connectionIntentArg.capture(), requestingUserIdArg.capture(), toBeConnectedWithUserIdArg.capture());
+        assertEquals(connectionIntentArg.getValue(), connectionIntent);
+        assertEquals(requestingUserIdArg.getValue(), requestingUserId);
+        assertEquals(toBeConnectedWithUserIdArg.getValue(), toBeConnectedWithUserId);
+
+        ArgumentCaptor<String> recipientArg = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> destinationArg = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<ConnectOutgoingMessageDTO> outgoingMsgArg = ArgumentCaptor.forClass(ConnectOutgoingMessageDTO.class);
+        verify(simpMessagingTemplate, times(2)).convertAndSendToUser(recipientArg.capture(), destinationArg.capture(), outgoingMsgArg.capture());
+        assertEquals(recipientArg.getAllValues().get(0), String.valueOf(recipients.get(0)));
+        assertEquals(recipientArg.getAllValues().get(1), String.valueOf(recipients.get(1)));
+        assertEquals(destinationArg.getValue(), expectedDestination);
+        assertThat(outgoingMsgArg.getValue()).isEqualToComparingFieldByField(outgoing);
+    }
 }

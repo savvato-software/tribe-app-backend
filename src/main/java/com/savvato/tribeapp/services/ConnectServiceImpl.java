@@ -97,7 +97,7 @@ public class ConnectServiceImpl implements ConnectService {
         }
     }
 
-    private ConnectOutgoingMessageDTO handleConnectionIntent(String connectionIntent, Long requestingUserId, Long toBeConnectedWithUserId) {
+    public ConnectOutgoingMessageDTO handleConnectionIntent(String connectionIntent, Long requestingUserId, Long toBeConnectedWithUserId) {
         if (connectionIntent == "") {
             List<Long> recipients = new ArrayList<>(Arrays.asList(toBeConnectedWithUserId));
             return ConnectOutgoingMessageDTO.builder().message("Please confirm that you wish to connect.").to(recipients).build();

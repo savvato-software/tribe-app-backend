@@ -153,4 +153,22 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         verify(connectServiceSpy, never()).saveConnectionDetails(Mockito.any(), Mockito.any());
         verify(connectionsRepository, never()).save(Mockito.any());
     }
+
+    @Test
+    public void handleConnectionIntentWhenConnectionIntentConfirmedAndDatabaseSaveSuccessful() {
+        Long requestingUserId = 1L;
+        Long toBeConnectedWithUserId = 2L;
+        String connectionIntent = "confirmed";
+        ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
+        ConnectOutgoingMessageDTO expectedOutgoingMsg = ConnectOutgoingMessageDTO.builder().connectionSuccess(true).to(recipients).message("Successfully saved connection!").build();
+        Connection connection = new Connection(requestingUserId, toBeConnectedWithUserId);
+        Mockito.when(connectionsRepository.save(Mockito.any())).thenReturn(connection);
+        ConnectOutgoingMessageDTO outgoing = connectService.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
+
+        ArgumentCaptor<Connection> connectionArg = ArgumentCaptor.forClass(Connection.class);
+        verify(connectionsRepository, times(1)).save(connectionArg.capture());
+        assertEquals(connectionArg.getValue().getToBeConnectedWithUserId(), toBeConnectedWithUserId);
+        assertEquals(connectionArg.getValue().getRequestingUserId(), requestingUserId);
+        assertThat(expectedOutgoingMsg.equals(outgoing));
+    }
 }

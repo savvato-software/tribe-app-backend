@@ -64,7 +64,7 @@ public class ConnectServiceImpl implements ConnectService {
     }
 
     public boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
-        Optional<Connection> opt = Optional.of(connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId)));
+        Optional<Connection> opt = Optional.ofNullable(connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId)));
 
         if (opt.isPresent()) {
             return true;

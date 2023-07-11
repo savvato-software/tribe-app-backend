@@ -14,4 +14,7 @@ public interface NotificationService {
 
     public Notification createNotification(NotificationType type, Long userId, String description, String body);
 
+    void deleteNotification(Long id);
+
+    boolean checkNotificationExists(Long id);
 }

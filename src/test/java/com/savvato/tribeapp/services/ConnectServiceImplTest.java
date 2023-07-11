@@ -7,8 +7,10 @@ import com.savvato.tribeapp.entities.Connection;
 import com.savvato.tribeapp.entities.RejectedNonEnglishWord;
 import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import com.savvato.tribeapp.repositories.UserRepository;
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -22,10 +24,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.zip.DataFormatException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -80,6 +83,23 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         assertEquals(arg2.getValue(), String.valueOf(userId));
     }
 
+    @Test
+    public void saveConnectionDetailsHappyPath() {
+        Long requestingUserId = 1L;
+        Long toBeConnectedWithUserId = 2L;
+
+        Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
+        assertEquals(connectionStatus, true);
+    }
+
+    @Test
+    public void saveConnectionDetailsUnhappyPath() {
+        Long requestingUserId = 1L;
+        Long toBeConnectedWithUserId = 2L;
+        doThrow(new IndexOutOfBoundsException()).when(connectionsRepository).save(Mockito.any());
+        Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
+        assertEquals(connectionStatus, false);
+    }
     @Test
     public void connectWhenQrCodeIsInvalid() {
         UserPrincipal user = new UserPrincipal(getUser1());
@@ -149,9 +169,9 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         ConnectService connectServiceSpy = spy(connectService);
         ConnectOutgoingMessageDTO outgoing = connectServiceSpy.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
 
-        assertThat(expectedOutgoingMsg.equals(outgoing));
         verify(connectServiceSpy, never()).saveConnectionDetails(Mockito.any(), Mockito.any());
         verify(connectionsRepository, never()).save(Mockito.any());
+        assertThat(expectedOutgoingMsg).isEqualToComparingFieldByField(outgoing);
     }
 
     @Test
@@ -169,7 +189,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         verify(connectionsRepository, times(1)).save(connectionArg.capture());
         assertEquals(connectionArg.getValue().getToBeConnectedWithUserId(), toBeConnectedWithUserId);
         assertEquals(connectionArg.getValue().getRequestingUserId(), requestingUserId);
-        assertThat(expectedOutgoingMsg.equals(outgoing));
+        assertThat(expectedOutgoingMsg).isEqualToComparingFieldByField(outgoing);
     }
 
     @Test
@@ -186,7 +206,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         verify(connectionsRepository, times(1)).save(connectionArg.capture());
         assertEquals(connectionArg.getValue().getToBeConnectedWithUserId(), toBeConnectedWithUserId);
         assertEquals(connectionArg.getValue().getRequestingUserId(), requestingUserId);
-        assertThat(expectedOutgoingMsg.equals(outgoing));
+        assertThat(expectedOutgoingMsg).isEqualToComparingFieldByField(outgoing);
     }
 
     @Test
@@ -194,13 +214,14 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         Long requestingUserId = 1L;
         Long toBeConnectedWithUserId = 2L;
         String connectionIntent = "denied";
-        ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(toBeConnectedWithUserId));
-        ConnectOutgoingMessageDTO expectedOutgoingMsg = ConnectOutgoingMessageDTO.builder().message("Please confirm that you wish to connect.").to(recipients).build();
+        ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
+        ConnectOutgoingMessageDTO expectedOutgoingMsg = ConnectOutgoingMessageDTO.builder().connectionError(true).to(recipients).message("Connection request denied.").build();
         ConnectService connectServiceSpy = spy(connectService);
         ConnectOutgoingMessageDTO outgoing = connectServiceSpy.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
 
-        assertThat(expectedOutgoingMsg.equals(outgoing));
         verify(connectServiceSpy, never()).saveConnectionDetails(Mockito.any(), Mockito.any());
         verify(connectionsRepository, never()).save(Mockito.any());
+        assertThat(expectedOutgoingMsg).isEqualToComparingFieldByField(outgoing);
+
     }
 }

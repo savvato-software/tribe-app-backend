@@ -78,4 +78,14 @@ public class NotificationServiceImpl implements NotificationService {
 
         return null;
     }
+    public void deleteNotification(Long id) {
+        Optional<Notification> optionalNotification = notificationRepository.findById(id);
+        if (optionalNotification.isPresent()) {
+            Notification notification = optionalNotification.get();
+            notificationRepository.delete(notification);
+        }
+    }
+    public boolean checkNotificationExists(Long id) {
+        return notificationRepository.existsById(id);
+    }
 }

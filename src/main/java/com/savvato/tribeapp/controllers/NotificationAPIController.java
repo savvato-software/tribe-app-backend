@@ -29,4 +29,14 @@ public class NotificationAPIController {
             return ResponseEntity.ok("Notification read status updated");
         }
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteNotification(@PathVariable Long id) {
+        boolean exists = notificationService.checkNotificationExists(id);
+        if (exists) {
+            notificationService.deleteNotification(id);
+            return ResponseEntity.ok("Notification deleted");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

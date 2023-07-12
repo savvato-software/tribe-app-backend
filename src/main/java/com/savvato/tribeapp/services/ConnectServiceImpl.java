@@ -78,6 +78,7 @@ public class ConnectServiceImpl implements ConnectService {
         return qrcodePhrase.equals(getQRCodeString(toBeConnectedWithUserId).get());
     }
 
+    @MessageMapping("/connect/room")
     public void connect(ConnectIncomingMessageDTO incoming, UserPrincipal user) {
         if(!validateQRCode(incoming.qrcodePhrase, incoming.toBeConnectedWithUserId)) {
             ConnectOutgoingMessageDTO msg = ConnectOutgoingMessageDTO.builder()

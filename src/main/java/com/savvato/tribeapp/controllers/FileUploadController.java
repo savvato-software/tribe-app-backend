@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
+@RequestMapping("/api/resource/{resourceType}/{resourceId}")
 @Slf4j
 public class FileUploadController {
 
@@ -26,7 +27,7 @@ public class FileUploadController {
 		this.pictureService = pictureService;
 	}
 
-	@RequestMapping(value = { "/api/resource/{resourceType}/{resourceId}/isFound" }, method = RequestMethod.GET)
+	@GetMapping("/isFound")
 	public long fileIsFound(HttpServletRequest request, @PathVariable String resourceType,
 			@PathVariable String resourceId) {
 		long timestamp = 0;
@@ -39,7 +40,7 @@ public class FileUploadController {
 		return timestamp;
 	}
 
-	@RequestMapping(value = { "/api/resource/{resourceType}/{resourceId}" }, method = RequestMethod.DELETE)
+	@DeleteMapping
 	public boolean deleteFile(HttpServletRequest request, @PathVariable String resourceType,
 			@PathVariable String resourceId) {
 		boolean b = false;
@@ -52,7 +53,7 @@ public class FileUploadController {
 		return b;
 	}
 
-	@RequestMapping(value = { "/api/resource/{resourceType}/{resourceId}" }, method = RequestMethod.GET)
+	@GetMapping
 	public ResponseEntity<byte[]> serveFile(HttpServletRequest request, @PathVariable String resourceType,
 			@PathVariable String resourceId, @RequestParam("photoSize") String photoSize) {
 		String filename = storageService.getDefaultFilename(resourceType, resourceId);
@@ -65,7 +66,7 @@ public class FileUploadController {
 		return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(fileAsByteArray);
 	}
 
-	@RequestMapping(value = { "/api/resource/{resourceType}/{resourceId}" }, method = RequestMethod.POST)
+	@PostMapping
 	public String handleFileUpload(HttpServletRequest request, @PathVariable String resourceType,
 			@PathVariable String resourceId, @RequestParam("file") MultipartFile file) {
 

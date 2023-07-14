@@ -6,15 +6,13 @@ import com.savvato.tribeapp.services.ConnectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/connect")
 public class ConnectAPIController {
     @Autowired
     ConnectService connectService;
@@ -23,7 +21,7 @@ public class ConnectAPIController {
 
     }
 
-    @RequestMapping(value = {"/api/connect/{userId}"}, method=RequestMethod.GET)
+    @GetMapping("/{userId}")
     public ResponseEntity getQrCodeString(@PathVariable Long userId){
 
         Optional<String> opt =  connectService.storeQRCodeString(userId);
@@ -35,7 +33,7 @@ public class ConnectAPIController {
         }
     }
 
-    @RequestMapping(value = {"/api/connect/"}, method=RequestMethod.POST)
+    @PostMapping
     public boolean connect(@Valid ConnectRequest connectRequest){
         boolean rtn = connectService.connect(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId, connectRequest.qrcodePhrase);
         return rtn;

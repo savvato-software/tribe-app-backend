@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/public/user")
 public class UserAPIController {
 
 	@Autowired
@@ -37,7 +38,7 @@ public class UserAPIController {
 		
 	}
 	
-	@RequestMapping(value = { "/api/public/user/new" }, method=RequestMethod.POST)
+	@PostMapping("/new" )
 	public ResponseEntity createUser(@RequestBody @Valid UserRequest req) {
 		
 		try {
@@ -55,13 +56,13 @@ public class UserAPIController {
 
 
 	// api/public/user/isUsernameAvailable?q=sample
-	@RequestMapping(value = { "/api/public/user/isUsernameAvailable" })
+	@RequestMapping( "/isUsernameAvailable" )
 	public boolean isUsernameAvailable(@RequestParam("q") String queryStr) {
 		return this.ur.findByName(queryStr).isPresent() == false;
 	}
 
 	// api/public/user/isPhoneNumberAvailable?q=7205870001
-	@RequestMapping(value = { "/api/public/user/isPhoneNumberAvailable" })
+	@RequestMapping( "/isPhoneNumberAvailable" )
 	public boolean isPhoneNumberAvailable(@RequestParam("q") String queryStr) {
 		Optional<List<User>> opt = this.ur.findByPhone(queryStr);
 
@@ -72,13 +73,13 @@ public class UserAPIController {
 	}
 
 	// api/public/user/isEmailAddressAvailable?q=anAddress@domain.com
-	@RequestMapping(value = { "/api/public/user/isEmailAddressAvailable" })
+	@RequestMapping( "/isEmailAddressAvailable" )
 	public boolean isEmailAddressAvailable(@RequestParam("q") String queryStr) {
 		return this.ur.findByEmail(queryStr).isPresent() == false;
 	}
 
 	// api/public/user/isUserInformationUnique?name=sample&phone=7205870001&email=anAddress@domain.com
-	@RequestMapping(value = { "/api/public/user/isUserInformationUnique" })
+	@RequestMapping( "/isUserInformationUnique" )
 	public String isUserInformationUnique(@RequestParam("name") String username, @RequestParam("phone") String phone, @RequestParam("email") String email) {
 		if (!isUsernameAvailable(username)) return "{\"response\": \"username\"}";
 		if (!isPhoneNumberAvailable(phone)) return "{\"response\": \"phone\"}";
@@ -87,12 +88,12 @@ public class UserAPIController {
 		return "{\"response\": true}";
 	}
     // Deprecated Route moving to api/public/user/changePassword
-	@RequestMapping(value = { "/api/public/user/changeLostPassword" }, method=RequestMethod.POST)
+	@PostMapping( "/changeLostPassword" )
 	public User changeLostPassword(@RequestBody @Valid ChangePasswordRequest request) {
 		return userService.changePassword(request.pw, request.phoneNumber, request.smsChallengeCode);
 	}
 
-	@RequestMapping(value = { "/api/public/user/changePassword" }, method=RequestMethod.POST)
+	@PostMapping( "/changePassword")
 	public User changePassword(@RequestBody @Valid ChangePasswordRequest request) {
 		return userService.changePassword(request.pw, request.phoneNumber, request.smsChallengeCode);
 	}

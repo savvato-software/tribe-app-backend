@@ -1,4 +1,6 @@
-package com.savvato.tribeapp.models;
+package com.savvato.tribeapp.entities;
+
+import com.savvato.tribeapp.entities.NotificationType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -95,6 +97,19 @@ public class Notification {
     }
 
     public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
+    }
+
+    public Notification() {
+    }
+
+    public Notification(Long userId, String description, String body, boolean isRead, Long typeId) {
+        this.userId = userId;
+        this.type = type;
+        this.description = description;
+        this.body = body;
+        this.isRead = isRead;
+        this.createdDate = createdDate;
         this.lastUpdatedDate = lastUpdatedDate;
     }
 }

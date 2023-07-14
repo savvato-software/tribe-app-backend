@@ -1,6 +1,6 @@
 package com.savvato.tribeapp.repositories;
 
-import com.savvato.tribeapp.models.NotificationType;
+import com.savvato.tribeapp.entities.NotificationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

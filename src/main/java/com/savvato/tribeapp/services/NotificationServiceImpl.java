@@ -3,6 +3,8 @@ package com.savvato.tribeapp.services;
 import com.savvato.tribeapp.entities.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.repositories.NotificationRepository;
@@ -87,5 +89,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
     public boolean checkNotificationExists(Long id) {
         return notificationRepository.existsById(id);
+    }
+    public List<Notification> getNotificationsByUserId(Long userId) {
+        return notificationRepository.findByUserId(userId);
     }
 }

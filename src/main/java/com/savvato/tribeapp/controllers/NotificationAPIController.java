@@ -1,10 +1,14 @@
 package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.dto.NotificationDTO;
+import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -38,5 +42,16 @@ public class NotificationAPIController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    @GetMapping("/user/{user_id}")
+    public ResponseEntity<List<NotificationDTO>> getUserNotifications(@PathVariable Long user_id) {
+        List<Notification> notifications = notificationService.getNotificationsByUserId(user_id);
+        List<NotificationDTO> userNotificationDTOs = new ArrayList<>();
+
+        for (Notification notification : notifications) {
+            userNotificationDTOs.add(notificationService.getNotificationDTOById(notification.getId()));
+        }
+
+        return ResponseEntity.ok(userNotificationDTOs);
     }
 }

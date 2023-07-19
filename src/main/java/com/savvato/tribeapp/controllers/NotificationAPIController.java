@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -18,11 +19,6 @@ public class NotificationAPIController {
     @Autowired
     private NotificationService notificationService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<NotificationDTO> getNotificationById(@PathVariable Long id) {
-        NotificationDTO notification = notificationService.getNotificationDTOById(id);
-        return notification != null ? ResponseEntity.ok(notification) : ResponseEntity.notFound().build();
-    }
     @PutMapping
     public ResponseEntity<String> updateNotification(@RequestBody Long id) {
         boolean isRead = notificationService.checkNotificationReadStatus(id);
@@ -46,12 +42,12 @@ public class NotificationAPIController {
     @GetMapping("/user/{user_id}")
     public ResponseEntity<List<NotificationDTO>> getUserNotifications(@PathVariable Long user_id) {
         List<Notification> notifications = notificationService.getNotificationsByUserId(user_id);
-        List<NotificationDTO> userNotificationDTOs = new ArrayList<>();
-
-        for (Notification notification : notifications) {
-            userNotificationDTOs.add(notificationService.getNotificationDTOById(notification.getId()));
-        }
-
-        return ResponseEntity.ok(userNotificationDTOs);
+        List<NotificationDTO> rtn = new ArrayList<>();
+        Iterator<Notification> iterator  = notifications.iterator();
+            while (iterator.hasNext()){
+                NotificationDTO notificationDTO= notificationService.createNotificationDTO(iterator.next());
+                rtn.add(notificationDTO);
+            }
+        return ResponseEntity.ok(rtn);
     }
 }

@@ -25,31 +25,28 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
 
-    public NotificationDTO getNotificationDTOById(Long id) {
-        Optional<Notification> notification = notificationRepository.findById(id);
-        if (notification.isPresent()) {
-            NotificationType type = notification.get().getType();
+    public NotificationDTO createNotificationDTO(Notification notification) {
+
+            NotificationType type = notification.getType();
             String iconUrl = type != null ? type.getIconUrl() : null;
 
-            Instant lastUpdatedInstant = notification.get().getLastUpdatedDate().atZone(ZoneOffset.UTC).toInstant();
+            Instant lastUpdatedInstant = notification.getLastUpdatedDate().atZone(ZoneOffset.UTC).toInstant();
             Instant currentInstant = Instant.now();
             long ageInMilliseconds = Duration.between(lastUpdatedInstant, currentInstant).toMillis();
 
             String formattedLastUpdatedDate = String.valueOf(ageInMilliseconds);
 
-            return new NotificationDTO(notification.get().getDescription(),
-                    notification.get().getBody(),
+            return new NotificationDTO(notification.getDescription(),
+                    notification.getBody(),
                     formattedLastUpdatedDate,
                     iconUrl);
-        }
-        return null;
     }
 
+    //tested
     public boolean checkNotificationReadStatus(Long id) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         return optionalNotification.map(Notification::isRead).orElse(false);
     }
-
     public boolean updateNotificationReadStatus(Long id) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         if (optionalNotification.isPresent()) {
@@ -80,6 +77,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         return null;
     }
+    //tested
     public void deleteNotification(Long id) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         if (optionalNotification.isPresent()) {
@@ -87,9 +85,11 @@ public class NotificationServiceImpl implements NotificationService {
             notificationRepository.delete(notification);
         }
     }
+    //tested
     public boolean checkNotificationExists(Long id) {
         return notificationRepository.existsById(id);
     }
+    //tested
     public List<Notification> getNotificationsByUserId(Long userId) {
         return notificationRepository.findByUserId(userId);
     }

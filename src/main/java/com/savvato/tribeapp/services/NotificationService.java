@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface NotificationService {
 
-    public NotificationDTO getNotificationDTOById(Long id);
+    public NotificationDTO createNotificationDTO(Notification notification);
 
     public boolean checkNotificationReadStatus(Long id);
 

@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/profile/{profileId}")
 public class ProfileAPIController {
 
 	@Autowired
@@ -21,7 +22,7 @@ public class ProfileAPIController {
 			
 	}
 	
-	@RequestMapping(value = { "/api/profile/{profileId}" }, method=RequestMethod.GET)
+	@GetMapping
 	public ResponseEntity<ProfileDTO> getById(@PathVariable Long profileId) {
 		
 		Optional<ProfileDTO> opt = profileService.getByUserId(profileId);
@@ -32,7 +33,7 @@ public class ProfileAPIController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 	}
 	
-	@RequestMapping(value = { "/api/profile/{profileId}" }, method=RequestMethod.PUT)
+	@PutMapping
 	public ResponseEntity<Boolean> update(@RequestBody @Valid ProfileRequest request) {
 		boolean rtn = profileService.update(request.userId, request.name, request.email, request.phone);
 		

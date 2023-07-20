@@ -64,14 +64,8 @@ public class ToBeReviewed {
     }
     @Override
     public String toString() {
-        String rtn = this.getVerb();
-        if (this.getPreposition() != "") {
-            rtn += " " + this.getPreposition();
-        }
-        rtn += " " + this.getNoun();
-        if (this.getAdverb() != "") {
-            rtn += " " + this.getAdverb();
-        }
+        String rtn = (this.getAdverb() != "") ? this.getAdverb() + " " + this.getVerb() : this.getVerb();
+        rtn += " " + ((this.getPreposition() != "") ? this.getPreposition() + " " + this.getNoun() : this.getNoun());
         return rtn;
     }
     @Id

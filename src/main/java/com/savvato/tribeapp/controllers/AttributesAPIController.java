@@ -56,7 +56,7 @@ public class AttributesAPIController {
             return ResponseEntity.status(HttpStatus.OK).body(true);
         }
 
-        Notification notification = notificationService.createNotification(
+        notificationService.createNotification(
                     NotificationType.ATTRIBUTE_REQUEST_REJECTED,
                     req.userId,
                     NotificationType.ATTRIBUTE_REQUEST_REJECTED.getName(),

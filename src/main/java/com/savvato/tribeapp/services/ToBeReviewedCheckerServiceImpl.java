@@ -111,11 +111,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
             toBeReviewedRepository.setHasBeenGroomedTrue(tbr.getId());
         }
         else {
-            if (!hasMatchingRejectedPhrase) {
-                RejectedPhrase rp = new RejectedPhrase();
-                rp.setRejectedPhrase(tbr.toString());
-                rejectedPhraseRepository.save(rp);
-            }
+            rejectedPhraseRepository.save(new RejectedPhrase(tbr.toString()));
             reviewSubmittingUserRepository.deleteByToBeReviewedId(tbr.getId());
             toBeReviewedRepository.deleteById(tbr.getId());
         }

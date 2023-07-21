@@ -2,7 +2,10 @@ package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
+import com.savvato.tribeapp.entities.Notification;
+import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.services.AttributesService;
+import com.savvato.tribeapp.services.NotificationService;
 import com.savvato.tribeapp.services.PhraseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,9 @@ public class AttributesAPIController {
 
     @Autowired
     PhraseService phraseService;
+
+    @Autowired
+    NotificationService notificationService;
 
     AttributesAPIController() {
 
@@ -46,9 +52,15 @@ public class AttributesAPIController {
             rtn = true;
         }
 
-        if (rtn)
+        if (rtn) {
             return ResponseEntity.status(HttpStatus.OK).body(true);
-        else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        Notification notification = notificationService.createNotification(
+                    NotificationType.ATTRIBUTE_REQUEST_REJECTED,
+                    req.userId,
+                    NotificationType.ATTRIBUTE_REQUEST_REJECTED.getName(),
+                    "Your attribute was rejected. This attribute is unsuitable and cannot be applied to users.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 }

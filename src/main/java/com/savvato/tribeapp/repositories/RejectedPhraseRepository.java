@@ -14,5 +14,5 @@ public interface RejectedPhraseRepository extends CrudRepository<RejectedPhrase,
     Optional<RejectedPhrase> findByRejectedPhrase(String rejectedPhrase);
 
     @Query("INSERT IGNORE INTO rejected_phrase (rejected_phrase) VALUES (?1)")
-    RejectedPhrase save(String rejectedPhrase);
+    RejectedPhrase save(RejectedPhrase rejectedPhrase);
 }

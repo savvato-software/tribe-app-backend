@@ -121,7 +121,7 @@ public class ToBeReviewedCheckerServiceImplTest {
     }
 
     @Test
-    public void updateTablesWhenPhraseValidAndNoMatchingRejectedPhrase() {
+    public void updateTablesWhenPhraseInvalidAndNoMatchingRejectedPhrase() {
         ToBeReviewed tbr = new ToBeReviewed(1L, false, "nonsense", "nonsense", "nonsense", "nonsense");
         boolean hasMatchingRejectedPhrase = false;
         boolean phraseValid = false;

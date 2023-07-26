@@ -20,4 +20,8 @@ public interface NotificationService {
     boolean checkNotificationExists(Long id);
 
     List<Notification> getNotificationsByUserId(Long userid);
-}
+
+    Object getIconUrlFromNotification(Notification mockNotification);
+
+    Object getFormattedLastUpdatedDate(Notification mockNotification);
+} 

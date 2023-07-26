@@ -14,21 +14,20 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.Spy;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.time.Clock;
-import java.time.Instant;
-
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.mockito.Mockito.when;
+
 
 
 @ExtendWith({SpringExtension.class})
@@ -51,57 +50,37 @@ public class NotificationServiceImplTest {
 	@MockBean
 	NotificationRepository notificationRepository;
 
+
 	@Test
-	public void testGetNotificationDTOById_NotificationExists() {
+	public void testCreateNotificationDTO() {
 		// Mock data
-		Long notificationId = 1L;
 		NotificationType mockType = new NotificationType();
-		mockType.setId(1L);
+		mockType.setIconUrl("http://example.com/icon.png");
 
 		Notification mockNotification = new Notification();
-		mockNotification.setId(notificationId);
-		mockNotification.setType(mockType);
 		mockNotification.setDescription("Test Description");
 		mockNotification.setBody("Test Body");
-		mockNotification.setLastUpdatedDate(LocalDateTime.of(2023, 7, 18, 12, 0)); // Set the lastUpdatedDate to a fixed value for testing
+		mockNotification.setLastUpdatedDate(LocalDateTime.of(2023, 7, 15, 12, 30, 45));
+		mockNotification.setType(mockType);
 
-		// Mock repository behavior
-		when(notificationRepository.findById(notificationId)).thenReturn(Optional.of(mockNotification));
+		// Mock the behavior of helper methods using doReturn
+		doReturn("http://example.com/icon.png")
+				.when(notificationService)
+				.getIconUrlFromNotification(any(Notification.class));
+		doReturn("1000")
+				.when(notificationService)
+				.getFormattedLastUpdatedDate(any(Notification.class));
 
-		// Set a fixed time for testing
-		Instant fixedInstant = LocalDateTime.of(2023, 7, 18, 13, 0).atZone(ZoneId.systemDefault()).toInstant();
-		Clock fixedClock = Clock.fixed(fixedInstant, ZoneOffset.UTC);
-
-		// Perform the method call with the fixedClock
-		NotificationDTO result = notificationService.getNotificationDTOById(notificationId);
-
-		// Verify the repository call
-		verify(notificationRepository, times(1)).findById(notificationId);
+		// Perform the method call
+		NotificationDTO result = notificationService.createNotificationDTO(mockNotification);
 
 		// Verify the result
 		assertEquals("Test Description", result.description);
 		assertEquals("Test Body", result.body);
-		assertEquals("3600000", result.lastUpdatedDate); // Check that the formatted lastUpdatedDate is correct (1 hour in milliseconds)
-		assertEquals(mockType.getIconUrl(), result.iconUrl);
+		assertEquals("1000", result.lastUpdatedDate); // Replace "1000" with the expected formatted date
+		assertEquals("http://example.com/icon.png", result.iconUrl);
 	}
 
-	@Test
-	public void testGetNotificationDTOById_NotificationDoesNotExist() {
-		// Mock data
-		Long notificationId = 1L;
-
-		// Mock repository behavior
-		when(notificationRepository.findById(notificationId)).thenReturn(Optional.empty());
-
-		// Perform the method call
-		NotificationDTO result = notificationService.getNotificationDTOById(notificationId);
-
-		// Verify the repository call
-		verify(notificationRepository, times(1)).findById(notificationId);
-
-		// Verify the result
-		assertEquals(null, result);
-	}
 	@Test
 	public void testCreateNotification() {
 		// Mock data

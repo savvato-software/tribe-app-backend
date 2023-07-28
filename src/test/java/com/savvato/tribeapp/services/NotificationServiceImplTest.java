@@ -44,6 +44,9 @@ public class NotificationServiceImplTest {
 	@Autowired
 	NotificationService notificationService;
 
+	@Spy
+	NotificationService notificationServiceSpy;
+
 	@MockBean
 	NotificationTypeRepository notificationTypeRepository;
 
@@ -53,26 +56,16 @@ public class NotificationServiceImplTest {
 	@Test
 	public void testCreateNotificationDTO() {
 		// Mock data
-		NotificationType mockType = new NotificationType();
-		mockType.setIconUrl("http://example.com/icon.png");
+		String formattedLastUpdatedDate = "1000";
+		String iconUrl = "http://example.com/icon.png";
 
 		Notification mockNotification = new Notification();
 		mockNotification.setDescription("Test Description");
 		mockNotification.setBody("Test Body");
-		mockNotification.setLastUpdatedDate(LocalDateTime.of(2023, 7, 15, 12, 30, 45));
-		mockNotification.setType(mockType);
-
-		// Mock the behavior of helper methods using doReturn
-		doReturn("http://example.com/icon.png")
-				.when(notificationService)
-				.getIconUrlFromNotification(any(Notification.class));
-		doReturn("1000")
-				.when(notificationService)
-				.getFormattedLastUpdatedDate(any(Notification.class));
+		mockNotification.setLastUpdatedDate(LocalDateTime.now());
 
 		// Perform the method call
-		NotificationDTO result = notificationService.createNotificationDTO(mockNotification);
-
+		NotificationDTO result = notificationService.createNotificationDTO(mockNotification, formattedLastUpdatedDate, iconUrl);
 		// Verify the result
 		assertEquals("Test Description", result.description);
 		assertEquals("Test Body", result.body);
@@ -124,7 +117,7 @@ public class NotificationServiceImplTest {
 		assertEquals(mockNotification.getBody(), result.getBody());
 		assertEquals(mockNotification.isRead(), result.isRead());
 		assertEquals(mockNotification.getCreatedDate(), result.getCreatedDate());
-		assertEquals(mockNotification.getLastUpdatedDate(), result.getLastUpdatedDate());
+		assertEquals(mockNotification.getLastUpdatedDate(LocalDateTime.now()), result.getLastUpdatedDate(LocalDateTime.now()));
 	}
 
 	@Test

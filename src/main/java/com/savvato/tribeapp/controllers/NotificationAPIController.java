@@ -45,7 +45,9 @@ public class NotificationAPIController {
         List<NotificationDTO> rtn = new ArrayList<>();
         Iterator<Notification> iterator  = notifications.iterator();
             while (iterator.hasNext()){
-                NotificationDTO notificationDTO= notificationService.createNotificationDTO(iterator.next());
+                String iconUrl = notificationService.getIconUrlFromNotification(iterator.next());
+                String formattedLastUpdatedDate = notificationService.getFormattedLastUpdatedDate(iterator.next());
+                NotificationDTO notificationDTO= notificationService.createNotificationDTO(iterator.next(), formattedLastUpdatedDate, iconUrl);
                 rtn.add(notificationDTO);
             }
         return ResponseEntity.ok(rtn);

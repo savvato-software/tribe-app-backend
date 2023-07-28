@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface NotificationService {
 
-    public NotificationDTO createNotificationDTO(Notification notification);
+    public NotificationDTO createNotificationDTO(Notification notification, String formattedLastUpdatedDate , String iconUrl);
 
     public boolean checkNotificationReadStatus(Long id);
 
@@ -21,7 +21,8 @@ public interface NotificationService {
 
     List<Notification> getNotificationsByUserId(Long userid);
 
-    Object getIconUrlFromNotification(Notification mockNotification);
+    String getIconUrlFromNotification(Notification notification);
 
-    Object getFormattedLastUpdatedDate(Notification mockNotification);
-} 
+    String getFormattedLastUpdatedDate(Notification notification);
+
+}

@@ -25,9 +25,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
 
-    public NotificationDTO createNotificationDTO(Notification notification) {
-        String iconUrl = getIconUrlFromNotification(notification);
-        String formattedLastUpdatedDate = getFormattedLastUpdatedDate(notification);
+    public NotificationDTO createNotificationDTO(Notification notification, String formattedLastUpdatedDate , String iconUrl ) {
 
         return NotificationDTO.builder()
                 .description(notification.getDescription())
@@ -43,7 +41,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public String getFormattedLastUpdatedDate(Notification notification) {
-        Instant lastUpdatedInstant = notification.getLastUpdatedDate().atZone(ZoneOffset.UTC).toInstant();
+        Instant lastUpdatedInstant = notification.getLastUpdatedDate(LocalDateTime.now()).atZone(ZoneOffset.UTC).toInstant();
         Instant currentInstant = Instant.now();
         long ageInMilliseconds = Duration.between(lastUpdatedInstant, currentInstant).toMillis();
         return String.valueOf(ageInMilliseconds);

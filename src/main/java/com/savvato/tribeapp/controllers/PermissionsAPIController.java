@@ -3,24 +3,31 @@ package com.savvato.tribeapp.controllers;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.services.UserRoleMapService;
+import com.savvato.tribeapp.services.UserRoleService;
 import com.savvato.tribeapp.services.UserService;
+import com.savvato.tribeapp.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/permissions")
 public class PermissionsAPIController {
     @Autowired
     UserRoleMapService userRoleMapService;
 
     @Autowired
+    UserRoleService userRoleService;
+
+    @Autowired
     UserService userService;
 
-    @GetMapping("/users")
+    @RequestMapping(value = { "/api/permissions/users"}, method=RequestMethod.GET)
     public ResponseEntity<Iterable<User>> getAllUsers() {
 
         // WHY is this defined here? Instead of UserAPIController? It's because only
@@ -39,7 +46,7 @@ public class PermissionsAPIController {
         }
     }
 
-    @GetMapping("/user-roles")
+    @RequestMapping(value = { "/api/permissions/user-roles"}, method=RequestMethod.GET)
     public ResponseEntity<Iterable<String>> getAllUserRoles() {
         Iterable<String> rtn = userRoleMapService.getRoles();
 
@@ -50,7 +57,18 @@ public class PermissionsAPIController {
         }
     }
 
-    @PostMapping
+    @RequestMapping(value = { "/api/permissions/user-roles-list"}, method=RequestMethod.GET)
+    public ResponseEntity<Iterable<UserRole>> getAllRoles() {
+        Iterable<UserRole> rtn = userRoleService.getRoles();
+
+        if (rtn != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(rtn);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(null);
+        }
+    }
+
+    @RequestMapping(value = { "/api/permissions" }, method= RequestMethod.POST)
     public ResponseEntity<Boolean> addPermissions(@RequestBody @Valid PermissionsRequest request) {
         boolean rtn = userRoleMapService.addRolesToUser(request.id, request.permissions);
 
@@ -60,7 +78,7 @@ public class PermissionsAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);
         }
     }
-    @DeleteMapping
+    @RequestMapping(value = { "/api/permissions" }, method= RequestMethod.DELETE)
     public ResponseEntity<Boolean> deletePermissions(@RequestBody @Valid PermissionsRequest request) {
         boolean rtn = userRoleMapService.removeRolesFromUser(request.id, request.permissions);
 

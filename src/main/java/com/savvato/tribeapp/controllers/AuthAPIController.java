@@ -17,15 +17,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-@RestController 
+@RestController
+@RequestMapping("/api/public")
 public class AuthAPIController {
 
     private final AuthenticationManager authenticationManager;
@@ -34,7 +32,7 @@ public class AuthAPIController {
         this.authenticationManager = authenticationManager;
     }
 
-    @RequestMapping(value = { "/api/public/login" }, method = RequestMethod.POST)
+    @PostMapping( "/login" )
     public ResponseEntity<User> login(@RequestBody @Valid AuthRequest request) {
         try {
             Authentication authenticate = authenticationManager

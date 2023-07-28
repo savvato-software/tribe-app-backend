@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/attributes")
 public class AttributesAPIController {
 
     @Autowired
@@ -26,7 +27,7 @@ public class AttributesAPIController {
 
     }
 
-    @RequestMapping(value = { "/api/attributes/{userId}" }, method=RequestMethod.GET)
+    @GetMapping( "/{userId}")
     public ResponseEntity<List<AttributeDTO>> getAttributesForUser(@PathVariable Long userId) {
 
         Optional<List<AttributeDTO>> opt = attributesService.getAttributesByUserId(userId);
@@ -37,7 +38,7 @@ public class AttributesAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
-    @RequestMapping(value = { "/api/attributes" }, method=RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
         boolean rtn = false;
 

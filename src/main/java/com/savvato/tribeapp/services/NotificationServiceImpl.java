@@ -49,7 +49,6 @@ public class NotificationServiceImpl implements NotificationService {
         return String.valueOf(ageInMilliseconds);
     }
 
-    //tested
     public boolean checkNotificationReadStatus(Long id) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         return optionalNotification.map(Notification::isRead).orElse(false);
@@ -84,7 +83,6 @@ public class NotificationServiceImpl implements NotificationService {
 
         return null;
     }
-    //tested
     public void deleteNotification(Long id) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         if (optionalNotification.isPresent()) {
@@ -92,12 +90,16 @@ public class NotificationServiceImpl implements NotificationService {
             notificationRepository.delete(notification);
         }
     }
-    //tested
+
     public boolean checkNotificationExists(Long id) {
         return notificationRepository.existsById(id);
     }
     //tested
     public List<Notification> getNotificationsByUserId(Long userId) {
         return notificationRepository.findByUserId(userId);
+    }
+
+    public boolean checkNotificationExists(Long id) {
+        return notificationRepository.existsById(id);
     }
 }

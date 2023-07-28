@@ -50,7 +50,6 @@ public class NotificationServiceImplTest {
 	@MockBean
 	NotificationRepository notificationRepository;
 
-
 	@Test
 	public void testCreateNotificationDTO() {
 		// Mock data
@@ -127,6 +126,7 @@ public class NotificationServiceImplTest {
 		assertEquals(mockNotification.getCreatedDate(), result.getCreatedDate());
 		assertEquals(mockNotification.getLastUpdatedDate(), result.getLastUpdatedDate());
 	}
+
 	@Test
 	public void testDeleteNotification() {
 		// Mock data
@@ -145,6 +145,7 @@ public class NotificationServiceImplTest {
 		verify(notificationRepository, times(1)).findById(notificationId);
 		verify(notificationRepository, times(1)).delete(mockNotification);
 	}
+
 	@Test
 	public void testCheckNotificationExists_Exists() {
 		// Mock data
@@ -164,6 +165,7 @@ public class NotificationServiceImplTest {
 		// Verify the result
 		assertTrue(exists);
 	}
+
 	@Test
 	public void testCheckNotificationExists_NotExists() {
 		// Mock data
@@ -181,6 +183,7 @@ public class NotificationServiceImplTest {
 		// Verify the result
 		assertFalse(exists);
 	}
+
 	@Test
 	public void testGetNotificationsByUserId() {
 		// Mock data

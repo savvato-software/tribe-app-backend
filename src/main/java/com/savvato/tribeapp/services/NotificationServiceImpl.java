@@ -94,12 +94,8 @@ public class NotificationServiceImpl implements NotificationService {
     public boolean checkNotificationExists(Long id) {
         return notificationRepository.existsById(id);
     }
-    //tested
     public List<Notification> getNotificationsByUserId(Long userId) {
         return notificationRepository.findByUserId(userId);
     }
 
-    public boolean checkNotificationExists(Long id) {
-        return notificationRepository.existsById(id);
-    }
 }

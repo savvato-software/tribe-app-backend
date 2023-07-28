@@ -2,8 +2,11 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.entities.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import com.savvato.tribeapp.entities.Notification;
@@ -24,6 +27,19 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
+
+    public List<NotificationDTO> getUserNotifications(Long userId){
+        List<Notification> notifications = getNotificationsByUserId(userId);
+        List<NotificationDTO> rtn = new ArrayList<>();
+        Iterator<Notification> iterator  = notifications.iterator();
+        while (iterator.hasNext()){
+            String iconUrl = getIconUrlFromNotification(iterator.next());
+            String formattedLastUpdatedDate = getFormattedLastUpdatedDate(iterator.next());
+            NotificationDTO notificationDTO= createNotificationDTO(iterator.next(), formattedLastUpdatedDate, iconUrl);
+            rtn.add(notificationDTO);
+        }
+        return rtn;
+    };
 
     public NotificationDTO createNotificationDTO(Notification notification, String formattedLastUpdatedDate , String iconUrl ) {
 

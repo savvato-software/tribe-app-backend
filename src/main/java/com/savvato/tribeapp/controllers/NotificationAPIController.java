@@ -41,15 +41,7 @@ public class NotificationAPIController {
     }
     @GetMapping("/user/{user_id}")
     public ResponseEntity<List<NotificationDTO>> getUserNotifications(@PathVariable Long user_id) {
-        List<Notification> notifications = notificationService.getNotificationsByUserId(user_id);
-        List<NotificationDTO> rtn = new ArrayList<>();
-        Iterator<Notification> iterator  = notifications.iterator();
-            while (iterator.hasNext()){
-                String iconUrl = notificationService.getIconUrlFromNotification(iterator.next());
-                String formattedLastUpdatedDate = notificationService.getFormattedLastUpdatedDate(iterator.next());
-                NotificationDTO notificationDTO= notificationService.createNotificationDTO(iterator.next(), formattedLastUpdatedDate, iconUrl);
-                rtn.add(notificationDTO);
-            }
-        return ResponseEntity.ok(rtn);
-    }
+        List<NotificationDTO> rtn = notificationService.getUserNotifications(user_id);
+            return ResponseEntity.ok(rtn);
+    };
 }

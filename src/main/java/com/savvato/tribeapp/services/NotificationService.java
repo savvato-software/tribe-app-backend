@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface NotificationService {
 
+    public List<NotificationDTO> getUserNotifications(Long userId);
+
     public NotificationDTO createNotificationDTO(Notification notification, String formattedLastUpdatedDate , String iconUrl);
 
     public boolean checkNotificationReadStatus(Long id);

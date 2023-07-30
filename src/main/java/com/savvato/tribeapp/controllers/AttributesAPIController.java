@@ -40,16 +40,15 @@ public class AttributesAPIController {
 
     @PostMapping
     public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
-        boolean rtn = false;
+        ResponseEntity rtn;
 
         if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
             phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
-            rtn = true;
+            rtn = ResponseEntity.status(HttpStatus.OK).body(true);
+        } else {
+            rtn = ResponseEntity.status(HttpStatus.OK).body(false);
         }
 
-        if (rtn)
-            return ResponseEntity.status(HttpStatus.OK).body(true);
-        else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return rtn;
     }
 }

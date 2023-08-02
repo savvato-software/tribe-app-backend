@@ -46,26 +46,29 @@ public class AttributesAPIController {
 
     @PostMapping
     public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
-        ResponseEntity rtn;
-
         if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
             phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
-            rtn = ResponseEntity.status(HttpStatus.OK).body(true);
-        } else {
-            rtn = ResponseEntity.status(HttpStatus.OK).body(false);
-        }
-
-        if (rtn) {
+            sendNotification(true, req.userId);
             return ResponseEntity.status(HttpStatus.OK).body(true);
         }
+        sendNotification(false, req.userId);
+        return ResponseEntity.status(HttpStatus.OK).body(false);
+    }
 
-        notificationService.createNotification(
+    private void sendNotification(Boolean approved, Long userId) {
+        if (approved) {
+            notificationService.createNotification(
                     NotificationType.ATTRIBUTE_REQUEST_REJECTED,
-                    req.userId,
+                    userId,
                     NotificationType.ATTRIBUTE_REQUEST_REJECTED.getName(),
                     "Your attribute was rejected. This attribute is unsuitable and cannot be applied to users.");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-
-        return rtn;
+        } else {
+            notificationService.createNotification(
+                    NotificationType.ATTRIBUTE_REQUEST_APPROVED,
+                    userId,
+                    NotificationType.ATTRIBUTE_REQUEST_APPROVED.getName(),
+                    "Your attribute has been approved!");
+        }
     }
+
 }

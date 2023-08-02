@@ -104,12 +104,12 @@ public class ToBeReviewedCheckerServiceImplTest {
     }
 
     @Test
-    public void updateTablesWhenPhraseValid() {
+    public void validatePhraseWhenPhraseValid() {
         ToBeReviewed tbr = new ToBeReviewed(1L, false, "competitively", "plays", "", "chess");
-        boolean hasMatchingRejectedPhrase = false;
-        boolean phraseValid = true;
-
-        toBeReviewedCheckerService.updateTables(tbr, hasMatchingRejectedPhrase, phraseValid);
+        ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
+        doReturn(true).when(toBeReviewedCheckerServiceSpy).validatePhraseComponent(Mockito.any(), Mockito.any());
+        Mockito.when(rejectedPhraseRepository.findByRejectedPhrase(Mockito.any())).thenReturn(Optional.empty());
+        toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
 
         ArgumentCaptor<Long> arg1 = ArgumentCaptor.forClass(Long.class);
         verify(toBeReviewedRepository, times(1)).setHasBeenGroomedTrue(arg1.capture());
@@ -123,10 +123,8 @@ public class ToBeReviewedCheckerServiceImplTest {
     @Test
     public void updateTablesWhenPhraseInvalidAndNoMatchingRejectedPhrase() {
         ToBeReviewed tbr = new ToBeReviewed(1L, false, "nonsense", "nonsense", "nonsense", "nonsense");
-        boolean hasMatchingRejectedPhrase = false;
-        boolean phraseValid = false;
 
-        toBeReviewedCheckerService.updateTables(tbr, hasMatchingRejectedPhrase, phraseValid);
+        toBeReviewedCheckerService.updateTables(tbr);
 
         ArgumentCaptor<RejectedPhrase> arg1 = ArgumentCaptor.forClass(RejectedPhrase.class);
         verify(rejectedPhraseRepository, times(1)).save(arg1.capture());
@@ -152,13 +150,10 @@ public class ToBeReviewedCheckerServiceImplTest {
         doReturn(true).when(toBeReviewedCheckerServiceSpy).validatePhraseComponent(Mockito.any(), Mockito.any());
 
         toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
-        ArgumentCaptor<Boolean> arg1 = ArgumentCaptor.forClass(Boolean.class);
-        ArgumentCaptor<Boolean> arg2 = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<Long> arg1 = ArgumentCaptor.forClass(Long.class);
 
-        verify(toBeReviewedCheckerServiceSpy, times(1)).updateTables(Mockito.any(), arg1.capture(), arg2.capture());
-        assertEquals(arg1.getValue(), false);
-        assertEquals(arg2.getValue(), true);
-
+        verify(toBeReviewedRepository, times(1)).setHasBeenGroomedTrue(arg1.capture());
+        assertEquals(arg1.getValue(), tbr.getId());
     }
 
     @Test
@@ -170,12 +165,10 @@ public class ToBeReviewedCheckerServiceImplTest {
         Mockito.when(rejectedPhraseRepository.findByRejectedPhrase(Mockito.any())).thenReturn(Optional.of(rp));
 
         toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
-        ArgumentCaptor<Boolean> arg1 = ArgumentCaptor.forClass(Boolean.class);
-        ArgumentCaptor<Boolean> arg2 = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<ToBeReviewed> arg1 = ArgumentCaptor.forClass(ToBeReviewed.class);
 
         verify(toBeReviewedCheckerServiceSpy, times(0)).validatePhraseComponent(Mockito.any(), Mockito.any());
-        verify(toBeReviewedCheckerServiceSpy, times(1)).updateTables(Mockito.any(), arg1.capture(), arg2.capture());
-        assertEquals(arg1.getValue(), true);
-        assertEquals(arg2.getValue(), false);
+        verify(toBeReviewedCheckerServiceSpy, times(1)).updateTables(arg1.capture());
+        assertEquals(arg1.getValue(), tbr);
     }
 }

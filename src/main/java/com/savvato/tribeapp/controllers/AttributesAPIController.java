@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/attributes")
 public class AttributesAPIController {
 
     @Autowired
@@ -32,7 +33,7 @@ public class AttributesAPIController {
 
     }
 
-    @RequestMapping(value = { "/api/attributes/{userId}" }, method=RequestMethod.GET)
+    @GetMapping( "/{userId}")
     public ResponseEntity<List<AttributeDTO>> getAttributesForUser(@PathVariable Long userId) {
 
         Optional<List<AttributeDTO>> opt = attributesService.getAttributesByUserId(userId);
@@ -43,13 +44,15 @@ public class AttributesAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
-    @RequestMapping(value = { "/api/attributes" }, method=RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
-        boolean rtn = false;
+        ResponseEntity rtn;
 
         if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
             phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
-            rtn = true;
+            rtn = ResponseEntity.status(HttpStatus.OK).body(true);
+        } else {
+            rtn = ResponseEntity.status(HttpStatus.OK).body(false);
         }
 
         if (rtn) {
@@ -62,5 +65,7 @@ public class AttributesAPIController {
                     NotificationType.ATTRIBUTE_REQUEST_REJECTED.getName(),
                     "Your attribute was rejected. This attribute is unsuitable and cannot be applied to users.");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+
+        return rtn;
     }
 }

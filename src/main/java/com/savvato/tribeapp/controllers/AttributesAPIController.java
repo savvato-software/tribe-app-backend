@@ -46,6 +46,7 @@ public class AttributesAPIController {
 
     @PostMapping
     public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
+
         if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
             phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
             sendNotification(true, req.userId);

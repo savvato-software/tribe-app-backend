@@ -11,7 +11,7 @@ public interface ToBeReviewedCheckerService {
 
     void validatePhrase(ToBeReviewed tbr);
 
-    void updateTables(ToBeReviewed tbr, boolean hasMatchingRejectedPhrase, boolean phraseValid);
+    void updateTables(ToBeReviewed tbr);
 
     JsonObject getWordDetails(String word);
 }

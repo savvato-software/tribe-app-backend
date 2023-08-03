@@ -24,22 +24,22 @@ public class ToBeReviewedChecker {
     @Autowired
     ReviewSubmittingUserRepository reviewSubmittingUserRepository;
 
-    @Scheduled(fixedDelayString = "PT10M")
-    public void updateUngroomedPhrases() {
-        log.info("Beginning updateUngroomedPhrases process...");
-        List<ToBeReviewed> ungroomedPhrases = toBeReviewedRepository.getAllUngroomed();
-
-        for (ToBeReviewed tbr : ungroomedPhrases) {
-            Optional<RejectedPhrase> matchingRejectedPhrase = rejectedPhraseRepository.findById(tbr.getId());
-            if (matchingRejectedPhrase.isEmpty()) {
-                // contact wordsApi...
-            }
-            else {
-                log.error("Phrase has already been rejected!");
-                reviewSubmittingUserRepository.deleteByToBeReviewedId(tbr.getId());
-                toBeReviewedRepository.deleteById(tbr.getId());
-            }
-        }
-    }
+//    @Scheduled(fixedDelayString = "PT10M")
+//    public void updateUngroomedPhrases() {
+//        log.info("Beginning updateUngroomedPhrases process...");
+//        List<ToBeReviewed> ungroomedPhrases = toBeReviewedRepository.getAllUngroomed();
+//
+//        for (ToBeReviewed tbr : ungroomedPhrases) {
+//            Optional<RejectedPhrase> matchingRejectedPhrase = rejectedPhraseRepository.findById(tbr.getId());
+//            if (matchingRejectedPhrase.isEmpty()) {
+//                // contact wordsApi...
+//            }
+//            else {
+//                log.error("Phrase has already been rejected!");
+//                reviewSubmittingUserRepository.deleteByToBeReviewedId(tbr.getId());
+//                toBeReviewedRepository.deleteById(tbr.getId());
+//            }
+//        }
+//    }
 
 }

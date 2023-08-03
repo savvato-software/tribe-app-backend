@@ -32,9 +32,11 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     static final Logger LOGGER = Logger.getLogger(ToBeReviewedChecker.class.getName());
     @Value("${WORDS_API_KEY}")
     private String apiKey;
+
+    @Scheduled(fixedDelayString = "PT1M")
     @Override
     public void updateUngroomedPhrases() {
-        LOGGER.info("Beginning updateUngroomedPhrases process...");
+        LOGGER.info("from service: Beginning updateUngroomedPhrases process...");
         List<ToBeReviewed> ungroomedPhrases = toBeReviewedRepository.getAllUngroomed();
         for (ToBeReviewed tbr : ungroomedPhrases) {
             validatePhrase(tbr);
@@ -56,14 +58,19 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     }
     @Override
     public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech, JsonObject wordDetails) {
+        //System.out.println("got in checkPartOfSpeech 1 ");
         JsonArray definitions = wordDetails.getAsJsonArray("results");
+        //System.out.println("got in checkPartOfSpeech 2");
         Set<String> partsOfSpeech = new HashSet<>();
 
         for (int i = 0; i < definitions.size(); i++) {
+            //System.out.println("got in checkPartOfSpeech 3");
             JsonObject definition = definitions.get(i).getAsJsonObject();
+            //System.out.println("got in checkPartOfSpeech 4");
             partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
+            //System.out.println("got in checkPartOfSpeech 5");
         }
-
+        //System.out.println("got in checkPartOfSpeech 6");
         return partsOfSpeech.contains(expectedPartOfSpeech);
     }
     @Override
@@ -91,7 +98,11 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     public void validatePhrase(ToBeReviewed tbr) {
         Optional<RejectedPhrase> matchingRejectedPhrase = rejectedPhraseRepository.findByRejectedPhrase(tbr.toString());
         if (matchingRejectedPhrase.isEmpty()) {
-            boolean validPhrase = validatePhraseComponent(tbr.getNoun(), "noun") && validatePhraseComponent(tbr.getVerb(), "verb") && validatePhraseComponent(tbr.getAdverb(), "adverb") && validatePhraseComponent(tbr.getPreposition(), "preposition");
+            boolean validPhrase = validatePhraseComponent(tbr.getNoun(), "noun")
+                    && validatePhraseComponent(tbr.getVerb(), "verb")
+                    && validatePhraseComponent(tbr.getAdverb(), "adverb")
+                    && validatePhraseComponent(tbr.getPreposition(), "preposition");
+
             if (validPhrase) {
                 updateTables(tbr, false, true);
             } else {

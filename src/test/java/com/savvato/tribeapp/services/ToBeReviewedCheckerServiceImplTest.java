@@ -111,9 +111,8 @@ public class ToBeReviewedCheckerServiceImplTest {
         Mockito.when(rejectedPhraseRepository.findByRejectedPhrase(Mockito.any())).thenReturn(Optional.empty());
         toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
 
-        ArgumentCaptor<Long> arg1 = ArgumentCaptor.forClass(Long.class);
-        verify(toBeReviewedRepository, times(1)).setHasBeenGroomedTrue(arg1.capture());
-        assertEquals(arg1.getValue(), tbr.getId());
+        // verify tbr was groomed
+        assertEquals(true,tbr.isHasBeenGroomed());
 
         verify(rejectedPhraseRepository, times(0)).save(Mockito.any());
         verify(reviewSubmittingUserRepository, times(0)).deleteByToBeReviewedId(Mockito.any());
@@ -138,7 +137,8 @@ public class ToBeReviewedCheckerServiceImplTest {
         verify(toBeReviewedRepository, times(1)).deleteById(arg3.capture());
         assertEquals(arg3.getValue(), tbr.getId());
 
-        verify(toBeReviewedRepository, times(0)).setHasBeenGroomedTrue(Mockito.any());
+        // verify tbr was not groomed
+        assertEquals(false,tbr.isHasBeenGroomed());
     }
 
     @Test
@@ -152,8 +152,8 @@ public class ToBeReviewedCheckerServiceImplTest {
         toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
         ArgumentCaptor<Long> arg1 = ArgumentCaptor.forClass(Long.class);
 
-        verify(toBeReviewedRepository, times(1)).setHasBeenGroomedTrue(arg1.capture());
-        assertEquals(arg1.getValue(), tbr.getId());
+        // verify tbr was groomed
+        assertEquals(true,tbr.isHasBeenGroomed());
     }
 
     @Test

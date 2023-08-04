@@ -58,19 +58,13 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     }
     @Override
     public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech, JsonObject wordDetails) {
-        //System.out.println("got in checkPartOfSpeech 1 ");
         JsonArray definitions = wordDetails.getAsJsonArray("results");
-        //System.out.println("got in checkPartOfSpeech 2");
         Set<String> partsOfSpeech = new HashSet<>();
 
         for (int i = 0; i < definitions.size(); i++) {
-            //System.out.println("got in checkPartOfSpeech 3");
             JsonObject definition = definitions.get(i).getAsJsonObject();
-            //System.out.println("got in checkPartOfSpeech 4");
             partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
-            //System.out.println("got in checkPartOfSpeech 5");
         }
-        //System.out.println("got in checkPartOfSpeech 6");
         return partsOfSpeech.contains(expectedPartOfSpeech);
     }
     @Override

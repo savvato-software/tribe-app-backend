@@ -104,7 +104,8 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
                     && validatePhraseComponent(tbr.getPreposition(), "preposition");
 
             if (validPhrase) {
-                toBeReviewedRepository.setHasBeenGroomedTrue(tbr.getId());
+                tbr.setHasBeenGroomed(true);
+                toBeReviewedRepository.save(tbr);
             } else {
                 LOGGER.warning("Phrase is invalid.");
                 updateTables(tbr);

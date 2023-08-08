@@ -203,4 +203,89 @@ public class NotificationServiceImplTest {
 		assertEquals(userId, notifications.get(0).getUserId());
 		// Add more assertions for other notification properties as needed
 	}
+
+	@Test
+	public void testGetIconUrlFromNotification_TypeNotNull() {
+		// Mock data
+		NotificationType type = new NotificationType();
+		type.setIconUrl("http://example.com/icon.png");
+
+		Notification notification = new Notification();
+		notification.setType(type);
+
+		// Perform the method call
+		String result = notificationService.getIconUrlFromNotification(notification);
+
+		// Verify the result
+		assertEquals("http://example.com/icon.png", result);
+	}
+
+	@Test
+	public void testGetIconUrlFromNotification_TypeNull() {
+		// Mock data
+		Notification notification = new Notification();
+
+		// Perform the method call
+		String result = notificationService.getIconUrlFromNotification(notification);
+
+		// Verify the result
+		assertNull(result);
+	}
+
+	@Test
+	public void testGetFormattedLastUpdatedDate() {
+		// Mock data
+		Notification notification = new Notification();
+		LocalDateTime lastUpdatedDate = LocalDateTime.of(2023, 8, 1, 12, 0); // Customize the date and time
+		notification.setLastUpdatedDate(lastUpdatedDate);
+
+		// Perform the method call
+		String result = notificationService.getFormattedLastUpdatedDate(notification);
+
+		// Verify the result (you may want to customize the expected result)
+		assertNotNull(result);
+		// Add more assertions to verify the formatted date
+	}
+
+	@Test
+	public void testCheckNotificationReadStatus_True() {
+		// Mock data
+		Long notificationId = 1L;
+		Notification notification = new Notification();
+		notification.setId(notificationId);
+		notification.setRead(true);
+
+		// Mock repository behavior
+		when(notificationRepository.findById(notificationId)).thenReturn(Optional.of(notification));
+
+		// Perform the method call
+		boolean result = notificationService.checkNotificationReadStatus(notificationId);
+
+		// Verify the repository call
+		verify(notificationRepository, times(1)).findById(notificationId);
+
+		// Verify the result
+		assertTrue(result);
+	}
+
+	@Test
+	public void testCheckNotificationReadStatus_False() {
+		// Mock data
+		Long notificationId = 1L;
+		Notification notification = new Notification();
+		notification.setId(notificationId);
+		notification.setRead(false);
+
+		// Mock repository behavior
+		when(notificationRepository.findById(notificationId)).thenReturn(Optional.of(notification));
+
+		// Perform the method call
+		boolean result = notificationService.checkNotificationReadStatus(notificationId);
+
+		// Verify the repository call
+		verify(notificationRepository, times(1)).findById(notificationId);
+
+		// Verify the result
+		assertFalse(result);
+	}
 }

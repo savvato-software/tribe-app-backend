@@ -31,11 +31,13 @@ public class NotificationServiceImpl implements NotificationService {
     public List<NotificationDTO> getUserNotifications(Long userId){
         List<Notification> notifications = getNotificationsByUserId(userId);
         List<NotificationDTO> rtn = new ArrayList<>();
+
         Iterator<Notification> iterator  = notifications.iterator();
         while (iterator.hasNext()){
-            String iconUrl = getIconUrlFromNotification(iterator.next());
-            String formattedLastUpdatedDate = getFormattedLastUpdatedDate(iterator.next());
-            NotificationDTO notificationDTO= createNotificationDTO(iterator.next(), formattedLastUpdatedDate, iconUrl);
+            Notification notification = iterator.next();
+            String iconUrl = getIconUrlFromNotification(notification);
+            String formattedLastUpdatedDate = getFormattedLastUpdatedDate(notification);
+            NotificationDTO notificationDTO= createNotificationDTO(notification, formattedLastUpdatedDate, iconUrl);
             rtn.add(notificationDTO);
         }
         return rtn;

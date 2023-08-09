@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.savvato.tribeapp.entities.Phrase;
 import com.savvato.tribeapp.entities.RejectedPhrase;
 import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.RejectedPhraseRepository;
@@ -45,6 +46,8 @@ public class ToBeReviewedCheckerServiceImplTest {
     @Autowired
     private ToBeReviewedCheckerService toBeReviewedCheckerService;
 
+    @MockBean
+    private PhraseServiceImpl phraseService;
     @MockBean
     private ToBeReviewedRepository toBeReviewedRepository;
     @MockBean
@@ -92,15 +95,12 @@ public class ToBeReviewedCheckerServiceImplTest {
 
     @Test
     public void validatePhraseComponentWhenCriticalComponentIsEmpty() {
-        String word = "";
-        String expectedPartOfSpeech = "noun";
+        ToBeReviewed tbr = new ToBeReviewed(1L, false, "completely", "runs", "at", "");
         JsonObject wordDetails = new JsonParser().parse("{}").getAsJsonObject();
 
         ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
-        boolean rtn = toBeReviewedCheckerServiceSpy.validatePhraseComponent(word, expectedPartOfSpeech);
-        verify(toBeReviewedCheckerServiceSpy, never()).getWordDetails(word);
-        verify(toBeReviewedCheckerServiceSpy, never()).checkPartOfSpeech(word, expectedPartOfSpeech, wordDetails);
-        assertEquals(rtn, false);
+        toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
+        verify(toBeReviewedCheckerServiceSpy, never()).validatePhraseComponent(tbr.getNoun(), "noun");
     }
 
     @Test

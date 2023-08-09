@@ -23,6 +23,10 @@ import java.util.logging.Logger;
 
 @Service
 public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerService {
+
+    @Autowired
+    PhraseServiceImpl phraseService;
+
     @Autowired
     ToBeReviewedRepository toBeReviewedRepository;
     @Autowired
@@ -69,11 +73,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     }
     @Override
     public boolean validatePhraseComponent(String word, String expectedPartOfSpeech) {
-        if ((expectedPartOfSpeech == "noun" || expectedPartOfSpeech == "verb") && word.length() == 0) {
-            Exception e = new IllegalStateException();
-            LOGGER.log(Level.SEVERE, "Critical error: expected component " + expectedPartOfSpeech + " is empty!", e);
-            return false;
-        }
+
         Boolean validPartOfSpeech = checkPartOfSpeech(word, expectedPartOfSpeech, getWordDetails(word));
         try {
             if (validPartOfSpeech) {
@@ -90,8 +90,8 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
 
     @Override
     public void validatePhrase(ToBeReviewed tbr) {
-        Optional<RejectedPhrase> matchingRejectedPhrase = rejectedPhraseRepository.findByRejectedPhrase(tbr.toString());
-        if (matchingRejectedPhrase.isEmpty()) {
+
+        if (phraseService.isPhraseValid(tbr.getAdverb(), tbr.getVerb(), tbr.getPreposition(), tbr.getNoun())) {
             boolean validPhrase = validatePhraseComponent(tbr.getNoun(), "noun")
                     && validatePhraseComponent(tbr.getVerb(), "verb")
                     && validatePhraseComponent(tbr.getAdverb(), "adverb")

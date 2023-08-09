@@ -64,12 +64,14 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech, JsonObject wordDetails) {
         JsonArray definitions = wordDetails.getAsJsonArray("results");
         Set<String> partsOfSpeech = new HashSet<>();
-
-        for (int i = 0; i < definitions.size(); i++) {
-            JsonObject definition = definitions.get(i).getAsJsonObject();
-            partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
+        if(definitions != null) {
+            for (int i = 0; i < definitions.size(); i++) {
+                JsonObject definition = definitions.get(i).getAsJsonObject();
+                partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
+            }
         }
         return partsOfSpeech.contains(expectedPartOfSpeech);
+
     }
     @Override
     public boolean validatePhraseComponent(String word, String expectedPartOfSpeech) {

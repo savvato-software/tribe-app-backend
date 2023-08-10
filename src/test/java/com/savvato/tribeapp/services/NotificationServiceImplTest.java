@@ -20,6 +20,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -242,9 +245,17 @@ public class NotificationServiceImplTest {
 		// Perform the method call
 		String result = notificationService.getFormattedLastUpdatedDate(notification);
 
-		// Verify the result (you may want to customize the expected result)
+		// Verify the result
 		assertNotNull(result);
-		// Add more assertions to verify the formatted date
+		// Convert lastUpdatedDate to Instant
+		Instant lastUpdatedInstant = lastUpdatedDate.atZone(ZoneOffset.UTC).toInstant();
+
+		// Calculate age in milliseconds
+		Instant currentInstant = Instant.now();
+		long ageInMilliseconds = Duration.between(lastUpdatedInstant, currentInstant).toMillis();
+
+		// Verify the formatted date
+		assertEquals(String.valueOf(ageInMilliseconds), result);
 	}
 
 	@Test

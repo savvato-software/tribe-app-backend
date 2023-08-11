@@ -21,11 +21,11 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Service
-public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerService {
+import lombok.extern.slf4j.Slf4j;
 
-    @Autowired
-    PhraseServiceImpl phraseService;
+@Service
+@Slf4j
+public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerService {
 
     @Autowired
     ToBeReviewedRepository toBeReviewedRepository;
@@ -60,23 +60,31 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
         JsonObject responseJson = new JsonParser().parse(response.getBody()).getAsJsonObject();
         return responseJson;
     }
+
     @Override
-    public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech, JsonObject wordDetails) {
+    public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech) {
+        JsonObject wordDetails = getWordDetails(word);
         JsonArray definitions = wordDetails.getAsJsonArray("results");
         Set<String> partsOfSpeech = new HashSet<>();
-        if(definitions != null) {
-            for (int i = 0; i < definitions.size(); i++) {
-                JsonObject definition = definitions.get(i).getAsJsonObject();
+
+        for (int i = 0; i < definitions.size(); i++) {
+            JsonObject definition = definitions.get(i).getAsJsonObject();
+            try {
                 partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
+            } catch (Exception e) {
+                // Words API may occasionally have a null parts of speech. This is an error on their part.
+                log.warn("Words API parts of speech null. Set for manual review.");
+                return true;
             }
         }
-        return partsOfSpeech.contains(expectedPartOfSpeech);
 
+        return partsOfSpeech.contains(expectedPartOfSpeech);
     }
+
     @Override
     public boolean validatePhraseComponent(String word, String expectedPartOfSpeech) {
 
-        Boolean validPartOfSpeech = checkPartOfSpeech(word, expectedPartOfSpeech, getWordDetails(word));
+        Boolean validPartOfSpeech = checkPartOfSpeech(word, expectedPartOfSpeech);
         try {
             if (validPartOfSpeech) {
                 return true;

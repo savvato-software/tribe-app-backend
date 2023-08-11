@@ -5,7 +5,7 @@ import com.savvato.tribeapp.entities.ToBeReviewed;
 
 public interface ToBeReviewedCheckerService {
     void updateUngroomedPhrases();
-    boolean checkPartOfSpeech(String word, String expectedPartOfSpeech, JsonObject wordDetails);
+    boolean checkPartOfSpeech(String word, String expectedPartOfSpeech);
 
     boolean validatePhraseComponent(String word, String expectedPartOfSpeech);
 

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.savvato.tribeapp.constants.Constants;
 
@@ -45,55 +46,66 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
         }
     }
     @Override
-    public JsonObject getWordDetails(String word) {
+    public Optional<JsonObject> getWordDetails(String word) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("X-RapidAPI-Key", apiKey);
         httpHeaders.set("X-RapidAPI-Host", "wordsapiv1.p.rapidapi.com");
         String url = "https://wordsapiv1.p.rapidapi.com/words/"+word;
         HttpEntity<String> entity = new HttpEntity<>("", httpHeaders);
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        String responseBody = response.getBody();
+        ResponseEntity<String> response = null;
+        Optional responseJson = Optional.empty();
+        try {
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        } catch (RestClientException e) {
+            log.warn(word + " isn't an English word!");
+            return responseJson;
+        }
+        //String responseBody = response.getBody();
 
-        JsonObject responseJson = new JsonParser().parse(response.getBody()).getAsJsonObject();
+        responseJson = Optional.of(new JsonParser().parse(response.getBody()).getAsJsonObject());
         return responseJson;
     }
 
     @Override
     public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech) {
-        JsonObject wordDetails = getWordDetails(word);
-        JsonArray definitions = wordDetails.getAsJsonArray("results");
-        Set<String> partsOfSpeech = new HashSet<>();
+        if(getWordDetails(word).isEmpty()){
+            log.warn("The " + expectedPartOfSpeech + " passed in isn't an English word!");
+            return false;
+        } else {
+            JsonObject wordDetails = getWordDetails(word).get();
+            JsonArray definitions = wordDetails.getAsJsonArray("results");
+            Set<String> partsOfSpeech = new HashSet<>();
 
-        for (int i = 0; i < definitions.size(); i++) {
-            JsonObject definition = definitions.get(i).getAsJsonObject();
-            try {
-                partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
-            } catch (Exception e) {
-                // Words API may occasionally have a null parts of speech. This is an error on their part.
-                log.warn("Words API parts of speech null. Set for manual review.");
-                return true;
+            for (int i = 0; i < definitions.size(); i++) {
+                JsonObject definition = definitions.get(i).getAsJsonObject();
+                try {
+                    partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
+                } catch (Exception e) {
+                    // Words API may occasionally have a null parts of speech. This is an error on their part.
+                    log.warn("Words API parts of speech null. Set for manual review.");
+                    return true;
+                }
             }
+            return partsOfSpeech.contains(expectedPartOfSpeech);
         }
-
-        return partsOfSpeech.contains(expectedPartOfSpeech);
     }
 
     @Override
     public boolean validatePhraseComponent(String word, String expectedPartOfSpeech) {
 
         Boolean validPartOfSpeech = checkPartOfSpeech(word, expectedPartOfSpeech);
-        try {
+        //try {
             if (validPartOfSpeech) {
                 return true;
             } else {
                 log.warn("The word passed in isn't a " + expectedPartOfSpeech + "!");
                 return false;
             }
-        } catch (Exception e) {
-            log.warn("The " + expectedPartOfSpeech + " passed in isn't an English word!");
-            return false;
-        }
+//        } catch (Exception e) {
+//            log.warn("The " + expectedPartOfSpeech + " passed in isn't an English word!");
+//            return false;
+//        }
     }
 
     @Override
@@ -115,9 +127,14 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
 
     @Override
     public void updateTables(ToBeReviewed tbr) {
-        rejectedPhraseRepository.save(new RejectedPhrase(tbr.toString()));
+        System.out.println("entering update tables: ");
+        RejectedPhrase rjp = new RejectedPhrase(tbr.toString());
+        rejectedPhraseRepository.save(rjp);
+        System.out.println("saved to PhraseRepository.");
         reviewSubmittingUserRepository.deleteByToBeReviewedId(tbr.getId());
+        System.out.println("deleted from reviewSubmittingUserRepo.");
         toBeReviewedRepository.deleteById(tbr.getId());
+        System.out.println("deleted from to tobereviewd repo.");
     }
 
 }

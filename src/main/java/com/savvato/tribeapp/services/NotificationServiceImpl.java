@@ -22,10 +22,13 @@ import java.time.Duration;
 public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
+    private SystemTimeProvider timeProvider;
+    @Autowired
     private NotificationRepository notificationRepository;
 
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
+
 
     public List<NotificationDTO> getUserNotifications(Long userId){
         List<Notification> notifications = getNotificationsByUserId(userId);
@@ -59,7 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     public String getFormattedLastUpdatedDate(Notification notification) {
         Instant lastUpdatedInstant = notification.getLastUpdatedDate(LocalDateTime.now()).atZone(ZoneOffset.UTC).toInstant();
-        Instant currentInstant = Instant.now();
+        Instant currentInstant = timeProvider.getCurrentInstant();
         long ageInMilliseconds = Duration.between(lastUpdatedInstant, currentInstant).toMillis();
         return String.valueOf(ageInMilliseconds);
     }

@@ -5,6 +5,8 @@ import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.repositories.NotificationRepository;
 import com.savvato.tribeapp.repositories.NotificationTypeRepository;
 import com.savvato.tribeapp.dto.NotificationDTO;
+import com.savvato.tribeapp.services.SystemTimeProvider;
+
 
 
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.mockito.Spy;
+import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -40,15 +42,19 @@ public class NotificationServiceImplTest {
 	static class NotificationServiceTestContextConfiguration {
 
 		@Bean
-		public NotificationService notificationService() {
+		public NotificationService notificationService(SystemTimeProvider timeProvider) {
 			return new NotificationServiceImpl();
+		}
+		@Bean
+		public SystemTimeProvider systemTimeProvider() {
+			return Mockito.mock(SystemTimeProvider.class);
 		}
 	}
 	@Autowired
 	NotificationService notificationService;
 
-	@Spy
-	NotificationService notificationServiceSpy;
+	@Autowired
+	SystemTimeProvider mockTimeProvider;
 
 	@MockBean
 	NotificationTypeRepository notificationTypeRepository;
@@ -239,23 +245,21 @@ public class NotificationServiceImplTest {
 	public void testGetFormattedLastUpdatedDate() {
 		// Mock data
 		Notification notification = new Notification();
-		LocalDateTime lastUpdatedDate = LocalDateTime.of(2023, 8, 1, 12, 0); // Customize the date and time
-		notification.setLastUpdatedDate(lastUpdatedDate);
+		notification.setLastUpdatedDate(LocalDateTime.of(2023, 8, 1, 12, 0));
 
-		// Perform the method call
-		String result = notificationService.getFormattedLastUpdatedDate(notification);
+		// Set up the mock SystemTimeProvider to return a fixed current instant
+		Instant fixedInstant = Instant.parse("2023-08-10T12:00:00Z");
+		when(mockTimeProvider.getCurrentInstant()).thenReturn(fixedInstant);
+
+		// Call the method to be tested
+		String formattedLastUpdatedDate = notificationService.getFormattedLastUpdatedDate(notification);
+
+		// Calculate expected age in milliseconds
+		Instant lastUpdatedInstant = notification.getLastUpdatedDate(LocalDateTime.now()).atZone(ZoneOffset.UTC).toInstant();
+		long expectedAgeMillis = Duration.between(lastUpdatedInstant, fixedInstant).toMillis();
 
 		// Verify the result
-		assertNotNull(result);
-		// Convert lastUpdatedDate to Instant
-		Instant lastUpdatedInstant = lastUpdatedDate.atZone(ZoneOffset.UTC).toInstant();
-
-		// Calculate age in milliseconds
-		Instant currentInstant = Instant.now();
-		long ageInMilliseconds = Duration.between(lastUpdatedInstant, currentInstant).toMillis();
-
-		// Verify the formatted date
-		assertEquals(String.valueOf(ageInMilliseconds), result);
+		assertEquals(String.valueOf(expectedAgeMillis), formattedLastUpdatedDate);
 	}
 
 	@Test

@@ -9,7 +9,6 @@ import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.RejectedPhraseRepository;
 import com.savvato.tribeapp.repositories.ReviewSubmittingUserRepository;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
-import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -19,8 +18,6 @@ import org.springframework.web.client.RestTemplate;
 import com.savvato.tribeapp.constants.Constants;
 
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,14 +31,14 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     RejectedPhraseRepository rejectedPhraseRepository;
     @Autowired
     ReviewSubmittingUserRepository reviewSubmittingUserRepository;
-    static final Logger LOGGER = Logger.getLogger(ToBeReviewedChecker.class.getName());
+
     @Value("${WORDS_API_KEY}")
     private String apiKey;
 
     @Scheduled(fixedDelayString = "PT1M")
     @Override
     public void updateUngroomedPhrases() {
-        LOGGER.info("from service: Beginning updateUngroomedPhrases process...");
+        log.info("from service: Beginning updateUngroomedPhrases process...");
         List<ToBeReviewed> ungroomedPhrases = toBeReviewedRepository.getAllUngroomed();
         for (ToBeReviewed tbr : ungroomedPhrases) {
             validatePhrase(tbr);
@@ -90,11 +87,11 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
             if (validPartOfSpeech) {
                 return true;
             } else {
-                LOGGER.warning("The word passed in isn't a " + expectedPartOfSpeech + "!");
+                log.warn("The word passed in isn't a " + expectedPartOfSpeech + "!");
                 return false;
             }
         } catch (Exception e) {
-            LOGGER.warning("The " + expectedPartOfSpeech + " passed in isn't an English word!");
+            log.warn("The " + expectedPartOfSpeech + " passed in isn't an English word!");
             return false;
         }
     }
@@ -111,7 +108,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
             tbr.setHasBeenGroomed(true);
             toBeReviewedRepository.save(tbr);
         } else {
-            LOGGER.warning("Phrase is invalid.");
+            log.warn("Phrase is invalid.");
             updateTables(tbr);
         }
     }

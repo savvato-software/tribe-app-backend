@@ -16,6 +16,7 @@ import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.savvato.tribeapp.constants.Constants;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -103,8 +104,8 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
 
         boolean validPhrase = validatePhraseComponent(tbr.getNoun(), "noun")
                 && validatePhraseComponent(tbr.getVerb(), "verb")
-                && validatePhraseComponent(tbr.getAdverb(), "adverb")
-                && validatePhraseComponent(tbr.getPreposition(), "preposition");
+                && (tbr.getAdverb().equals(Constants.NULL_VALUE_WORD) || validatePhraseComponent(tbr.getAdverb(), "adverb"))
+                && (tbr.getPreposition().equals(Constants.NULL_VALUE_WORD) || validatePhraseComponent(tbr.getPreposition(), "preposition"));
 
         if (validPhrase) {
             tbr.setHasBeenGroomed(true);
@@ -114,7 +115,6 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
             updateTables(tbr);
         }
     }
-
 
     @Override
     public void updateTables(ToBeReviewed tbr) {

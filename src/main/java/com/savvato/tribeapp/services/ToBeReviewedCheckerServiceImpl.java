@@ -93,25 +93,20 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     @Override
     public void validatePhrase(ToBeReviewed tbr) {
 
-        if (phraseService.isPhraseValid(tbr.getAdverb(), tbr.getVerb(), tbr.getPreposition(), tbr.getNoun())) {
-            boolean validPhrase = validatePhraseComponent(tbr.getNoun(), "noun")
-                    && validatePhraseComponent(tbr.getVerb(), "verb")
-                    && validatePhraseComponent(tbr.getAdverb(), "adverb")
-                    && validatePhraseComponent(tbr.getPreposition(), "preposition");
+        boolean validPhrase = validatePhraseComponent(tbr.getNoun(), "noun")
+                && validatePhraseComponent(tbr.getVerb(), "verb")
+                && validatePhraseComponent(tbr.getAdverb(), "adverb")
+                && validatePhraseComponent(tbr.getPreposition(), "preposition");
 
-            if (validPhrase) {
-                tbr.setHasBeenGroomed(true);
-                toBeReviewedRepository.save(tbr);
-            } else {
-                LOGGER.warning("Phrase is invalid.");
-                updateTables(tbr);
-            }
-        }
-        else {
-            LOGGER.warning("Phrase has already been rejected!");
+        if (validPhrase) {
+            tbr.setHasBeenGroomed(true);
+            toBeReviewedRepository.save(tbr);
+        } else {
+            LOGGER.warning("Phrase is invalid.");
             updateTables(tbr);
         }
     }
+
 
     @Override
     public void updateTables(ToBeReviewed tbr) {

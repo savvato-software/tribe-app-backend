@@ -27,7 +27,7 @@ public class PermissionsAPIController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = { "/api/permissions/users"}, method=RequestMethod.GET)
+    @GetMapping("/users")
     public ResponseEntity<Iterable<User>> getAllUsers() {
 
         // WHY is this defined here? Instead of UserAPIController? It's because only
@@ -46,7 +46,7 @@ public class PermissionsAPIController {
         }
     }
 
-    @RequestMapping(value = { "/api/permissions/user-roles"}, method=RequestMethod.GET)
+    @GetMapping("/user-roles")
     public ResponseEntity<Iterable<String>> getAllUserRoles() {
         Iterable<String> rtn = userRoleMapService.getRoles();
 
@@ -78,7 +78,7 @@ public class PermissionsAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);
         }
     }
-    @RequestMapping(value = { "/api/permissions" }, method= RequestMethod.DELETE)
+    @DeleteMapping
     public ResponseEntity<Boolean> deletePermissions(@RequestBody @Valid PermissionsRequest request) {
         boolean rtn = userRoleMapService.removeRolesFromUser(request.id, request.permissions);
 

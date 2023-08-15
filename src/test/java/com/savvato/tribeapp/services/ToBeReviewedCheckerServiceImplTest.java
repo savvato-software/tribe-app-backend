@@ -73,7 +73,7 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
 
         ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
         //Mockito.when(toBeReviewedCheckerService.getWordDetails(word)).thenReturn(wordDetails);
-        doReturn(wordDetails).when(toBeReviewedCheckerServiceSpy).getWordDetails(word);
+        doReturn(Optional.of(wordDetails)).when(toBeReviewedCheckerServiceSpy).getWordDetails(word);
         doReturn(true).when(toBeReviewedCheckerServiceSpy).checkPartOfSpeech(word, expectedPartOfSpeech);
 
         boolean rtn = toBeReviewedCheckerServiceSpy.validatePhraseComponent(word, expectedPartOfSpeech);

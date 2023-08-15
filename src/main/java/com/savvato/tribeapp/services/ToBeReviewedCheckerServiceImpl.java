@@ -71,7 +71,6 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     @Override
     public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech) {
         if(getWordDetails(word).isEmpty()){
-            log.warn("The " + expectedPartOfSpeech + " passed in isn't an English word!");
             return false;
         } else {
             JsonObject wordDetails = getWordDetails(word).get();

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.savvato.tribeapp.entities.RejectedPhrase;
+import com.savvato.tribeapp.entities.ReviewSubmittingUser;
 import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.RejectedPhraseRepository;
 import com.savvato.tribeapp.repositories.ReviewSubmittingUserRepository;
@@ -127,14 +128,10 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
 
     @Override
     public void updateTables(ToBeReviewed tbr) {
-        System.out.println("entering update tables: ");
-        RejectedPhrase rjp = new RejectedPhrase(tbr.toString());
-        rejectedPhraseRepository.save(rjp);
-        System.out.println("saved to PhraseRepository.");
-        reviewSubmittingUserRepository.deleteByToBeReviewedId(tbr.getId());
-        System.out.println("deleted from reviewSubmittingUserRepo.");
+        rejectedPhraseRepository.save(new RejectedPhrase(tbr.toString()));
+        ReviewSubmittingUser rsu = new ReviewSubmittingUser(reviewSubmittingUserRepository.findUserIdByToBeReviewedId(tbr.getId()),tbr.getId());
+        reviewSubmittingUserRepository.delete(rsu);
         toBeReviewedRepository.deleteById(tbr.getId());
-        System.out.println("deleted from to tobereviewd repo.");
     }
 
 }

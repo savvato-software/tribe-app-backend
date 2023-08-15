@@ -2,9 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.savvato.tribeapp.entities.Phrase;
-import com.savvato.tribeapp.entities.RejectedPhrase;
-import com.savvato.tribeapp.entities.ToBeReviewed;
+import com.savvato.tribeapp.entities.*;
 import com.savvato.tribeapp.repositories.RejectedPhraseRepository;
 import com.savvato.tribeapp.repositories.ReviewSubmittingUserRepository;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
@@ -34,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-public class ToBeReviewedCheckerServiceImplTest {
+public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
     @TestConfiguration
     static class ToBeReviewedCheckerServiceImplTestContextConfiguration {
         @Bean
@@ -119,13 +117,14 @@ public class ToBeReviewedCheckerServiceImplTest {
         assertEquals(true,tbr.isHasBeenGroomed());
 
         verify(rejectedPhraseRepository, times(0)).save(Mockito.any());
-        verify(reviewSubmittingUserRepository, times(0)).deleteByToBeReviewedId(Mockito.any());
+        verify(reviewSubmittingUserRepository, times(0)).delete(Mockito.any());
         verify(toBeReviewedRepository, times(0)).deleteById(Mockito.any());
     }
 
     @Test
     public void updateTablesWhenPhraseInvalidAndNoMatchingRejectedPhrase() {
         ToBeReviewed tbr = new ToBeReviewed(1L, false, "nonsense", "nonsense", "nonsense", "nonsense");
+        Mockito.when(reviewSubmittingUserRepository.findUserIdByToBeReviewedId(Mockito.any())).thenReturn(USER1_ID);
 
         toBeReviewedCheckerService.updateTables(tbr);
 
@@ -133,9 +132,10 @@ public class ToBeReviewedCheckerServiceImplTest {
         verify(rejectedPhraseRepository, times(1)).save(arg1.capture());
         assertEquals(arg1.getValue().getRejectedPhrase(), tbr.toString());
 
-        ArgumentCaptor<Long> arg2 = ArgumentCaptor.forClass(Long.class);
-        verify(reviewSubmittingUserRepository, times(1)).deleteByToBeReviewedId(arg2.capture());
-        assertEquals(arg2.getValue(), tbr.getId());
+        ArgumentCaptor<ReviewSubmittingUser> arg2 = ArgumentCaptor.forClass(ReviewSubmittingUser.class);
+        verify(reviewSubmittingUserRepository, times(1)).delete(arg2.capture());
+        assertEquals(arg2.getValue().getUserId(), USER1_ID);
+
 
         ArgumentCaptor<Long> arg3 = ArgumentCaptor.forClass(Long.class);
         verify(toBeReviewedRepository, times(1)).deleteById(arg3.capture());

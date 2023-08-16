@@ -9,16 +9,12 @@ import com.savvato.tribeapp.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
+    
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/api/permissions")
 public class PermissionsAPIController {
     @Autowired
     UserRoleMapService userRoleMapService;
@@ -59,7 +55,7 @@ public class PermissionsAPIController {
         }
     }
 
-    @RequestMapping(value = { "/user-roles-list"}, method=RequestMethod.GET)
+    @GetMapping ("/user-roles-list")
     public ResponseEntity<Iterable<UserRole>> getAllRoles() {
         Iterable<UserRole> rtn = userRoleService.getRoles();
 
@@ -70,7 +66,7 @@ public class PermissionsAPIController {
         }
     }
 
-    @RequestMapping(value = { "/api/permissions" }, method= RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<Boolean> addPermissions(@RequestBody @Valid PermissionsRequest request) {
         boolean rtn = userRoleMapService.addRolesToUser(request.id, request.permissions);
 

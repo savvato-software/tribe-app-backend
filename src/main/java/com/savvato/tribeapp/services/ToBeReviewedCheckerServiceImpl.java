@@ -62,8 +62,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
             log.warn(word + " isn't an English word!");
             return responseJson;
         }
-        //String responseBody = response.getBody();
-
+        
         responseJson = Optional.of(new JsonParser().parse(response.getBody()).getAsJsonObject());
         return responseJson;
     }

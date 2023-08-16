@@ -93,32 +93,23 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
         if (matchingRejectedPhrase.isEmpty()) {
             boolean validPhrase = validatePhraseComponent(tbr.getNoun(), "noun") && validatePhraseComponent(tbr.getVerb(), "verb") && validatePhraseComponent(tbr.getAdverb(), "adverb") && validatePhraseComponent(tbr.getPreposition(), "preposition");
             if (validPhrase) {
-                updateTables(tbr, false, true);
+                toBeReviewedRepository.setHasBeenGroomedTrue(tbr.getId());
             } else {
                 LOGGER.warning("Phrase is invalid.");
-                updateTables(tbr, false, false);
+                updateTables(tbr);
             }
         }
         else {
             LOGGER.warning("Phrase has already been rejected!");
-            updateTables(tbr, true, false);
+            updateTables(tbr);
         }
     }
 
     @Override
-    public void updateTables(ToBeReviewed tbr, boolean hasMatchingRejectedPhrase, boolean phraseValid) {
-        if (phraseValid) {
-            toBeReviewedRepository.setHasBeenGroomedTrue(tbr.getId());
-        }
-        else {
-            if (!hasMatchingRejectedPhrase) {
-                RejectedPhrase rp = new RejectedPhrase();
-                rp.setRejectedPhrase(tbr.toString());
-                rejectedPhraseRepository.save(rp);
-            }
-            reviewSubmittingUserRepository.deleteByToBeReviewedId(tbr.getId());
-            toBeReviewedRepository.deleteById(tbr.getId());
-        }
+    public void updateTables(ToBeReviewed tbr) {
+        rejectedPhraseRepository.save(new RejectedPhrase(tbr.toString()));
+        reviewSubmittingUserRepository.deleteByToBeReviewedId(tbr.getId());
+        toBeReviewedRepository.deleteById(tbr.getId());
     }
 
 }

@@ -17,6 +17,10 @@ public class RejectedPhrase {
         this.rejectedPhrase = rejectedPhrase;
     }
 
+    public RejectedPhrase(String rejectedPhrase) {
+        this.rejectedPhrase = rejectedPhrase;
+    }
+
     public RejectedPhrase() {
     }
 

@@ -37,7 +37,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     @Value("${WORDS_API_KEY}")
     private String apiKey;
 
-    @Scheduled(fixedDelayString = "PT1M")
+    @Scheduled(fixedDelayString = "PT10M")
     @Override
     public void updateUngroomedPhrases() {
         log.info("from service: Beginning updateUngroomedPhrases process...");

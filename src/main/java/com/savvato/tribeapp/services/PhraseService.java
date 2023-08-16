@@ -9,12 +9,9 @@ public interface PhraseService {
 
     boolean isPhraseValid(String adverb, String verb, String preposition, String noun);
 
-    void applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun);
+    boolean applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun);
 
     Optional<Long> findPreviouslyApprovedPhraseId(String adverb, String verb, String preposition, String noun);
 
     Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long id);
-
-
-
 }

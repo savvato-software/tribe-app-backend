@@ -46,14 +46,19 @@ public class AttributesAPIController {
 
     @PostMapping
     public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
-
         if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
-            phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
-            sendNotification(true, req.userId);
-            return ResponseEntity.status(HttpStatus.OK).body(true);
+            boolean isPhraseApplied = phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
+            if (isPhraseApplied) {
+                sendNotification(true, req.userId);
+                return ResponseEntity.status(HttpStatus.OK).body(true);
+            } else {
+                sendNotification(false, req.userId);
+                return ResponseEntity.status(HttpStatus.OK).body(false);
+            }
+        } else {
+            sendNotification(false, req.userId);
+            return ResponseEntity.status(HttpStatus.OK).body(false);
         }
-        sendNotification(false, req.userId);
-        return ResponseEntity.status(HttpStatus.OK).body(false);
     }
 
     private void sendNotification(Boolean approved, Long userId) {

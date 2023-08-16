@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="loretdemolas" id="202308150714">
+        <update tableName="notifications">
+            <column name="user_id" valueNumeric="2"/>
+            <where>user_id = 1</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

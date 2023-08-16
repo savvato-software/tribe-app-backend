@@ -7,14 +7,12 @@ import com.savvato.tribeapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/api/permissions")
 public class PermissionsAPIController {
     @Autowired
     UserRoleMapService userRoleMapService;
@@ -22,7 +20,7 @@ public class PermissionsAPIController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = { "/api/permissions/users"}, method=RequestMethod.GET)
+    @GetMapping("/users")
     public ResponseEntity<Iterable<User>> getAllUsers() {
 
         // WHY is this defined here? Instead of UserAPIController? It's because only
@@ -41,7 +39,7 @@ public class PermissionsAPIController {
         }
     }
 
-    @RequestMapping(value = { "/api/permissions/user-roles"}, method=RequestMethod.GET)
+    @GetMapping("/user-roles")
     public ResponseEntity<Iterable<String>> getAllUserRoles() {
         Iterable<String> rtn = userRoleMapService.getRoles();
 
@@ -52,7 +50,7 @@ public class PermissionsAPIController {
         }
     }
 
-    @RequestMapping(value = { "/api/permissions" }, method= RequestMethod.POST)
+    @PostMapping
     public ResponseEntity<Boolean> addPermissions(@RequestBody @Valid PermissionsRequest request) {
         boolean rtn = userRoleMapService.addRolesToUser(request.id, request.permissions);
 
@@ -62,7 +60,7 @@ public class PermissionsAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);
         }
     }
-    @RequestMapping(value = { "/api/permissions" }, method= RequestMethod.DELETE)
+    @DeleteMapping
     public ResponseEntity<Boolean> deletePermissions(@RequestBody @Valid PermissionsRequest request) {
         boolean rtn = userRoleMapService.removeRolesFromUser(request.id, request.permissions);
 

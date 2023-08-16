@@ -126,7 +126,7 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     @Override
-    public void applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun) {
+    public boolean applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun) {
 
         String adverbLowerCase = changeToLowerCase(adverb);
         String verbLowerCase = changeToLowerCase(verb);
@@ -140,13 +140,15 @@ public class PhraseServiceImpl implements PhraseService {
             userPhrase.setUserId(userId);
             userPhrase.setPhraseId(previouslyReviewedPhraseId.get());
             userPhraseRepository.save(userPhrase);
-            log.info("Phrase added to user.");
+            log.info("Phrase added to user " + userId);
+
+            return true;
         } else {
             Optional<ToBeReviewed> toBeReviewedPhrase = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
 
             if (toBeReviewedPhrase.isPresent()) {
                 addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhrase.get().getId());
-                log.info("ToBeReviewed phrase has been mapped to user");
+                log.info("ToBeReviewed phrase has been mapped to user " + userId);
             } else {
                 ToBeReviewed toBeReviewed = new ToBeReviewed();
                 toBeReviewed.setHasBeenGroomed(false);
@@ -160,8 +162,10 @@ public class PhraseServiceImpl implements PhraseService {
                 Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
 
                 addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
-                log.info("ToBeReviewed phrase has been mapped to user");
+                log.info("ToBeReviewed phrase has been mapped to user " + userId);
             }
+
+            return false;
         }
     }
 

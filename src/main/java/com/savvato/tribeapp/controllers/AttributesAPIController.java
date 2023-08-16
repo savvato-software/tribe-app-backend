@@ -43,8 +43,8 @@ public class AttributesAPIController {
         ResponseEntity rtn;
 
         if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
-            phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
-            rtn = ResponseEntity.status(HttpStatus.OK).body(true);
+            boolean isPhraseApplied = phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
+            rtn = ResponseEntity.status(HttpStatus.OK).body(isPhraseApplied);
         } else {
             rtn = ResponseEntity.status(HttpStatus.OK).body(false);
         }

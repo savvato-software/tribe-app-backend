@@ -133,9 +133,10 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(userPhraseRepository.save(Mockito.any())).thenReturn(userPhrase);
 
-        phraseService.applyPhraseToUser(user1.getId(), "testAdverb", "testVerb", "testPreposition", "testNoun");
+        boolean rtn = phraseService.applyPhraseToUser(user1.getId(), "testAdverb", "testVerb", "testPreposition", "testNoun");
 
         verify(userPhraseRepository, times(1)).save(Mockito.any());
+        assertTrue(rtn);
 
     }
 
@@ -164,9 +165,10 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.of(toBeReviewed));
 
-        phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
+        boolean rtn = phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
 
         verify(reviewSubmittingUserRepository, times(1)).save(Mockito.any());
+        assertFalse(rtn);
     }
 
     // Test that reviewSubmittingUserRepository is called once when calling ApplyPhraseToUser and conditions:
@@ -194,8 +196,9 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.empty()).thenReturn(Optional.of(toBeReviewed));
 
-        phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
+        boolean rtn = phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
 
         verify(reviewSubmittingUserRepository, times(1)).save(Mockito.any());
+        assertFalse(rtn);
     }
 }

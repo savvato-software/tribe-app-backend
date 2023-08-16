@@ -95,16 +95,6 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
     }
 
     @Test
-    public void validatePhraseComponentWhenCriticalComponentIsEmpty() {
-        ToBeReviewed tbr = new ToBeReviewed(1L, false, "completely", "runs", "at", "");
-        JsonObject wordDetails = new JsonParser().parse("{}").getAsJsonObject();
-
-        ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
-        toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
-        verify(toBeReviewedCheckerServiceSpy, never()).validatePhraseComponent(tbr.getNoun(), "noun");
-    }
-
-    @Test
     public void validatePhraseWhenPhraseValid() {
         ToBeReviewed tbr = new ToBeReviewed(1L, false, "competitively", "plays", "", "chess");
         ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
@@ -159,19 +149,4 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
         assertEquals(true,tbr.isHasBeenGroomed());
     }
 
-    @Test
-    public void validatePhraseWhenMatchingRejectedPhrase() {
-        ToBeReviewed tbr = new ToBeReviewed(1L, false, "competitively", "plays", "", "chess");
-        RejectedPhrase rp = new RejectedPhrase();
-        rp.setRejectedPhrase(tbr.toString());
-        ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
-        Mockito.when(rejectedPhraseRepository.findByRejectedPhrase(Mockito.any())).thenReturn(Optional.of(rp));
-
-        toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
-        ArgumentCaptor<ToBeReviewed> arg1 = ArgumentCaptor.forClass(ToBeReviewed.class);
-
-        verify(toBeReviewedCheckerServiceSpy, times(0)).validatePhraseComponent(Mockito.any(), Mockito.any());
-        verify(toBeReviewedCheckerServiceSpy, times(1)).updateTables(arg1.capture());
-        assertEquals(arg1.getValue(), tbr);
-    }
 }

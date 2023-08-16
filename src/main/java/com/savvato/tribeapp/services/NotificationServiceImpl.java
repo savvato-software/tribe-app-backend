@@ -3,6 +3,10 @@ package com.savvato.tribeapp.services;
 import com.savvato.tribeapp.entities.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.repositories.NotificationRepository;
@@ -18,36 +22,55 @@ import java.time.Duration;
 public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
+    private SystemTimeProvider timeProvider;
+    @Autowired
     private NotificationRepository notificationRepository;
 
     @Autowired
     private NotificationTypeRepository notificationTypeRepository;
 
-    public NotificationDTO getNotificationDTOById(Long id) {
-        Optional<Notification> notification = notificationRepository.findById(id);
-        if (notification.isPresent()) {
-            NotificationType type = notification.get().getType();
-            String iconUrl = type != null ? type.getIconUrl() : null;
 
-            Instant lastUpdatedInstant = notification.get().getLastUpdatedDate().atZone(ZoneOffset.UTC).toInstant();
-            Instant currentInstant = Instant.now();
-            long ageInMilliseconds = Duration.between(lastUpdatedInstant, currentInstant).toMillis();
+    public List<NotificationDTO> getUserNotifications(Long userId){
+        List<Notification> notifications = getNotificationsByUserId(userId);
+        List<NotificationDTO> rtn = new ArrayList<>();
 
-            String formattedLastUpdatedDate = String.valueOf(ageInMilliseconds);
-
-            return new NotificationDTO(notification.get().getDescription(),
-                    notification.get().getBody(),
-                    formattedLastUpdatedDate,
-                    iconUrl);
+        Iterator<Notification> iterator  = notifications.iterator();
+        while (iterator.hasNext()){
+            Notification notification = iterator.next();
+            String iconUrl = getIconUrlFromNotification(notification);
+            String formattedLastUpdatedDate = getFormattedLastUpdatedDate(notification);
+            NotificationDTO notificationDTO= createNotificationDTO(notification, formattedLastUpdatedDate, iconUrl);
+            rtn.add(notificationDTO);
         }
-        return null;
+        return rtn;
+    };
+
+    public NotificationDTO createNotificationDTO(Notification notification, String formattedLastUpdatedDate , String iconUrl ) {
+
+        return NotificationDTO.builder()
+                .description(notification.getDescription())
+                .body(notification.getBody())
+                .lastUpdatedDate(formattedLastUpdatedDate)
+                .iconUrl(iconUrl)
+                .build();
+    }
+
+    public String getIconUrlFromNotification(Notification notification) {
+        NotificationType type = notification.getType();
+        return type != null ? type.getIconUrl() : null;
+    }
+
+    public String getFormattedLastUpdatedDate(Notification notification) {
+        Instant lastUpdatedInstant = notification.getLastUpdatedDate(LocalDateTime.now()).atZone(ZoneOffset.UTC).toInstant();
+        Instant currentInstant = timeProvider.getCurrentInstant();
+        long ageInMilliseconds = Duration.between(lastUpdatedInstant, currentInstant).toMillis();
+        return String.valueOf(ageInMilliseconds);
     }
 
     public boolean checkNotificationReadStatus(Long id) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         return optionalNotification.map(Notification::isRead).orElse(false);
     }
-
     public boolean updateNotificationReadStatus(Long id) {
         Optional<Notification> optionalNotification = notificationRepository.findById(id);
         if (optionalNotification.isPresent()) {
@@ -85,7 +108,12 @@ public class NotificationServiceImpl implements NotificationService {
             notificationRepository.delete(notification);
         }
     }
+
     public boolean checkNotificationExists(Long id) {
         return notificationRepository.existsById(id);
     }
+    public List<Notification> getNotificationsByUserId(Long userId) {
+        return notificationRepository.findByUserId(userId);
+    }
+
 }

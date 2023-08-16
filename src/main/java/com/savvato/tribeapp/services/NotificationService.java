@@ -3,10 +3,13 @@ package com.savvato.tribeapp.services;
 import com.savvato.tribeapp.dto.NotificationDTO;
 import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.entities.NotificationType;
+import java.util.List;
 
 public interface NotificationService {
 
-    public NotificationDTO getNotificationDTOById(Long id);
+    public List<NotificationDTO> getUserNotifications(Long userId);
+
+    public NotificationDTO createNotificationDTO(Notification notification, String formattedLastUpdatedDate , String iconUrl);
 
     public boolean checkNotificationReadStatus(Long id);
 
@@ -17,4 +20,11 @@ public interface NotificationService {
     void deleteNotification(Long id);
 
     boolean checkNotificationExists(Long id);
+
+    List<Notification> getNotificationsByUserId(Long userid);
+
+    String getIconUrlFromNotification(Notification notification);
+
+    String getFormattedLastUpdatedDate(Notification notification);
+
 }

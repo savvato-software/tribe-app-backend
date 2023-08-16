@@ -1,7 +1,5 @@
 package com.savvato.tribeapp.entities;
 
-import com.savvato.tribeapp.entities.NotificationType;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -92,7 +90,7 @@ public class Notification {
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getLastUpdatedDate() {
+    public LocalDateTime getLastUpdatedDate(LocalDateTime now) {
         return lastUpdatedDate;
     }
 

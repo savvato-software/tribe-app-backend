@@ -108,12 +108,10 @@ public class NotificationServiceImpl implements NotificationService {
             notificationRepository.delete(notification);
         }
     }
-
     public boolean checkNotificationExists(Long id) {
         return notificationRepository.existsById(id);
     }
     public List<Notification> getNotificationsByUserId(Long userId) {
         return notificationRepository.findByUserId(userId);
     }
-
 }

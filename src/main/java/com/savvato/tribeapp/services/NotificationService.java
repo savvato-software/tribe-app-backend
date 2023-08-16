@@ -26,5 +26,4 @@ public interface NotificationService {
     String getIconUrlFromNotification(Notification notification);
 
     String getFormattedLastUpdatedDate(Notification notification);
-
 }

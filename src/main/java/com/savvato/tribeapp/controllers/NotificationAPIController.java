@@ -39,6 +39,7 @@ public class NotificationAPIController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @GetMapping("/user/{user_id}")
     public ResponseEntity<List<NotificationDTO>> getUserNotifications(@PathVariable Long user_id) {
         List<NotificationDTO> rtn = notificationService.getUserNotifications(user_id);

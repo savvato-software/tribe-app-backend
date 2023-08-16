@@ -62,7 +62,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
             log.warn(word + " isn't an English word!");
             return responseJson;
         }
-        
+
         responseJson = Optional.of(new JsonParser().parse(response.getBody()).getAsJsonObject());
         return responseJson;
     }
@@ -94,17 +94,14 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     public boolean validatePhraseComponent(String word, String expectedPartOfSpeech) {
 
         Boolean validPartOfSpeech = checkPartOfSpeech(word, expectedPartOfSpeech);
-        //try {
-            if (validPartOfSpeech) {
-                return true;
-            } else {
-                log.warn("The word passed in isn't a " + expectedPartOfSpeech + "!");
-                return false;
-            }
-//        } catch (Exception e) {
-//            log.warn("The " + expectedPartOfSpeech + " passed in isn't an English word!");
-//            return false;
-//        }
+
+        if (validPartOfSpeech) {
+            return true;
+        } else {
+            log.warn("The word passed in isn't a " + expectedPartOfSpeech + "!");
+            return false;
+        }
+
     }
 
     @Override

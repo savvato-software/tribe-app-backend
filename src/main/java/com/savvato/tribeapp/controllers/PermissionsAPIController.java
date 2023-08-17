@@ -3,12 +3,14 @@ package com.savvato.tribeapp.controllers;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.services.UserRoleMapService;
+import com.savvato.tribeapp.services.UserRoleService;
 import com.savvato.tribeapp.services.UserService;
+import com.savvato.tribeapp.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+    
 import javax.validation.Valid;
 
 @RestController
@@ -16,6 +18,9 @@ import javax.validation.Valid;
 public class PermissionsAPIController {
     @Autowired
     UserRoleMapService userRoleMapService;
+
+    @Autowired
+    UserRoleService userRoleService;
 
     @Autowired
     UserService userService;
@@ -42,6 +47,17 @@ public class PermissionsAPIController {
     @GetMapping("/user-roles")
     public ResponseEntity<Iterable<String>> getAllUserRoles() {
         Iterable<String> rtn = userRoleMapService.getRoles();
+
+        if (rtn != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(rtn);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(null);
+        }
+    }
+
+    @GetMapping ("/user-roles-list")
+    public ResponseEntity<Iterable<UserRole>> getAllRoles() {
+        Iterable<UserRole> rtn = userRoleService.getRoles();
 
         if (rtn != null) {
             return ResponseEntity.status(HttpStatus.OK).body(rtn);

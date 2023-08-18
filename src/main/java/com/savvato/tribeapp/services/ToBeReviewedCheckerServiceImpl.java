@@ -10,6 +10,7 @@ import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.RejectedPhraseRepository;
 import com.savvato.tribeapp.repositories.ReviewSubmittingUserRepository;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
+import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -124,6 +125,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     @Override
     public void updateTables(ToBeReviewed tbr) {
         rejectedPhraseRepository.save(new RejectedPhrase(tbr.toString()));
+        // TODO: Create notification for users when their submitted phrase has been rejected after review. Jira TRIB-153
         ReviewSubmittingUser rsu = new ReviewSubmittingUser(reviewSubmittingUserRepository.findUserIdByToBeReviewedId(tbr.getId()),tbr.getId());
         reviewSubmittingUserRepository.delete(rsu);
         toBeReviewedRepository.deleteById(tbr.getId());

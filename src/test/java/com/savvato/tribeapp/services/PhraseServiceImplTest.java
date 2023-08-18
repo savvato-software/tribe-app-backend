@@ -193,7 +193,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(any(Long.class), any(Long.class), any(Long.class), any(Long.class))).thenReturn(Optional.empty());
 
-        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.empty()).thenReturn(Optional.of(toBeReviewed));
+        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.of(toBeReviewed));
 
         boolean rtn = phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
 

@@ -156,12 +156,11 @@ public class PhraseServiceImpl implements PhraseService {
                 toBeReviewed.setVerb(verbLowerCase);
                 toBeReviewed.setPreposition(prepositionLowerCase);
                 toBeReviewed.setNoun(nounLowerCase);
-                toBeReviewedRepository.save(toBeReviewed);
+                ToBeReviewed tbr = toBeReviewedRepository.save(toBeReviewed);
+
                 log.info("phrase added to to_be_reviewed table");
 
-                Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
-
-                addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
+                addUserAndPhraseToReviewSubmittingUserRepository(userId, tbr.getId());
                 log.info("ToBeReviewed phrase has been mapped to user " + userId);
             }
 

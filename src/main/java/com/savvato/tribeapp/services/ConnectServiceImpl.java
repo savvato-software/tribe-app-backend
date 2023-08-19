@@ -1,12 +1,14 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.entities.Connection;
+import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -30,6 +32,7 @@ public class ConnectServiceImpl implements ConnectService {
         return opt;
 
     }
+
 
     public Optional<String> storeQRCodeString(long userId){
         String generatedQRCodeString = generateRandomString(QRCODE_STRING_LENGTH);
@@ -62,4 +65,14 @@ public class ConnectServiceImpl implements ConnectService {
             return false;
         }
     }
+
+    @Override
+    public Optional<String> getAllUserConnection(long userId, long userIdToBeConnected) {
+        return Optional.empty();
+    }
+
+    public List<Connection> getUserId2(Long id2) {
+        return (List<Connection>) connectionsRepository.findbyId(id2);
+    }
+
 }

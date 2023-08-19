@@ -38,4 +38,7 @@ public class ConnectAPIController {
         boolean rtn = connectService.connect(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId, connectRequest.qrcodePhrase);
         return rtn;
     }
+
+
+
 }

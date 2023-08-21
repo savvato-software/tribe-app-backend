@@ -220,7 +220,8 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         // Should return false if the phrase has not been seen before
         Mockito.when(toBeReviewedRepository.save(any())).thenReturn(tbrSaved);
-        assertFalse(phraseService.applyPhraseToUser(user1.getId(),testAdverb,testVerb,testPreposition, testNoun));
+        boolean applyPhraseToUser = phraseService.applyPhraseToUser(user1.getId(),testAdverb,testVerb,testPreposition, testNoun);
+        assertFalse(applyPhraseToUser);
 
         // Empty Adverb should be converted to "nullvalue"
         ArgumentCaptor<String> argAdverb = ArgumentCaptor.forClass(String.class);

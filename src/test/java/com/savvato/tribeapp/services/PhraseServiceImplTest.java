@@ -228,7 +228,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         ArgumentCaptor<String> argVerb = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> argPreposition = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> argNoun = ArgumentCaptor.forClass(String.class);
-        verify(toBeReviewedRepository, times(1)).findByAdverbAndVerbAndNounAndPreposition(argAdverb.capture(),argVerb.capture(),argPreposition.capture(),argNoun.capture());
+        verify(toBeReviewedRepository, times(1)).findByAdverbAndVerbAndNounAndPreposition(argAdverb.capture(),argVerb.capture(),argNoun.capture(),argPreposition.capture());
         assertEquals(argAdverb.getValue(), testAdverbConverted);
     }
 

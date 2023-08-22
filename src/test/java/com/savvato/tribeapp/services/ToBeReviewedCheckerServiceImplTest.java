@@ -162,5 +162,19 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
         assertTrue(rtn);
     }
 
+    @Test
+    public void verifyWordWithKnownMissingPartOfSpeechIsSetForManualReview() {
+        String word = "competitively";
+        String expectedPartOfSpeech = "adverb";
+
+        // Known example of error from Words API as of 08/22/23
+        JsonObject wordDetails = new JsonParser().parse("{\"word\":\"competitively\",\"results\":[{\"definition\":\"in competition\",\"partOfSpeech\":null,\"antonyms\":[\"noncompetitively\"],\"pertainsTo\":[\"competitive\"],\"examples\":[\"the companies ld bid competitively\"]}],\"syllables\":{\"count\":5,\"list\":[\"com\",\"pet\",\"i\",\"tive\",\"ly\"]},\"pronunciation\":{\"all\":\"kəm'pɛtɪtɪvli\"},\"frequency\":2.03}").getAsJsonObject();
+
+        ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
+        doReturn(Optional.of(wordDetails)).when(toBeReviewedCheckerServiceSpy).getWordDetails(word);
+
+        boolean rtn = toBeReviewedCheckerServiceSpy.checkPartOfSpeech(word, expectedPartOfSpeech);
+        assertTrue(rtn);
+    }
 
 }

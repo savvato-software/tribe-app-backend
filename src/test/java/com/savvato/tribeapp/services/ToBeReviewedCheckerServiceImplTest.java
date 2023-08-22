@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -147,5 +146,21 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
         // verify tbr was groomed
         assertEquals(true,tbr.isHasBeenGroomed());
     }
+
+    @Test
+    public void verifyWordWithKnownMissingResultsSetIsSetForManualReview() {
+        String word = "bakes";
+        String expectedPartOfSpeech = "verb";
+
+        // Known example of error from Words API as of 08/22/23
+        JsonObject wordDetails = new JsonParser().parse("{\"rhymes\":{\"all\": \"-eɪkeɪʃ\"},\"word\":\"bakes\",\"pronunciation\":\"beɪks\",\"frequency\":2.78}").getAsJsonObject();
+
+        ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
+        doReturn(Optional.of(wordDetails)).when(toBeReviewedCheckerServiceSpy).getWordDetails(word);
+
+        boolean rtn = toBeReviewedCheckerServiceSpy.checkPartOfSpeech(word, expectedPartOfSpeech);
+        assertTrue(rtn);
+    }
+
 
 }

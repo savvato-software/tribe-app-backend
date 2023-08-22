@@ -83,7 +83,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
                     JsonObject definition = definitions.get(i).getAsJsonObject();
                     try {
                         partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
-                    } catch (Exception e) {
+                    } catch (NullPointerException e) {
                         // Words API may occasionally have a null parts of speech. This is an error on their part.
                         log.warn(word + " is missing a parts of speech definition from the Words API. Set for manual review.");
                         return true;

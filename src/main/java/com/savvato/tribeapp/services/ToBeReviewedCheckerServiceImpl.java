@@ -91,6 +91,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
                 }
 
             } catch (NullPointerException e) {
+                // Words API may occasionally have a null results set. This is an error on their part.
                 log.warn(word + " is missing a results set from the Words API. Set for manual review.");
                 return true;
             }

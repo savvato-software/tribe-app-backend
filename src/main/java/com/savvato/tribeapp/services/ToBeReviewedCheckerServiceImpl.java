@@ -37,7 +37,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     @Value("${WORDS_API_KEY}")
     private String apiKey;
 
-    @Scheduled(fixedDelayString = "PT10M")
+    @Scheduled(fixedDelayString = "PT1M")
     @Override
     public void updateUngroomedPhrases() {
         log.info("from service: Beginning updateUngroomedPhrases process...");
@@ -106,26 +106,12 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     }
 
     @Override
-    public boolean validatePhraseComponent(String word, String expectedPartOfSpeech) {
-
-        Boolean validPartOfSpeech = checkPartOfSpeech(word, expectedPartOfSpeech);
-
-        if (validPartOfSpeech) {
-            return true;
-        } else {
-            log.warn("The word passed in isn't a " + expectedPartOfSpeech + "!");
-            return false;
-        }
-
-    }
-
-    @Override
     public void validatePhrase(ToBeReviewed tbr) {
 
-        boolean validPhrase = validatePhraseComponent(tbr.getNoun(), "noun")
-                && validatePhraseComponent(tbr.getVerb(), "verb")
-                && (tbr.getAdverb().equals(Constants.NULL_VALUE_WORD) || validatePhraseComponent(tbr.getAdverb(), "adverb"))
-                && (tbr.getPreposition().equals(Constants.NULL_VALUE_WORD) || validatePhraseComponent(tbr.getPreposition(), "preposition"));
+        boolean validPhrase = checkPartOfSpeech(tbr.getNoun(), "noun")
+                && checkPartOfSpeech(tbr.getVerb(), "verb")
+                && (tbr.getAdverb().equals(Constants.NULL_VALUE_WORD) || checkPartOfSpeech(tbr.getAdverb(), "adverb"))
+                && (tbr.getPreposition().equals(Constants.NULL_VALUE_WORD) || checkPartOfSpeech(tbr.getPreposition(), "preposition"));
 
         if (validPhrase) {
             tbr.setHasBeenGroomed(true);

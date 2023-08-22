@@ -75,7 +75,7 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
         doReturn(Optional.of(wordDetails)).when(toBeReviewedCheckerServiceSpy).getWordDetails(word);
         doReturn(true).when(toBeReviewedCheckerServiceSpy).checkPartOfSpeech(word, expectedPartOfSpeech);
 
-        boolean rtn = toBeReviewedCheckerServiceSpy.validatePhraseComponent(word, expectedPartOfSpeech);
+        boolean rtn = toBeReviewedCheckerServiceSpy.checkPartOfSpeech(word, expectedPartOfSpeech);
         assertEquals(rtn, true);
     }
 
@@ -89,7 +89,7 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
         doReturn(Optional.of(wordDetails)).when(toBeReviewedCheckerServiceSpy).getWordDetails(word);
         doReturn(false).when(toBeReviewedCheckerServiceSpy).checkPartOfSpeech(word, expectedPartOfSpeech);
 
-        boolean rtn = toBeReviewedCheckerServiceSpy.validatePhraseComponent(word, expectedPartOfSpeech);
+        boolean rtn = toBeReviewedCheckerServiceSpy.checkPartOfSpeech(word, expectedPartOfSpeech);
         assertEquals(rtn, false);
     }
 
@@ -97,7 +97,7 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
     public void validatePhraseWhenPhraseValid() {
         ToBeReviewed tbr = new ToBeReviewed(1L, false, "competitively", "plays", "", "chess");
         ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
-        doReturn(true).when(toBeReviewedCheckerServiceSpy).validatePhraseComponent(Mockito.any(), Mockito.any());
+        doReturn(true).when(toBeReviewedCheckerServiceSpy).checkPartOfSpeech(Mockito.any(), Mockito.any());
         Mockito.when(rejectedPhraseRepository.findByRejectedPhrase(Mockito.any())).thenReturn(Optional.empty());
         toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
 
@@ -139,7 +139,7 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest{
 
         ToBeReviewedCheckerService toBeReviewedCheckerServiceSpy = spy(toBeReviewedCheckerService);
         Mockito.when(rejectedPhraseRepository.findByRejectedPhrase(Mockito.any())).thenReturn(Optional.empty());
-        doReturn(true).when(toBeReviewedCheckerServiceSpy).validatePhraseComponent(Mockito.any(), Mockito.any());
+        doReturn(true).when(toBeReviewedCheckerServiceSpy).checkPartOfSpeech(Mockito.any(), Mockito.any());
 
         toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
         ArgumentCaptor<Long> arg1 = ArgumentCaptor.forClass(Long.class);

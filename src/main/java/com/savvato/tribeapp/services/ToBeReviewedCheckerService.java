@@ -9,8 +9,6 @@ public interface ToBeReviewedCheckerService {
     void updateUngroomedPhrases();
     boolean checkPartOfSpeech(String word, String expectedPartOfSpeech);
 
-    boolean validatePhraseComponent(String word, String expectedPartOfSpeech);
-
     void validatePhrase(ToBeReviewed tbr);
 
     void updateTables(ToBeReviewed tbr);

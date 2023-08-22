@@ -99,7 +99,7 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
             if(partsOfSpeech.contains(expectedPartOfSpeech)){
                 return true;
             } else {
-                log.warn("The word passed in isn't a(n) " + expectedPartOfSpeech + "!");
+                log.warn(word + " isn't a(n) " + expectedPartOfSpeech + "!");
                 return false;
             }
         }

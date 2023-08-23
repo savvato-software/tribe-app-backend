@@ -69,15 +69,15 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
 
     @Override
     public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech) {
-        if(getWordDetails(word).isEmpty()){
+        Optional<JsonObject> wordDetails = getWordDetails(word);
+        if(wordDetails.isEmpty()){
             return false;
         } else {
-            JsonObject wordDetails = getWordDetails(word).get();
             JsonArray definitions;
             Set<String> partsOfSpeech = new HashSet<>();
 
             try {
-                definitions = wordDetails.getAsJsonArray("results");
+                definitions = wordDetails.get().getAsJsonArray("results");
 
                 for (int i = 0; i < definitions.size(); i++) {
                     JsonObject definition = definitions.get(i).getAsJsonObject();

@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ConnectionsRepository extends JpaRepository<Connection, Long> {
+public interface ConnectionsRepository extends CrudRepository<Connection, Long> {
 
     // call the repository in the service
     // write unit test for the service
-    Connection findbyId(Long id2);
+    Connection findByToBeConnectedWithUserId(Long toBeConnectedWithUserId);
 }

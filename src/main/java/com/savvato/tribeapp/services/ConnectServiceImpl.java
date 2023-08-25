@@ -71,8 +71,8 @@ public class ConnectServiceImpl implements ConnectService {
         return Optional.empty();
     }
 
-    public List<Connection> getUserId2(Long id2) {
-        return (List<Connection>) connectionsRepository.findbyId(id2);
+    public List<Connection> getByToBeConnectedWithUserId(Long toBeConnectedWithUserId) {
+        return (List<Connection>) connectionsRepository.findByToBeConnectedWithUserId(toBeConnectedWithUserId);
     }
 
 }

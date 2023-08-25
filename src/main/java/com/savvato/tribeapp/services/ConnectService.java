@@ -14,6 +14,6 @@ public interface ConnectService {
 
     Optional<String> getAllUserConnection(long userId, long userIdToBeConnected);
 
-    public List<Connection> getUserId2(Long id2);
+    public List<Connection> getByToBeConnectedWithUserId(Long toBeConnectedWithUserId);
 
 }

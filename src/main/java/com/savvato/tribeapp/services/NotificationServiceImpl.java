@@ -48,10 +48,12 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationDTO createNotificationDTO(Notification notification, String formattedLastUpdatedDate , String iconUrl ) {
 
         return NotificationDTO.builder()
+                .id(notification.getId())
                 .description(notification.getDescription())
                 .body(notification.getBody())
                 .lastUpdatedDate(formattedLastUpdatedDate)
                 .iconUrl(iconUrl)
+                .isRead(notification.isRead())
                 .build();
     }
 

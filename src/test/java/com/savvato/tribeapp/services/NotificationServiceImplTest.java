@@ -69,6 +69,8 @@ public class NotificationServiceImplTest {
 		String iconUrl = "http://example.com/icon.png";
 
 		Notification mockNotification = new Notification();
+		mockNotification.setId(93L);
+		mockNotification.setRead(true);
 		mockNotification.setDescription("Test Description");
 		mockNotification.setBody("Test Body");
 		mockNotification.setLastUpdatedDate(LocalDateTime.now());
@@ -77,7 +79,9 @@ public class NotificationServiceImplTest {
 		NotificationDTO result = notificationService.createNotificationDTO(mockNotification, formattedLastUpdatedDate, iconUrl);
 		// Verify the result
 		assertEquals("Test Description", result.description);
+		assertEquals(93L, result.id);
 		assertEquals("Test Body", result.body);
+		assertEquals(true, result.isRead);
 		assertEquals("1000", result.lastUpdatedDate); // Replace "1000" with the expected formatted date
 		assertEquals("http://example.com/icon.png", result.iconUrl);
 	}

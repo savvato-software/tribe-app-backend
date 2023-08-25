@@ -2,7 +2,10 @@ package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
+import com.savvato.tribeapp.entities.Notification;
+import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.services.AttributesService;
+import com.savvato.tribeapp.services.NotificationService;
 import com.savvato.tribeapp.services.PhraseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,9 @@ public class AttributesAPIController {
     @Autowired
     PhraseService phraseService;
 
+    @Autowired
+    NotificationService notificationService;
+
     AttributesAPIController() {
 
     }
@@ -40,15 +46,35 @@ public class AttributesAPIController {
 
     @PostMapping
     public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
-        ResponseEntity rtn;
-
         if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
-            phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
-            rtn = ResponseEntity.status(HttpStatus.OK).body(true);
+            boolean isPhraseApplied = phraseService.applyPhraseToUser(req.userId, req.adverb, req.verb, req.preposition, req.noun);
+            if (isPhraseApplied) {
+                sendNotification(true, req.userId);
+                return ResponseEntity.status(HttpStatus.OK).body(true);
+            } else {
+                sendNotification(false, req.userId);
+                return ResponseEntity.status(HttpStatus.OK).body(false);
+            }
         } else {
-            rtn = ResponseEntity.status(HttpStatus.OK).body(false);
+            sendNotification(false, req.userId);
+            return ResponseEntity.status(HttpStatus.OK).body(false);
         }
-
-        return rtn;
     }
+
+    private void sendNotification(Boolean approved, Long userId) {
+        if (approved) {
+            notificationService.createNotification(
+                    NotificationType.ATTRIBUTE_REQUEST_REJECTED,
+                    userId,
+                    NotificationType.ATTRIBUTE_REQUEST_REJECTED.getName(),
+                    "Your attribute was rejected. This attribute is unsuitable and cannot be applied to users.");
+        } else {
+            notificationService.createNotification(
+                    NotificationType.ATTRIBUTE_REQUEST_APPROVED,
+                    userId,
+                    NotificationType.ATTRIBUTE_REQUEST_APPROVED.getName(),
+                    "Your attribute has been approved!");
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.repositories;
 
 import com.savvato.tribeapp.entities.RejectedPhrase;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,7 @@ public interface RejectedPhraseRepository extends CrudRepository<RejectedPhrase,
     Optional<RejectedPhrase> findById(Long id);
 
     Optional<RejectedPhrase> findByRejectedPhrase(String rejectedPhrase);
+
+    @Query(value = "INSERT IGNORE INTO rejected_phrase (rejected_phrase) VALUES (?1)", nativeQuery = true)
+    RejectedPhrase save(RejectedPhrase rejectedPhrase);
 }

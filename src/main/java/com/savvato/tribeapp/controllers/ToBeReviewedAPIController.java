@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -25,7 +24,7 @@ public class ToBeReviewedAPIController {
 
     @GetMapping
     public ResponseEntity getPhrase() {
-        Optional<ToBeReviewed> opt = toBeReviewedService.getReviewPhrase();
+        Optional<ToBeReviewed> opt = toBeReviewedService.getReviewPhraseWithoutPlaceholderNullvalue();
 
         if (opt.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(opt.get());

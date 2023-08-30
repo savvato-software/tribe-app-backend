@@ -47,7 +47,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.of(expectedToBeReviewed));
 
-        Optional<ToBeReviewed> rtn = toBeReviewedService.getReviewPhrase();
+        Optional<ToBeReviewed> rtn = toBeReviewedService.getReviewPhraseWithoutPlaceholderNullvalue();
 
         assertEquals(rtn.get(), expectedToBeReviewed);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());
@@ -61,7 +61,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.empty());
 
         //Success: test that the getReviewPhrase() method returns an empty Optional object
-        assertFalse(toBeReviewedService.getReviewPhrase().isPresent());
+        assertFalse(toBeReviewedService.getReviewPhraseWithoutPlaceholderNullvalue().isPresent());
         
     }
 
@@ -79,7 +79,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.of(expectedToBeReviewed));
 
-        Optional<ToBeReviewed> rtn = toBeReviewedService.getReviewPhrase();
+        Optional<ToBeReviewed> rtn = toBeReviewedService.getReviewPhraseWithoutPlaceholderNullvalue();
 
         assertEquals(rtn.get(), expectedToBeReviewed);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());
@@ -91,7 +91,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         expectedToBeReviewed.setPreposition("without");
         expectedToBeReviewed.setNoun("Scala");
 
-        Optional<ToBeReviewed> rtnTwo = toBeReviewedService.getReviewPhrase();
+        Optional<ToBeReviewed> rtnTwo = toBeReviewedService.getReviewPhraseWithoutPlaceholderNullvalue();
 
         assertEquals(rtnTwo.get(), expectedToBeReviewed);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());

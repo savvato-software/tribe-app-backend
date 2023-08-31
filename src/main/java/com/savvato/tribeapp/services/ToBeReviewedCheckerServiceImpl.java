@@ -5,102 +5,119 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.savvato.tribeapp.entities.RejectedPhrase;
+import com.savvato.tribeapp.entities.ReviewSubmittingUser;
 import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.RejectedPhraseRepository;
 import com.savvato.tribeapp.repositories.ReviewSubmittingUserRepository;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
-import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import com.savvato.tribeapp.constants.Constants;
 
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerService {
+
     @Autowired
     ToBeReviewedRepository toBeReviewedRepository;
     @Autowired
     RejectedPhraseRepository rejectedPhraseRepository;
     @Autowired
     ReviewSubmittingUserRepository reviewSubmittingUserRepository;
-    static final Logger LOGGER = Logger.getLogger(ToBeReviewedChecker.class.getName());
+
     @Value("${WORDS_API_KEY}")
     private String apiKey;
+
+    @Scheduled(fixedDelayString = "PT10M")
     @Override
     public void updateUngroomedPhrases() {
-        LOGGER.info("Beginning updateUngroomedPhrases process...");
+        log.info("from service: Beginning updateUngroomedPhrases process...");
         List<ToBeReviewed> ungroomedPhrases = toBeReviewedRepository.getAllUngroomed();
         for (ToBeReviewed tbr : ungroomedPhrases) {
             validatePhrase(tbr);
         }
     }
     @Override
-    public JsonObject getWordDetails(String word) {
+    public Optional<JsonObject> getWordDetails(String word) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("X-RapidAPI-Key", apiKey);
         httpHeaders.set("X-RapidAPI-Host", "wordsapiv1.p.rapidapi.com");
         String url = "https://wordsapiv1.p.rapidapi.com/words/"+word;
         HttpEntity<String> entity = new HttpEntity<>("", httpHeaders);
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        String responseBody = response.getBody();
+        ResponseEntity<String> response = null;
+        Optional responseJson = Optional.empty();
+        try {
+            response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        } catch (RestClientException e) {
+            log.warn(word + " isn't an English word!");
+            return responseJson;
+        }
 
-        JsonObject responseJson = new JsonParser().parse(response.getBody()).getAsJsonObject();
+        responseJson = Optional.of(new JsonParser().parse(response.getBody()).getAsJsonObject());
         return responseJson;
     }
-    @Override
-    public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech, JsonObject wordDetails) {
-        JsonArray definitions = wordDetails.getAsJsonArray("results");
-        Set<String> partsOfSpeech = new HashSet<>();
 
-        for (int i = 0; i < definitions.size(); i++) {
-            JsonObject definition = definitions.get(i).getAsJsonObject();
-            partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
-        }
-
-        return partsOfSpeech.contains(expectedPartOfSpeech);
-    }
     @Override
-    public boolean validatePhraseComponent(String word, String expectedPartOfSpeech) {
-        if ((expectedPartOfSpeech == "noun" || expectedPartOfSpeech == "verb") && word.length() == 0) {
-            Exception e = new IllegalStateException();
-            LOGGER.log(Level.SEVERE, "Critical error: expected component " + expectedPartOfSpeech + " is empty!", e);
+    public boolean checkPartOfSpeech(String word, String expectedPartOfSpeech) {
+        Optional<JsonObject> wordDetails = getWordDetails(word);
+        if(wordDetails.isEmpty()){
             return false;
-        }
-        Boolean validPartOfSpeech = checkPartOfSpeech(word, expectedPartOfSpeech, getWordDetails(word));
-        try {
-            if (validPartOfSpeech) {
+        } else {
+            JsonArray definitions;
+            Set<String> partsOfSpeech = new HashSet<>();
+
+            try {
+                definitions = wordDetails.get().getAsJsonArray("results");
+
+                for (int i = 0; i < definitions.size(); i++) {
+                    JsonObject definition = definitions.get(i).getAsJsonObject();
+                    try {
+                        partsOfSpeech.add(definition.get("partOfSpeech").getAsString());
+                    } catch (UnsupportedOperationException e) {
+                        // Words API may occasionally have a null parts of speech. This is an error on their part.
+                        log.warn(word + " is missing a parts of speech definition from the Words API. Set for manual review.");
+                        return true;
+                    }
+                }
+
+            } catch (NullPointerException e) {
+                // Words API may occasionally have a null results set. This is an error on their part.
+                log.warn(word + " is missing a results set from the Words API. Set for manual review.");
+                return true;
+            }
+
+            if(partsOfSpeech.contains(expectedPartOfSpeech)){
                 return true;
             } else {
-                LOGGER.warning("The word passed in isn't a " + expectedPartOfSpeech + "!");
+                log.warn(word + " isn't a(n) " + expectedPartOfSpeech + "!");
                 return false;
             }
-        } catch (Exception e) {
-            LOGGER.warning("The " + expectedPartOfSpeech + " passed in isn't an English word!");
-            return false;
         }
     }
 
     @Override
     public void validatePhrase(ToBeReviewed tbr) {
-        Optional<RejectedPhrase> matchingRejectedPhrase = rejectedPhraseRepository.findByRejectedPhrase(tbr.toString());
-        if (matchingRejectedPhrase.isEmpty()) {
-            boolean validPhrase = validatePhraseComponent(tbr.getNoun(), "noun") && validatePhraseComponent(tbr.getVerb(), "verb") && validatePhraseComponent(tbr.getAdverb(), "adverb") && validatePhraseComponent(tbr.getPreposition(), "preposition");
-            if (validPhrase) {
-                toBeReviewedRepository.setHasBeenGroomedTrue(tbr.getId());
-            } else {
-                LOGGER.warning("Phrase is invalid.");
-                updateTables(tbr);
-            }
-        }
-        else {
-            LOGGER.warning("Phrase has already been rejected!");
+
+        boolean validPhrase = checkPartOfSpeech(tbr.getNoun(), "noun")
+                && checkPartOfSpeech(tbr.getVerb(), "verb")
+                && (tbr.getAdverb().equals(Constants.NULL_VALUE_WORD) || checkPartOfSpeech(tbr.getAdverb(), "adverb"))
+                && (tbr.getPreposition().equals(Constants.NULL_VALUE_WORD) || checkPartOfSpeech(tbr.getPreposition(), "preposition"));
+
+        if (validPhrase) {
+            tbr.setHasBeenGroomed(true);
+            toBeReviewedRepository.save(tbr);
+        } else {
+            log.warn("Phrase is invalid.");
             updateTables(tbr);
         }
     }
@@ -108,7 +125,9 @@ public class ToBeReviewedCheckerServiceImpl implements ToBeReviewedCheckerServic
     @Override
     public void updateTables(ToBeReviewed tbr) {
         rejectedPhraseRepository.save(new RejectedPhrase(tbr.toString()));
-        reviewSubmittingUserRepository.deleteByToBeReviewedId(tbr.getId());
+        // TODO: Create notification for users when their submitted phrase has been rejected after review. Jira TRIB-153
+        ReviewSubmittingUser rsu = new ReviewSubmittingUser(reviewSubmittingUserRepository.findUserIdByToBeReviewedId(tbr.getId()),tbr.getId());
+        reviewSubmittingUserRepository.delete(rsu);
         toBeReviewedRepository.deleteById(tbr.getId());
     }
 

@@ -21,7 +21,7 @@ public class ToBeReviewedServiceImpl implements ToBeReviewedService {
         this.lastAssignedForReviewId = id;
     }
     Long lastAssignedForReviewId = 0L;
-    public Optional<ToBeReviewed> getReviewPhraseWithoutPlaceholderNullvalue() {
+    public Optional<ToBeReviewed> getReviewPhrase() {
         Optional<ToBeReviewed> opt = toBeReviewedRepository.findNextReviewEligible(lastAssignedForReviewId);
         if (opt.isPresent()) {
             ToBeReviewed tbr = opt.get();

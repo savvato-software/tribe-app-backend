@@ -24,7 +24,7 @@ public class ToBeReviewedAPIController {
 
     @GetMapping
     public ResponseEntity getPhrase() {
-        Optional<ToBeReviewed> opt = toBeReviewedService.getReviewPhraseWithoutPlaceholderNullvalue();
+        Optional<ToBeReviewed> opt = toBeReviewedService.getReviewPhrase();
 
         if (opt.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(opt.get());

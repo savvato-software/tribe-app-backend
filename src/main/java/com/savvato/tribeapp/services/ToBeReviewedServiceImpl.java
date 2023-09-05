@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,15 @@ public class ToBeReviewedServiceImpl implements ToBeReviewedService {
     public Optional<ToBeReviewed> getReviewPhrase() {
         Optional<ToBeReviewed> opt = toBeReviewedRepository.findNextReviewEligible(lastAssignedForReviewId);
         if (opt.isPresent()) {
-            setLastAssignedForReview(opt.get().getId());
-            return opt;
+            ToBeReviewed tbr = opt.get();
+            if(tbr.getAdverb().equals(Constants.NULL_VALUE_WORD)){
+                tbr.setAdverb("");
+            }
+            if(tbr.getPreposition().equals(Constants.NULL_VALUE_WORD)){
+                tbr.setPreposition("");
+            }
+            setLastAssignedForReview(tbr.getId());
+            return Optional.of(tbr);
         }
         return Optional.empty();
     }

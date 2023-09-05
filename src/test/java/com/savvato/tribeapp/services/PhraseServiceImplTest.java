@@ -1,5 +1,7 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.constants.Constants;
+import com.savvato.tribeapp.dto.PhraseDTO;
 import com.savvato.tribeapp.entities.*;
 import com.savvato.tribeapp.repositories.*;
 import org.junit.jupiter.api.Test;
@@ -12,13 +14,15 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith({SpringExtension.class})
@@ -200,5 +204,26 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         verify(reviewSubmittingUserRepository, times(1)).save(Mockito.any());
         assertFalse(rtn);
+    }
+
+    @Test
+    public void testGetListOfPhraseDTOByUserIdWithoutPlaceholderNullvalueForEmptyStrings() {
+        User user1 = getUser1();
+        String testWord = "test";
+        String testEmptyString = "";
+        List<Long> longList = new ArrayList<>(Arrays.asList(1L));
+        Phrase testPhrase = getTestPhrase1();
+
+        Mockito.when(userPhraseService.findPhraseIdsByUserId(anyLong())).thenReturn(Optional.of(longList));
+        Mockito.when(phraseRepository.findPhraseByPhraseId(anyLong())).thenReturn(Optional.of(testPhrase));
+        Mockito.when(adverbRepository.findAdverbById(anyLong())).thenReturn(Optional.of(Constants.NULL_VALUE_WORD));
+        Mockito.when(verbRepository.findVerbById(anyLong())).thenReturn(Optional.of(testWord));
+        Mockito.when(prepositionRepository.findPrepositionById(anyLong())).thenReturn(Optional.of(Constants.NULL_VALUE_WORD));
+        Mockito.when(nounRepository.findNounById(anyLong())).thenReturn(Optional.of(testWord));
+
+        Optional<List<PhraseDTO>> phraseDTOS = phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(user1.getId());
+        PhraseDTO phrase = phraseDTOS.get().get(0);
+        assertEquals(phrase.adverb,testEmptyString);
+        assertEquals(phrase.preposition,testEmptyString);
     }
 }

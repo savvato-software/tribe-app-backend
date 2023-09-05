@@ -2,7 +2,6 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.dto.AttributeDTO;
 import com.savvato.tribeapp.dto.PhraseDTO;
-import com.savvato.tribeapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ public class AttributesServiceImpl implements AttributesService{
         List<AttributeDTO> attributes = new ArrayList<>();
 
         // Get all user phrases as phraseDTOs
-        Optional<List<PhraseDTO>> optUserPhraseDTOs = phraseService.getListOfPhraseDTOByUserId(userId);
+        Optional<List<PhraseDTO>> optUserPhraseDTOs = phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(userId);
 
         // If there are phrases, build DTO and add to attributes list
         if(optUserPhraseDTOs.isPresent()) {

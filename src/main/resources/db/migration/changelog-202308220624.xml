@@ -7,14 +7,14 @@
 
     <changeSet author="audra" id="202308220624-01" context="test">
         <sql dbms="mysql">
-            INSERT INTO to_be_reviewed (id, has_been_groomed, adverb, verb, noun, preposition)
-            VALUES (1, false, "obsessively", "codes", "from", "books");
+            INSERT INTO to_be_reviewed (has_been_groomed, adverb, verb, noun, preposition)
+            VALUES (false, "obsessively", "codes", "from", "books");
 
-            INSERT INTO to_be_reviewed (id, has_been_groomed, adverb, verb, noun, preposition)
-            VALUES (2, false, "never", "converts", "from", "mac");
+            INSERT INTO to_be_reviewed (has_been_groomed, adverb, verb, noun, preposition)
+            VALUES (false, "never", "converts", "from", "mac");
 
-            INSERT INTO to_be_reviewed (id, has_been_groomed, adverb, verb, noun, preposition)
-            VALUES (3, false, "often", "cooks", "from", "scratch");
+            INSERT INTO to_be_reviewed (has_been_groomed, adverb, verb, noun, preposition)
+            VALUES (false, "often", "cooks", "from", "scratch");
         </sql>
     </changeSet>
 

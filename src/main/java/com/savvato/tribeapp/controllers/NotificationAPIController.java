@@ -1,11 +1,13 @@
 package com.savvato.tribeapp.controllers;
 
+import com.savvato.tribeapp.controllers.dto.NotificationRequest;
 import com.savvato.tribeapp.dto.NotificationDTO;
 import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,12 +22,12 @@ public class NotificationAPIController {
     private NotificationService notificationService;
 
     @PutMapping
-    public ResponseEntity<String> updateNotification(@RequestBody Long id) {
-        boolean isRead = notificationService.checkNotificationReadStatus(id);
+    public ResponseEntity<String> updateNotification(@RequestBody @Valid NotificationRequest req) {
+        boolean isRead = notificationService.checkNotificationReadStatus(req.id);
         if (isRead) {
             return ResponseEntity.ok("Notification is already read");
         } else {
-            notificationService.updateNotificationReadStatus(id);
+            notificationService.updateNotificationReadStatus(req.id);
             return ResponseEntity.ok("Notification read status updated");
         }
     }

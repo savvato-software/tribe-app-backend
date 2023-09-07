@@ -34,6 +34,6 @@ public class ReviewDecisionReasonServiceImpl implements ReviewDecisionReasonServ
         }
 
         return Optional.of(rdrDtoList);
-    };
+    }
 
 }

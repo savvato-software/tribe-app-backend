@@ -28,6 +28,7 @@ public class ReviewDecisionReasonServiceImpl implements ReviewDecisionReasonServ
 
             for(ReviewDecisionReason rdr : rdrList) {
                 ReviewDecisionReasonDTO rdrDto = ReviewDecisionReasonDTO.builder().build();
+                rdrDto.id = rdr.getId();
                 rdrDto.reason = rdr.getReason();
                 rdrDtoList.add(rdrDto);
             }

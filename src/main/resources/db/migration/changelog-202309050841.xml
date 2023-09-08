@@ -5,17 +5,27 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="audra" id="202308220624-01" context="test">
-        <sql dbms="mysql">
-            INSERT INTO to_be_reviewed (has_been_groomed, adverb, verb, noun, preposition)
-            VALUES (false, "obsessively", "codes", "from", "books");
-
-            INSERT INTO to_be_reviewed (has_been_groomed, adverb, verb, noun, preposition)
-            VALUES (false, "never", "converts", "from", "mac");
-
-            INSERT INTO to_be_reviewed (has_been_groomed, adverb, verb, noun, preposition)
-            VALUES (false, "often", "cooks", "from", "scratch");
-        </sql>
+    <changeSet author="loretdemolas" id="202309050841" context="test">
+        <insert tableName="notifications">
+            <column name="id" value="3"/>
+            <column name="user_id" value="2"/>
+            <column name="type_id" value="1"/>
+            <column name="description" value="Attribute request approved"/>
+            <column name="body" value="Your attribute &quot;Meat-Head&quot; was approved"/>
+            <column name="is_read" valueNumeric="1"/>
+            <column name="created_date" valueComputed="NOW()"/>
+            <column name="last_updated_date" valueComputed="NOW()"/>
+        </insert>
+        <insert tableName="notifications">
+            <column name="id" value="4"/>
+            <column name="user_id" value="2"/>
+            <column name="type_id" value="2"/>
+            <column name="description" value="Attribute request rejected"/>
+            <column name="body" value="Your attribute &quot; Between &quot; was rejected due to being a non english word"/>
+            <column name="is_read" valueNumeric="1"/>
+            <column name="created_date" valueComputed="NOW()"/>
+            <column name="last_updated_date" valueComputed="NOW()"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

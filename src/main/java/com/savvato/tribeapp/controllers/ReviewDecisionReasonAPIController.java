@@ -22,11 +22,9 @@ public class ReviewDecisionReasonAPIController {
     @GetMapping
     public ResponseEntity<List<ReviewDecisionReasonDTO>> getReviewDecisionReasons() {
 
-        Optional<List<ReviewDecisionReasonDTO>> opt = reviewDecisionReasonService.getReviewDecisionReasons();
+        List<ReviewDecisionReasonDTO> rdrDtoList = reviewDecisionReasonService.getReviewDecisionReasons();
 
-        if (opt.isPresent())
-            return ResponseEntity.status(HttpStatus.OK).body(opt.get());
-        else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(rdrDtoList);
+
     }
 }

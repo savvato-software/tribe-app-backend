@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface ReviewDecisionReasonRepository extends CrudRepository<ReviewDecisionReason, Long> {
 
     @Query(nativeQuery = true, value = "select rdr.* from review_decision_reason rdr")
-    Optional<List<ReviewDecisionReason>> findAllReviewDecisionReasons();
+    List<ReviewDecisionReason> findAllReviewDecisionReasons();
+
 }

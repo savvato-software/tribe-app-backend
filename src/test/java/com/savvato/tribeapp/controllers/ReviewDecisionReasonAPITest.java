@@ -86,47 +86,13 @@ public class ReviewDecisionReasonAPITest {
             rdrDTOList.add(rdrDTO);
         }
 
-        Optional<List<ReviewDecisionReasonDTO>> expectedResult = Optional.of(rdrDTOList);
-        Mockito.when(reviewDecisionreasonService.getReviewDecisionReasons()).thenReturn(expectedResult);
-
+        Mockito.when(reviewDecisionreasonService.getReviewDecisionReasons()).thenReturn(rdrDTOList);
 
         this.mockMvc.
                 perform(
                         get("/api/review-decision-reason")
                                 .header("Authorization", "Bearer " + auth))
                 .andExpect(status().isOk())
-                .andReturn();
-    }
-
-    @Test
-    public void testReviewDecisionReasonSadPath() throws Exception {
-        Set<UserRole> rolesSet = new HashSet<>();
-        rolesSet.add(UserRole.ROLE_ACCOUNTHOLDER);
-        rolesSet.add(UserRole.ROLE_ADMIN);
-        rolesSet.add(UserRole.ROLE_PHRASEREVIEWER);
-
-        User user = new User();
-        user.setId(1L);
-        user.setName(Constants.FAKE_USER_NAME1);
-        user.setPassword("phrase_reviewer"); // pw => admin
-        user.setEnabled(1);
-        user.setRoles(rolesSet);
-        user.setCreated();
-        user.setLastUpdated();
-        user.setEmail(Constants.FAKE_USER_EMAIL1);
-
-        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString())).thenReturn(
-                new UserPrincipal(user)
-        );
-        String auth = AuthServiceImpl.generateAccessToken(user);
-
-        Mockito.when(reviewDecisionreasonService.getReviewDecisionReasons()).thenReturn(Optional.empty());
-
-        this.mockMvc.
-                perform(
-                        get("/api/review-decision-reason")
-                                .header("Authorization", "Bearer " + auth))
-                .andExpect(status().isBadRequest())
                 .andReturn();
     }
 

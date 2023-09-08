@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 
@@ -36,7 +37,7 @@ public class ReviewDecisionReasonServiceImplTest {
     ReviewDecisionReasonRepository reviewDecisionReasonRepository;
 
     @Test
-    public void getReviewReasonDecisions() {
+    public void getReviewDecisionReasonsHappyPath() {
 
         List<ReviewDecisionReason> rdrList = new ArrayList<>();
 
@@ -47,11 +48,21 @@ public class ReviewDecisionReasonServiceImplTest {
             rdrList.add(rdr);
         }
 
-        Mockito.when(reviewDecisionReasonRepository.findAllReviewDecisionReasons()).thenReturn(Optional.of(rdrList));
-        Optional<List<ReviewDecisionReasonDTO>> opt = reviewDecisionReasonService.getReviewDecisionReasons();
-        assertEquals(opt.get().size(), 5);
-        assertEquals(opt.get().get(4).id, 5L);
-        assertEquals(opt.get().get(4).reason, "testing4");
+        Mockito.when(reviewDecisionReasonRepository.findAllReviewDecisionReasons()).thenReturn(rdrList);
+        List<ReviewDecisionReasonDTO> rdrDtoList = reviewDecisionReasonService.getReviewDecisionReasons();
+        assertEquals(rdrDtoList.size(), 5);
+        assertEquals(rdrDtoList.get(4).id, 5L);
+        assertEquals(rdrDtoList.get(4).reason, "testing4");
+
+    }
+
+    @Test
+    public void getReviewDecisionReasonsSadPath() {
+        List emptyList = new ArrayList<>();
+        Mockito.when(reviewDecisionReasonRepository.findAllReviewDecisionReasons()).thenReturn(emptyList);
+        assertThrows(IllegalStateException.class, () -> {
+            reviewDecisionReasonService.getReviewDecisionReasons();
+        });
 
     }
 }

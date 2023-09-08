@@ -9,5 +9,5 @@ import java.util.Optional;
 @Service
 public interface ReviewDecisionReasonService {
 
-    Optional<List<ReviewDecisionReasonDTO>> getReviewDecisionReasons();
+    List<ReviewDecisionReasonDTO> getReviewDecisionReasons();
 }

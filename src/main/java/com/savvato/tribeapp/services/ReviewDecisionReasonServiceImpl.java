@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReviewDecisionReasonServiceImpl implements ReviewDecisionReasonService {
@@ -17,15 +16,14 @@ public class ReviewDecisionReasonServiceImpl implements ReviewDecisionReasonServ
     ReviewDecisionReasonRepository reviewDecisionReasonRepository;
 
     @Override
-    public Optional<List<ReviewDecisionReasonDTO>> getReviewDecisionReasons() {
+    public List<ReviewDecisionReasonDTO> getReviewDecisionReasons() {
 
-        Optional<List<ReviewDecisionReason>> opt = reviewDecisionReasonRepository.findAllReviewDecisionReasons();
-
+        List<ReviewDecisionReason> rdrList = reviewDecisionReasonRepository.findAllReviewDecisionReasons();
         List<ReviewDecisionReasonDTO> rdrDtoList = new ArrayList<>();
 
-        if(opt.isPresent()){
-            List<ReviewDecisionReason> rdrList = opt.get();
-
+        if(rdrList.isEmpty()){
+            throw new IllegalStateException("Unable to get results from review_decision_reasons table in the database.");
+        } else {
             for(ReviewDecisionReason rdr : rdrList) {
                 ReviewDecisionReasonDTO rdrDto = ReviewDecisionReasonDTO.builder().build();
                 rdrDto.id = rdr.getId();
@@ -34,7 +32,7 @@ public class ReviewDecisionReasonServiceImpl implements ReviewDecisionReasonServ
             }
         }
 
-        return Optional.of(rdrDtoList);
+        return rdrDtoList;
     }
 
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="sun" id="202308300939-01">
+
+        <sql dbms="mysql">
+            INSERT INTO user (id, name, phone, email, password, enabled)
+            VALUES (3,
+            "testuser2",
+            "3035551214",
+            "testuser2@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", <!-- pw = admin -->
+            1);
+        </sql>
+        <sql dbms="mysql">
+            INSERT INTO user (id, name, phone, email, password, enabled)
+            VALUES (4,
+            "testuser3",
+            "3035551215",
+            "testuser3@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", <!-- pw = admin -->
+            1);
+        </sql>
+        <sql dbms="mysql">
+            INSERT INTO user (id, name, phone, email, password, enabled)
+            VALUES (5,
+            "testuser4",
+            "3035551216",
+            "testuser4@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", <!-- pw = admin -->
+            1);
+        </sql>
+        <sql dbms="mysql">
+            INSERT INTO user (id, name, phone, email, password, enabled)
+            VALUES (6,
+            "testuser5",
+            "3035551217",
+            "testuser5@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", <!-- pw = admin -->
+            1);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+
+

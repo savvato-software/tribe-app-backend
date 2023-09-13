@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
@@ -95,5 +97,27 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
 
         assertEquals(rtnTwo.get(), expectedToBeReviewed);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());
+    }
+
+    @Test
+    public void testGetReviewPhraseWithoutPlaceholderNullvalueReturnsEmptyString() {
+        String testWord = "test";
+        String testEmptyString = "";
+
+        ToBeReviewed testTbr = new ToBeReviewed();
+        testTbr.setId(1L);
+        testTbr.setHasBeenGroomed(true);
+        testTbr.setAdverb(Constants.NULL_VALUE_WORD);
+        testTbr.setVerb(testWord);
+        testTbr.setPreposition(Constants.NULL_VALUE_WORD);
+        testTbr.setNoun(testWord);
+
+        Mockito.when(toBeReviewedRepository.findNextReviewEligible(anyLong())).thenReturn(Optional.of(testTbr));
+
+        Optional<ToBeReviewed> tbrOptional = toBeReviewedService.getReviewPhrase();
+        ToBeReviewed tbr = tbrOptional.get();
+
+        assertEquals(tbr.getAdverb(),testEmptyString);
+        assertEquals(tbr.getPreposition(),testEmptyString);
     }
 }

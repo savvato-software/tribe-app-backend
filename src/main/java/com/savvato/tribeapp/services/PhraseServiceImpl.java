@@ -128,9 +128,9 @@ public class PhraseServiceImpl implements PhraseService {
     @Override
     public boolean applyPhraseToUser(Long userId, String adverb, String verb, String preposition, String noun) {
 
-        String adverbLowerCase = changeToLowerCase(adverb);
+        String adverbLowerCase = adverb.isBlank() ? Constants.NULL_VALUE_WORD : changeToLowerCase(adverb);
         String verbLowerCase = changeToLowerCase(verb);
-        String prepositionLowerCase = changeToLowerCase(preposition);
+        String prepositionLowerCase = preposition.isBlank() ? Constants.NULL_VALUE_WORD : changeToLowerCase(preposition);
         String nounLowerCase = changeToLowerCase(noun);
 
         Optional<Long> previouslyReviewedPhraseId = findPreviouslyApprovedPhraseId(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase);
@@ -156,12 +156,11 @@ public class PhraseServiceImpl implements PhraseService {
                 toBeReviewed.setVerb(verbLowerCase);
                 toBeReviewed.setPreposition(prepositionLowerCase);
                 toBeReviewed.setNoun(nounLowerCase);
-                toBeReviewedRepository.save(toBeReviewed);
+                ToBeReviewed tbr = toBeReviewedRepository.save(toBeReviewed);
+
                 log.info("phrase added to to_be_reviewed table");
 
-                Optional<ToBeReviewed> toBeReviewedPhraseNew = toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(adverbLowerCase, verbLowerCase, nounLowerCase, prepositionLowerCase);
-
-                addUserAndPhraseToReviewSubmittingUserRepository(userId, toBeReviewedPhraseNew.get().getId());
+                addUserAndPhraseToReviewSubmittingUserRepository(userId, tbr.getId());
                 log.info("ToBeReviewed phrase has been mapped to user " + userId);
             }
 
@@ -189,7 +188,7 @@ public class PhraseServiceImpl implements PhraseService {
             return Optional.empty();
         }
 
-        if (adverb == null || adverb.trim().isEmpty()) {
+        if (adverb.equals(Constants.NULL_VALUE_WORD)) {
             adverbId = Constants.NULL_VALUE_ID;
         } else if (findAdverbIfExists(adverb).isPresent()) {
             adverbId = adverbRepository.findByWord(adverb).get().getId();
@@ -197,7 +196,7 @@ public class PhraseServiceImpl implements PhraseService {
             return Optional.empty();
         }
 
-        if (preposition == null || preposition.trim().isEmpty()) {
+        if (preposition.equals(Constants.NULL_VALUE_WORD)) {
             prepositionId = Constants.NULL_VALUE_ID;
         } else if (findPrepositionIfExists(preposition).isPresent()) {
             prepositionId = prepositionRepository.findByWord(preposition).get().getId();
@@ -237,7 +236,7 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     @Override
-    public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long userId) {
+    public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(Long userId) {
 
         // create list of PhraseDtos
         List<PhraseDTO> phraseDTOS = new ArrayList<>();
@@ -260,7 +259,7 @@ public class PhraseServiceImpl implements PhraseService {
                 }
             }
 
-            // loop through phrases and get words
+            // loop through phrases and get words. replace nullvalue placeholders with empty string
             for (Phrase phrase : phrases) {
                 PhraseDTO phraseDTO = PhraseDTO.builder().build();
 
@@ -270,13 +269,15 @@ public class PhraseServiceImpl implements PhraseService {
                 Optional<String> optNoun = nounRepository.findNounById(phrase.getNounId());
 
                 if (optAdverb.isPresent()) {
-                    phraseDTO.adverb = optAdverb.get();
+                    String adverbText = optAdverb.get();
+                    phraseDTO.adverb = adverbText.equals(Constants.NULL_VALUE_WORD) ? "" : adverbText;
                 }
                 if (optVerb.isPresent()) {
                     phraseDTO.verb = optVerb.get();
                 }
                 if (optPreposition.isPresent()) {
-                    phraseDTO.preposition = optPreposition.get();
+                    String prepositionText = optPreposition.get();
+                    phraseDTO.preposition = prepositionText.equals(Constants.NULL_VALUE_WORD) ? "" : prepositionText;
                 }
                 if (optNoun.isPresent()) {
                     phraseDTO.noun = optNoun.get();

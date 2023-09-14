@@ -106,7 +106,6 @@
 			<artifactId>ehcache</artifactId>
 			<version>3.4.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
@@ -123,10 +122,45 @@
 			<artifactId>gson</artifactId>
 			<version>2.10.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-security</artifactId>
+			<version>1.7.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<jvmArguments>-Dspring.application.admin.enabled=true</jvmArguments>
+					<excludeDevtools>true</excludeDevtools>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<apiDocsUrl>http://localhost:8080/docs</apiDocsUrl>
+					<outputDir>${project.build.directory}/a</outputDir>
+					<outputFileName>openapi.json</outputFileName>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -170,10 +204,6 @@
 						<version>${spring-restdocs.version}</version>
 					</dependency>
 				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -5,6 +5,8 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletResponse;
 
 import com.savvato.tribeapp.config.filters.JwtTokenFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@SecurityScheme(
+        name = "Bearer Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
@@ -58,7 +66,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
     				}
     			).and();
-    	
     	// Set permissions on endpoints
     	http.authorizeRequests()
         .antMatchers(HttpMethod.HEAD, "/api/resource/topic/*").permitAll()  // this is because of the saveAs extension we use on the front end.. it won't let us pass in headers, so no authorization can be had.. ASAP, find a better way.
@@ -72,9 +79,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.GET, "/api/public/user/isUserInformationUnique").permitAll()
         .antMatchers(HttpMethod.POST, "/api/public/sendSMSChallengeCodeToPhoneNumber").permitAll()
         .antMatchers(HttpMethod.POST, "/api/public/isAValidSMSChallengeCode").permitAll()
-
+        .antMatchers("/swagger-ui/**", "/swagger-ui**", "/docs/**", "/docs**").permitAll()
     	.anyRequest().hasAnyRole("admin,accountholder");
-    		
+
     	
     	// Add JWT token filter
     	http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

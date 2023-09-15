@@ -7,6 +7,13 @@
 
     <changeSet author="sun" id="202308300939-01">
         <sql dbms="mysql">
+            ALTER TABLE connections
+            RENAME COLUMN userId1 TO requestingUserId;
+            ALTER TABLE connections
+            RENAME COLUMN userId2 TO toBeConnectedWithUserId;
+        </sql>
+
+        <sql dbms="mysql">
             INSERT INTO connections (id, requestingUserId, toBeConnectedWithUserId)
             VALUES (1,
             3,

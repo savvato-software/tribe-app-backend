@@ -12,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -43,9 +40,18 @@ public class ConnectAPIController {
     }
 
     @PostMapping
-    public boolean connect(@Valid ConnectRequest connectRequest){
-        boolean rtn = connectService.connect(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId, connectRequest.qrcodePhrase);
-        return rtn;
+    public boolean connect(@Valid ConnectRequest connectRequest) {
+        if (connectService.validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
+            boolean isConnectionSaved = connectService.saveConnectionDetails(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId);
+            if (isConnectionSaved) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
     @MessageMapping("/connect/room")
     public void connect(@Payload ConnectIncomingMessageDTO incoming, UserPrincipal user, @Header("simpSessionId") String sessionId) {

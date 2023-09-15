@@ -13,5 +13,5 @@ public interface PhraseService {
 
     Optional<Long> findPreviouslyApprovedPhraseId(String adverb, String verb, String preposition, String noun);
 
-    Optional<List<PhraseDTO>> getListOfPhraseDTOByUserId(Long id);
+    Optional<List<PhraseDTO>> getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(Long id);
 }

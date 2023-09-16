@@ -198,7 +198,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(any(Long.class), any(Long.class), any(Long.class), any(Long.class))).thenReturn(Optional.empty());
 
-        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.empty()).thenReturn(Optional.of(toBeReviewed));
+        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.of(toBeReviewed));
 
         boolean rtn = phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
 
@@ -223,7 +223,69 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         Optional<List<PhraseDTO>> phraseDTOS = phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(user1.getId());
         PhraseDTO phrase = phraseDTOS.get().get(0);
-        assertEquals(phrase.adverb,testEmptyString);
-        assertEquals(phrase.preposition,testEmptyString);
+        assertEquals(phrase.adverb, testEmptyString);
+        assertEquals(phrase.preposition, testEmptyString);
+    }
+
+    @Test
+    public void testApplyPhraseToUserWhenAdverbIsBlank() {
+        User user1 = getUser1();
+        String testAdverb = "";
+        String testAdverbConverted = "nullvalue";
+        String testVerb = getTestVerb1().getWord();
+        String testPreposition = getTestPreposition1().getWord();
+        String testNoun = getTestNoun1().getWord();
+
+        ToBeReviewed tbrSaved = new ToBeReviewed();
+        tbrSaved.setId(1L);
+        tbrSaved.setHasBeenGroomed(false);
+        tbrSaved.setAdverb(testAdverbConverted);
+        tbrSaved.setVerb(testVerb);
+        tbrSaved.setPreposition(testPreposition);
+        tbrSaved.setNoun(testNoun);
+
+        // Should return false if the phrase has not been seen before
+        Mockito.when(toBeReviewedRepository.save(any())).thenReturn(tbrSaved);
+        boolean applyPhraseToUser = phraseService.applyPhraseToUser(user1.getId(),testAdverb,testVerb,testPreposition, testNoun);
+        assertFalse(applyPhraseToUser);
+
+        // Empty Adverb should be converted to "nullvalue"
+        ArgumentCaptor<String> argAdverb = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> argVerb = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> argPreposition = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> argNoun = ArgumentCaptor.forClass(String.class);
+        verify(toBeReviewedRepository, times(1)).findByAdverbAndVerbAndNounAndPreposition(argAdverb.capture(),argVerb.capture(),argNoun.capture(),argPreposition.capture());
+        assertEquals(argAdverb.getValue(), testAdverbConverted);
+    }
+
+    @Test
+    public void testApplyPhraseToUserWhenPrepositionIsBlank() {
+        User user1 = getUser1();
+        String testAdverb = getTestAdverb1().getWord();
+        String testVerb = getTestVerb1().getWord();
+        String testPreposition = "";
+        String testPrepositionConverted = "nullvalue";
+        String testNoun = getTestNoun1().getWord();
+
+        ToBeReviewed tbrSaved = new ToBeReviewed();
+        tbrSaved.setId(1L);
+        tbrSaved.setHasBeenGroomed(false);
+        tbrSaved.setAdverb(testAdverb);
+        tbrSaved.setVerb(testVerb);
+        tbrSaved.setPreposition(testPrepositionConverted);
+        tbrSaved.setNoun(testNoun);
+
+        // Should return false if the phrase has not been seen before
+        Mockito.when(toBeReviewedRepository.save(any())).thenReturn(tbrSaved);
+        boolean applyPhraseToUser = phraseService.applyPhraseToUser(user1.getId(),testAdverb,testVerb,testPreposition, testNoun);
+        assertFalse(applyPhraseToUser);
+
+        // Empty Preposition should be converted to "nullvalue"
+        ArgumentCaptor<String> argAdverb = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> argVerb = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> argPreposition = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> argNoun = ArgumentCaptor.forClass(String.class);
+        verify(toBeReviewedRepository, times(1)).findByAdverbAndVerbAndNounAndPreposition(argAdverb.capture(),argVerb.capture(),argNoun.capture(),argPreposition.capture());
+        assertEquals(argPreposition.getValue(), testPrepositionConverted);
     }
 }

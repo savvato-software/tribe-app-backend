@@ -1,6 +1,6 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.entities.ToBeReviewed;
+import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
 import com.savvato.tribeapp.services.ToBeReviewedService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class ToBeReviewedAPIController {
 
     @GetMapping
     public ResponseEntity getPhrase() {
-        Optional<ToBeReviewed> opt = toBeReviewedService.getReviewPhrase();
+        Optional<ToBeReviewedDTO> opt = toBeReviewedService.getReviewPhrase();
 
         if (opt.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(opt.get());

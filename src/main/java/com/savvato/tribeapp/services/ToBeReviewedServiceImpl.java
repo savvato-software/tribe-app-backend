@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.constants.Constants;
+import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class ToBeReviewedServiceImpl implements ToBeReviewedService {
         this.lastAssignedForReviewId = id;
     }
     Long lastAssignedForReviewId = 0L;
-    public Optional<ToBeReviewed> getReviewPhrase() {
+    public Optional<ToBeReviewedDTO> getReviewPhrase() {
         Optional<ToBeReviewed> opt = toBeReviewedRepository.findNextReviewEligible(lastAssignedForReviewId);
         if (opt.isPresent()) {
             ToBeReviewed tbr = opt.get();
@@ -32,7 +33,16 @@ public class ToBeReviewedServiceImpl implements ToBeReviewedService {
                 tbr.setPreposition("");
             }
             setLastAssignedForReview(tbr.getId());
-            return Optional.of(tbr);
+
+            ToBeReviewedDTO rtn = ToBeReviewedDTO.builder()
+                    .hasBeenGroomed(tbr.isHasBeenGroomed())
+                    .adverb(tbr.getAdverb())
+                    .verb(tbr.getVerb())
+                    .preposition(tbr.getPreposition())
+                    .noun(tbr.getNoun())
+                    .build();
+
+            return Optional.of(rtn);
         }
         return Optional.empty();
     }

@@ -10,7 +10,7 @@ import com.savvato.tribeapp.entities.UserRole;
 
 public interface UserRoleService {
 
-	Iterable<UserRoleDTO> getRoles();
+	List<UserRoleDTO> getRoles();
 	
 
 }

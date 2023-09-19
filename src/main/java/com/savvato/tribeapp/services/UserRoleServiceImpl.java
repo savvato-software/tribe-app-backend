@@ -17,7 +17,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 	@Autowired
 	UserRoleRepository userRoleRepo;
 
-	public Iterable<UserRoleDTO> getRoles() {
+	public List<UserRoleDTO> getRoles() {
 		Iterable<UserRole> userRoles = userRoleRepo.findAll();
 		List<UserRoleDTO> rtn = new ArrayList<>();
 		for (UserRole userRole : userRoles) {

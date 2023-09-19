@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -15,10 +16,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -183,4 +184,42 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 	}
 
 	// etc...
+
+	@Test
+	public void testGetAllUsersFindsListOfTwoTestUsers(){
+		User user1 = getUser1();
+		User user2 = getUser2();
+
+		List<User> users = new ArrayList<>();
+		users.add(user1);
+		users.add(user2);
+
+		List<UserDTO> userDTOS = new ArrayList<>();
+		for (User user : users){
+			UserDTO userDTO = UserDTO.builder()
+					.name(user.getName())
+					.password(user.getPassword())
+					.phone(user.getPhone())
+					.email(user.getEmail())
+					.enabled(user.getEnabled())
+					.created(user.getCreated().toString())
+					.lastUpdated(user.getLastUpdated().toString())
+					.build();
+			userDTOS.add(userDTO);
+		}
+
+		Mockito.when(userRepository.findAll()).thenReturn(users);
+
+		List<UserDTO> rtn = userService.getAllUsers();
+		assertEquals(rtn.size(), 2);
+		for(int i=0; i<rtn.size(); i++) {
+			assertEquals(rtn.get(i).name, userDTOS.get(i).name);
+			assertEquals(rtn.get(i).password, userDTOS.get(i).password);
+			assertEquals(rtn.get(i).phone, userDTOS.get(i).phone);
+			assertEquals(rtn.get(i).email, userDTOS.get(i).email);
+			assertEquals(rtn.get(i).enabled, userDTOS.get(i).enabled);
+			assertEquals(rtn.get(i).created, userDTOS.get(i).created);
+			assertEquals(rtn.get(i).lastUpdated, userDTOS.get(i).lastUpdated);
+		}
+	}
 }

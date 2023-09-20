@@ -131,10 +131,10 @@ public class ConnectServiceImpl implements ConnectService {
         return null;
     }
 
-    @Override
-    public Optional<String> getAllUserConnection(long userId, long userIdToBeConnected) {
-        return Optional.empty();
-    }
+    //@Override
+    //public Optional<String> getAllUserConnection(long userId, long userIdToBeConnected) {
+//        return Optional.empty();
+//    }
 
     public List<Connection> getByToBeConnectedWithUserId(Long toBeConnectedWithUserId) {
         return (List<Connection>) connectionsRepository.findByToBeConnectedWithUserId(toBeConnectedWithUserId);

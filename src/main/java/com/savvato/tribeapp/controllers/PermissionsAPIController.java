@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.services.UserRoleMapService;
 import com.savvato.tribeapp.services.UserRoleService;
@@ -26,7 +27,7 @@ public class PermissionsAPIController {
     UserService userService;
 
     @GetMapping("/users")
-    public ResponseEntity<Iterable<User>> getAllUsers() {
+    public ResponseEntity<Iterable<UserDTO>> getAllUsers() {
 
         // WHY is this defined here? Instead of UserAPIController? It's because only
         // permissions needs this functionality, at the moment. Also, all the methods
@@ -35,7 +36,7 @@ public class PermissionsAPIController {
         // let's think about what they have in common, and create a controller/service
         // then, and removing this method, of course.
 
-        Iterable<User> rtn = userService.getAllUsers();
+        Iterable<UserDTO> rtn = userService.getAllUsers();
 
         if (rtn != null) {
             return ResponseEntity.status(HttpStatus.OK).body(rtn);

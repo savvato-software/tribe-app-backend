@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.entities.ToBeReviewed;
+import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,11 +48,23 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         expectedToBeReviewed.setPreposition("with");
         expectedToBeReviewed.setNoun("Python");
 
+        ToBeReviewedDTO expectedToBeReviewedDTO = ToBeReviewedDTO.builder()
+                .hasBeenGroomed(expectedToBeReviewed.isHasBeenGroomed())
+                .adverb(expectedToBeReviewed.getAdverb())
+                .verb(expectedToBeReviewed.getVerb())
+                .preposition(expectedToBeReviewed.getPreposition())
+                .noun(expectedToBeReviewed.getNoun())
+                .build();
+
         Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.of(expectedToBeReviewed));
 
-        Optional<ToBeReviewed> rtn = toBeReviewedService.getReviewPhrase();
+        Optional<ToBeReviewedDTO> rtn = toBeReviewedService.getReviewPhrase();
 
-        assertEquals(rtn.get(), expectedToBeReviewed);
+        assertEquals(rtn.get().hasBeenGroomed, expectedToBeReviewedDTO.hasBeenGroomed);
+        assertEquals(rtn.get().adverb, expectedToBeReviewedDTO.adverb);
+        assertEquals(rtn.get().verb, expectedToBeReviewedDTO.verb);
+        assertEquals(rtn.get().preposition, expectedToBeReviewedDTO.preposition);
+        assertEquals(rtn.get().noun, expectedToBeReviewedDTO.noun);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());
     }
 
@@ -79,11 +92,23 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         expectedToBeReviewed.setPreposition("with");
         expectedToBeReviewed.setNoun("Python");
 
+        ToBeReviewedDTO expectedToBeReviewedDTO = ToBeReviewedDTO.builder()
+                .hasBeenGroomed(expectedToBeReviewed.isHasBeenGroomed())
+                .adverb(expectedToBeReviewed.getAdverb())
+                .verb(expectedToBeReviewed.getVerb())
+                .preposition(expectedToBeReviewed.getPreposition())
+                .noun(expectedToBeReviewed.getNoun())
+                .build();
+
         Mockito.when(toBeReviewedRepository.findNextReviewEligible(any(Long.class))).thenReturn(Optional.of(expectedToBeReviewed));
 
-        Optional<ToBeReviewed> rtn = toBeReviewedService.getReviewPhrase();
+        Optional<ToBeReviewedDTO> rtn = toBeReviewedService.getReviewPhrase();
 
-        assertEquals(rtn.get(), expectedToBeReviewed);
+        assertEquals(rtn.get().hasBeenGroomed, expectedToBeReviewedDTO.hasBeenGroomed);
+        assertEquals(rtn.get().adverb, expectedToBeReviewedDTO.adverb);
+        assertEquals(rtn.get().verb, expectedToBeReviewedDTO.verb);
+        assertEquals(rtn.get().preposition, expectedToBeReviewedDTO.preposition);
+        assertEquals(rtn.get().noun, expectedToBeReviewedDTO.noun);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());
 
         expectedToBeReviewed.setId(2L);
@@ -93,9 +118,21 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         expectedToBeReviewed.setPreposition("without");
         expectedToBeReviewed.setNoun("Scala");
 
-        Optional<ToBeReviewed> rtnTwo = toBeReviewedService.getReviewPhrase();
+        ToBeReviewedDTO expectedToBeReviewedDTO2 = ToBeReviewedDTO.builder()
+                .hasBeenGroomed(expectedToBeReviewed.isHasBeenGroomed())
+                .adverb(expectedToBeReviewed.getAdverb())
+                .verb(expectedToBeReviewed.getVerb())
+                .preposition(expectedToBeReviewed.getPreposition())
+                .noun(expectedToBeReviewed.getNoun())
+                .build();
 
-        assertEquals(rtnTwo.get(), expectedToBeReviewed);
+        Optional<ToBeReviewedDTO> rtnTwo = toBeReviewedService.getReviewPhrase();
+
+        assertEquals(rtnTwo.get().hasBeenGroomed, expectedToBeReviewedDTO2.hasBeenGroomed);
+        assertEquals(rtnTwo.get().adverb, expectedToBeReviewedDTO2.adverb);
+        assertEquals(rtnTwo.get().verb, expectedToBeReviewedDTO2.verb);
+        assertEquals(rtnTwo.get().preposition, expectedToBeReviewedDTO2.preposition);
+        assertEquals(rtnTwo.get().noun, expectedToBeReviewedDTO2.noun);
         assertEquals(toBeReviewedService.getLastAssignedForReview(), expectedToBeReviewed.getId());
     }
 
@@ -114,10 +151,10 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(toBeReviewedRepository.findNextReviewEligible(anyLong())).thenReturn(Optional.of(testTbr));
 
-        Optional<ToBeReviewed> tbrOptional = toBeReviewedService.getReviewPhrase();
-        ToBeReviewed tbr = tbrOptional.get();
+        Optional<ToBeReviewedDTO> tbrDTOOptional = toBeReviewedService.getReviewPhrase();
+        ToBeReviewedDTO tbrDTO = tbrDTOOptional.get();
 
-        assertEquals(tbr.getAdverb(),testEmptyString);
-        assertEquals(tbr.getPreposition(),testEmptyString);
+        assertEquals(tbrDTO.adverb,testEmptyString);
+        assertEquals(tbrDTO.preposition,testEmptyString);
     }
 }

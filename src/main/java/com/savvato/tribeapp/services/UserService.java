@@ -1,8 +1,10 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -14,5 +16,5 @@ public interface UserService {
 
 	User changePassword(String pw, String phoneNumber, String challengeCode);
 
-	Iterable<User> getAllUsers();
+	List<UserDTO> getAllUsers();
 }

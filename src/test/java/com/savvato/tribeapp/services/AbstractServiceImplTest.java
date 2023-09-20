@@ -61,7 +61,8 @@ public abstract class AbstractServiceImplTest {
         rtn.setPhone(USER1_PHONE);
         rtn.setPassword(USER1_PASSWORD);
         rtn.setEnabled(USER_IS_ENABLED);
-
+        rtn.setCreated();
+        rtn.setLastUpdated();
         rtn.setRoles(getUserRoles_Admin());
 
         return rtn;
@@ -76,7 +77,8 @@ public abstract class AbstractServiceImplTest {
         rtn.setPhone(USER2_PHONE);
         rtn.setPassword(USER2_PASSWORD);
         rtn.setEnabled(USER_IS_ENABLED);
-
+        rtn.setCreated();
+        rtn.setLastUpdated();
         rtn.setRoles(getUserRoles_Admin());
 
         return rtn;

@@ -22,7 +22,7 @@ public class PermissionsAPIController {
     UserRoleMapService userRoleMapService;
 
     @Autowired
-    UserRoleService hm, userRoleService;
+    UserRoleService userRoleService;
 
     @Autowired
     UserService userService;

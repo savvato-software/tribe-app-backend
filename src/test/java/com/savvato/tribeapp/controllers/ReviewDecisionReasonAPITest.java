@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.dto.ReviewDecisionReasonDTO;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.*;
@@ -72,10 +73,21 @@ public class ReviewDecisionReasonAPITest {
         user.setLastUpdated();
         user.setEmail(Constants.FAKE_USER_EMAIL1);
 
+        UserDTO userDTO = UserDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .password(user.getPassword())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .enabled(user.getEnabled())
+                .created(user.getCreated().toString())
+                .lastUpdated(user.getLastUpdated().toString())
+                .build();
+
         Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString())).thenReturn(
                 new UserPrincipal(user)
         );
-        String auth = AuthServiceImpl.generateAccessToken(user);
+        String auth = AuthServiceImpl.generateAccessToken(userDTO);
 
         List<ReviewDecisionReasonDTO> rdrDTOList = new ArrayList<>();
 

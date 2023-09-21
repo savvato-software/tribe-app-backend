@@ -4,6 +4,7 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.ReviewDecisionRequest;
 import com.savvato.tribeapp.dto.ProfileDTO;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.ReviewDecision;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
@@ -77,10 +78,21 @@ public class ReviewDecisionAPITest {
         user.setLastUpdated();
         user.setEmail(Constants.FAKE_USER_EMAIL1);
 
+        UserDTO userDTO = UserDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .password(user.getPassword())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .enabled(user.getEnabled())
+                .created(user.getCreated().toString())
+                .lastUpdated(user.getLastUpdated().toString())
+                .build();
+
         Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString())).thenReturn(
                 new UserPrincipal(user)
         );
-        String auth = AuthServiceImpl.generateAccessToken(user);
+        String auth = AuthServiceImpl.generateAccessToken(userDTO);
 
         ReviewDecisionRequest reviewDecisionRequest = new ReviewDecisionRequest();
         reviewDecisionRequest.reviewId = 1L;

@@ -4,6 +4,7 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.dto.ProfileDTO;
 import com.savvato.tribeapp.entities.User;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.*;
 import org.aspectj.lang.annotation.Before;
@@ -79,6 +80,17 @@ public class ProfileAPITest {
         user.setLastUpdated();
         user.setEmail(Constants.FAKE_USER_EMAIL1);
 
+        UserDTO userDTO = UserDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .password(user.getPassword())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .enabled(user.getEnabled())
+                .created(user.getCreated().toString())
+                .lastUpdated(user.getLastUpdated().toString())
+                .build();
+
         Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString())).thenReturn(
                 new UserPrincipal(user)
         );
@@ -91,7 +103,7 @@ public class ProfileAPITest {
                         .build())
         );
 
-        String auth = AuthServiceImpl.generateAccessToken(user);
+        String auth = AuthServiceImpl.generateAccessToken(userDTO);
 
         this.mockMvc.
                 perform(
@@ -120,7 +132,18 @@ public class ProfileAPITest {
         user.setCreated();
         user.setLastUpdated();
         user.setEmail(Constants.FAKE_USER_EMAIL1);
-        
+
+         UserDTO userDTO = UserDTO.builder()
+                 .id(user.getId())
+                 .name(user.getName())
+                 .password(user.getPassword())
+                 .phone(user.getPhone())
+                 .email(user.getEmail())
+                 .enabled(user.getEnabled())
+                 .created(user.getCreated().toString())
+                 .lastUpdated(user.getLastUpdated().toString())
+                 .build();
+
         Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString())).thenReturn(
                 new UserPrincipal(user)
         );
@@ -129,7 +152,7 @@ public class ProfileAPITest {
         Mockito.when(profileService.update(Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
         .thenReturn(true);
 
-        String auth = AuthServiceImpl.generateAccessToken(user);
+        String auth = AuthServiceImpl.generateAccessToken(userDTO);
 
         this.mockMvc.
         perform(
@@ -161,7 +184,18 @@ public void testProfileUnHappyPathUpdate() throws Exception {
     user.setCreated();
     user.setLastUpdated();
     user.setEmail(Constants.FAKE_USER_EMAIL1);
-    
+
+    UserDTO userDTO = UserDTO.builder()
+            .id(user.getId())
+            .name(user.getName())
+            .password(user.getPassword())
+            .phone(user.getPhone())
+            .email(user.getEmail())
+            .enabled(user.getEnabled())
+            .created(user.getCreated().toString())
+            .lastUpdated(user.getLastUpdated().toString())
+            .build();
+
     Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString())).thenReturn(
             new UserPrincipal(user)
     );
@@ -170,7 +204,7 @@ public void testProfileUnHappyPathUpdate() throws Exception {
     Mockito.when(profileService.update(Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
     .thenReturn(false);
 
-    String auth = AuthServiceImpl.generateAccessToken(user);
+    String auth = AuthServiceImpl.generateAccessToken(userDTO);
 
     this.mockMvc.
     perform(

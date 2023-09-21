@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.AuthRequest;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.services.AuthService;
 import com.savvato.tribeapp.services.AuthServiceImpl;
@@ -43,11 +44,21 @@ public class AuthAPIController {
                 );
 
             User user = ((UserPrincipal) authenticate.getPrincipal()).getUser();
+            UserDTO userDTO = UserDTO.builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .password(user.getPassword())
+                    .phone(user.getPhone())
+                    .email(user.getEmail())
+                    .enabled(user.getEnabled())
+                    .created(user.getCreated().toString())
+                    .lastUpdated(user.getLastUpdated().toString())
+                    .build();
 
             return ResponseEntity.ok()
                 .header(
                     HttpHeaders.AUTHORIZATION,
-                    AuthServiceImpl.generateAccessToken(user)
+                    AuthServiceImpl.generateAccessToken(userDTO)
                 )
                 .body(user);
         } catch (BadCredentialsException ex) {

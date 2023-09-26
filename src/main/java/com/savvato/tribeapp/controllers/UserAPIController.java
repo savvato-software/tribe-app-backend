@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.ChangePasswordRequest;
 import com.savvato.tribeapp.controllers.dto.UserRequest;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.repositories.UserRepository;
 import com.savvato.tribeapp.services.ProfileService;
@@ -89,12 +90,12 @@ public class UserAPIController {
 	}
     // Deprecated Route moving to api/public/user/changePassword
 	@PostMapping( "/changeLostPassword" )
-	public User changeLostPassword(@RequestBody @Valid ChangePasswordRequest request) {
+	public UserDTO changeLostPassword(@RequestBody @Valid ChangePasswordRequest request) {
 		return userService.changePassword(request.pw, request.phoneNumber, request.smsChallengeCode);
 	}
 
 	@PostMapping( "/changePassword")
-	public User changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+	public UserDTO changePassword(@RequestBody @Valid ChangePasswordRequest request) {
 		return userService.changePassword(request.pw, request.phoneNumber, request.smsChallengeCode);
 	}
 

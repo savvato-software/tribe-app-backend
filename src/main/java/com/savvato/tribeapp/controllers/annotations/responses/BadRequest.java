@@ -6,11 +6,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
 import java.lang.annotation.*;
 
 /**
- * In OpenAPI, include success response. Optionally specify the following:
+ * In OpenAPI, include Bad Request response as a possible response. Optionally specify the
+ * following:
  *
  * <ul>
  *   <li>{@code responseCode}: The response code
@@ -27,6 +27,7 @@ import java.lang.annotation.*;
  *   <li>{@code array}: An array, if your response contains it
  *   <li>{@code content}: The response's content (use only if the above do not satisfy your modeling
  *       requirements)
+ *   <li>{@code noContent}: Defaults to false - the response has content
  * </ul>
  */
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
@@ -35,10 +36,10 @@ import java.lang.annotation.*;
 @Response()
 @Inherited
 @ApiResponse()
-public @interface Success {
-  String responseCode() default "200";
+public @interface BadRequest {
+  String description() default "The operation failed.";
 
-  String description() default "Successful operation";
+  String responseCode() default "400";
 
   Header[] headers() default {};
 
@@ -53,4 +54,6 @@ public @interface Success {
   ArraySchema array() default @ArraySchema;
 
   Content content() default @Content;
+
+  boolean noContent() default false;
 }

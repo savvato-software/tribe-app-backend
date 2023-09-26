@@ -78,10 +78,6 @@ public class AnnotationsUtils extends io.swagger.v3.core.util.AnnotationsUtils {
     getSchemaFromResponseAnnotation(responseAnnotation).ifPresent(schemaBuilder::merge);
     getSchemaFromSchemaAnnotation(responseAnnotation.schema()).ifPresent(schemaBuilder::merge);
     getArraySchemaFromAnnotation(responseAnnotation.array()).ifPresent(schemaBuilder::merge);
-    if (responseAnnotation.implementation() == Void.class
-        && responseAnnotation.schema().implementation() == Void.class) {
-      var a = 1;
-    }
     return (schemaBuilder.build() != null) ? Optional.of(schemaBuilder.build()) : Optional.empty();
   }
 

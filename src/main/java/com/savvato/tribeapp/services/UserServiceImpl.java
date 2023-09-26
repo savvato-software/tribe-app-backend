@@ -117,12 +117,12 @@ public class UserServiceImpl implements UserService {
 		// email.
 	}
 
-	public User changePassword(String pw, String phoneNumber, String smsChallengeCode) {
+	public UserDTO changePassword(String pw, String phoneNumber, String smsChallengeCode) {
 		// This method is for when the user wants to change there password.
 		//  It does not require authentication, but the sms challenge code helps to ensure that
 		//  at least this request came from the phone associated with the account.
 
-		User rtn = null;
+		UserDTO rtn = null;
 
 		if (!phoneNumber.startsWith("0"))
 			phoneNumber = "1" + phoneNumber;
@@ -135,7 +135,17 @@ public class UserServiceImpl implements UserService {
 				user.setPassword(passwordEncoder.encode(pw));
 				this.userRepo.save(user);
 
-				rtn = user;
+				UserDTO userDTO = UserDTO.builder()
+						.name(user.getName())
+						.password(user.getPassword())
+						.phone(user.getPhone())
+						.email(user.getEmail())
+						.enabled(user.getEnabled())
+						.created(user.getCreated().toString())
+						.lastUpdated(user.getLastUpdated().toString())
+						.build();
+
+				rtn = userDTO;
 			}
 		}
 

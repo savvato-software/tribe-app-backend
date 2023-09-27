@@ -1,4 +1,4 @@
-package com.savvato.tribeapp.controllers.annotations.utils;
+package com.savvato.tribeapp.controllers.annotations.config.utils;
 
 import io.swagger.v3.oas.models.media.Schema;
 import org.apache.commons.collections4.CollectionUtils;

@@ -1,11 +1,9 @@
-package com.savvato.tribeapp.controllers.annotations.builders;
+package com.savvato.tribeapp.controllers.annotations.config.builders;
 
-import com.savvato.tribeapp.controllers.annotations.utils.SchemaUtils;
+import com.savvato.tribeapp.controllers.annotations.config.utils.SchemaUtils;
 import io.swagger.v3.oas.models.media.ComposedSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import lombok.NoArgsConstructor;
-
-import java.util.*;
 
 /** Builder class for OpenAPI schema model. */
 @NoArgsConstructor

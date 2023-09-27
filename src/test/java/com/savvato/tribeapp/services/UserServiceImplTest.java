@@ -222,4 +222,47 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 			assertEquals(rtn.get(i).lastUpdated, userDTOS.get(i).lastUpdated);
 		}
 	}
+
+	@Test
+	public void testChangePasswordHappyPath() {
+		String password = "test";
+		String phoneNumber = "3333333333";
+		String smsChallengeCode = "code";
+
+		User user = getUser1();
+		user.setPassword(password);
+		user.setPhone(phoneNumber);
+		List users = new ArrayList<>();
+		users.add(user);
+		UserDTO userDTO = getUserDTO(user);
+
+		Mockito.when(smsccs.isAValidSMSChallengeCode(any(String.class),any(String.class))).thenReturn(true);
+		Mockito.when(userRepository.findByPhone(any(String.class))).thenReturn(Optional.of(users));
+		Mockito.when(userRepository.save(any(User.class))).thenReturn(user);
+		Mockito.when(passwordEncoder.encode(any(String.class))).thenReturn(password);
+
+		UserDTO rtn = userService.changePassword(password, phoneNumber, smsChallengeCode);
+		assertEquals(rtn.name, userDTO.name);
+		assertEquals(rtn.password, userDTO.password);
+		assertEquals(rtn.phone, userDTO.phone);
+		assertEquals(rtn.email, userDTO.email);
+		assertEquals(rtn.enabled, userDTO.enabled);
+		assertEquals(rtn.created, userDTO.created);
+		assertEquals(rtn.lastUpdated, userDTO.lastUpdated);
+	}
+
+	private UserDTO getUserDTO(User user) {
+		UserDTO userDTO = UserDTO.builder()
+				.name(user.getName())
+				.password(user.getPassword())
+				.phone(user.getPhone())
+				.email(user.getEmail())
+				.enabled(user.getEnabled())
+				.created(user.getCreated().toString())
+				.lastUpdated(user.getLastUpdated().toString())
+				.build();
+
+		return userDTO;
+	}
+
 }

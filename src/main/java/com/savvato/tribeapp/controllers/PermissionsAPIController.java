@@ -6,18 +6,16 @@ import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPICo
 import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.GetAllUsers;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
 import com.savvato.tribeapp.dto.UserDTO;
-import com.savvato.tribeapp.entities.User;
+import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.UserRoleMapService;
 import com.savvato.tribeapp.services.UserRoleService;
 import com.savvato.tribeapp.services.UserService;
-import com.savvato.tribeapp.entities.UserRole;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/permissions")
@@ -64,7 +62,6 @@ public class PermissionsAPIController {
   @GetMapping("/user-roles-list")
   public ResponseEntity<Iterable<UserRole>> getAllRoles() {
     Iterable<UserRole> rtn = userRoleService.getRoles();
-
     if (rtn != null) {
       return ResponseEntity.status(HttpStatus.OK).body(rtn);
     } else {

@@ -1,7 +1,6 @@
 package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.dto.NotificationRequest;
-
 import com.savvato.tribeapp.controllers.annotations.controllers.NotificationController.DeleteNotification;
 import com.savvato.tribeapp.controllers.annotations.controllers.NotificationController.GetNotificationById;
 import com.savvato.tribeapp.controllers.annotations.controllers.NotificationController.UpdateNotification;

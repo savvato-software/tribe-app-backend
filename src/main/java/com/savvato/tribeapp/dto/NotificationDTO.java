@@ -24,4 +24,11 @@ public class NotificationDTO {
   public String iconUrl;
 
   public boolean isRead;
+
+  public NotificationDTO(String description, String body, String lastUpdatedDate, String iconUrl) {
+    this.description = description;
+    this.body = body;
+    this.lastUpdatedDate = lastUpdatedDate;
+    this.iconUrl = iconUrl;
+  }
 }

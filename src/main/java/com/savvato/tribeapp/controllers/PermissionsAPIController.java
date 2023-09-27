@@ -1,9 +1,14 @@
 package com.savvato.tribeapp.controllers;
 
+import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.AddPermissions;
+import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.DeletePermissions;
+import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.GetAllUserRoles;
+import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.GetAllUsers;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.services.UserRoleMapService;
 import com.savvato.tribeapp.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +18,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/permissions")
+@Tag(name="permissions", description="Delegation of user permissions")
 public class PermissionsAPIController {
     @Autowired
     UserRoleMapService userRoleMapService;
@@ -20,6 +26,7 @@ public class PermissionsAPIController {
     @Autowired
     UserService userService;
 
+    @GetAllUsers
     @GetMapping("/users")
     public ResponseEntity<Iterable<User>> getAllUsers() {
 
@@ -39,6 +46,7 @@ public class PermissionsAPIController {
         }
     }
 
+    @GetAllUserRoles
     @GetMapping("/user-roles")
     public ResponseEntity<Iterable<String>> getAllUserRoles() {
         Iterable<String> rtn = userRoleMapService.getRoles();
@@ -50,6 +58,7 @@ public class PermissionsAPIController {
         }
     }
 
+    @AddPermissions
     @PostMapping
     public ResponseEntity<Boolean> addPermissions(@RequestBody @Valid PermissionsRequest request) {
         boolean rtn = userRoleMapService.addRolesToUser(request.id, request.permissions);
@@ -60,6 +69,7 @@ public class PermissionsAPIController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);
         }
     }
+    @DeletePermissions
     @DeleteMapping
     public ResponseEntity<Boolean> deletePermissions(@RequestBody @Valid PermissionsRequest request) {
         boolean rtn = userRoleMapService.removeRolesFromUser(request.id, request.permissions);

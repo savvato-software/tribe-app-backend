@@ -27,6 +27,7 @@ import java.lang.annotation.*;
  *   <li>{@code array}: An array, if your response contains it
  *   <li>{@code content}: The response's content (use only if the above do not satisfy your modeling
  *       requirements)
+ *   <li>{@code noContent}: Defaults to false - the response has content
  * </ul>
  */
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
@@ -53,4 +54,6 @@ public @interface Success {
   ArraySchema array() default @ArraySchema;
 
   Content content() default @Content;
+
+  boolean noContent() default false;
 }

@@ -1,10 +1,13 @@
 package com.savvato.tribeapp.entities;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+@Schema(description= "A user's role")
 @Entity
 public class UserRole {
 
@@ -12,6 +15,7 @@ public class UserRole {
 	public static final UserRole ROLE_ACCOUNTHOLDER = new UserRole(2L, "ROLE_accountholder");
 	public static final UserRole ROLE_PHRASEREVIEWER = new UserRole(3L, "ROLE_phrasereviewer");
 
+	@Schema(example = "1")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -25,6 +29,7 @@ public class UserRole {
 	}
 	
 	///
+	@Schema(name="ROLES", defaultValue ="ROLE_accountholder", allowableValues = {"ROLE_admin, ROLE_accountholder, ROLE_phrasereviewer"})
 	private String name;
 	
 	public String getName() {

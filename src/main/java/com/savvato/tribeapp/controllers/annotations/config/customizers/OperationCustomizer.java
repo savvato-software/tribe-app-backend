@@ -1,15 +1,14 @@
 package com.savvato.tribeapp.controllers.annotations.config.customizers;
 
-import com.savvato.tribeapp.controllers.annotations.requests.DocumentedRequestBody;
-import com.savvato.tribeapp.controllers.annotations.responses.Response;
 import com.savvato.tribeapp.controllers.annotations.config.utils.RequestAnnotationUtils;
 import com.savvato.tribeapp.controllers.annotations.config.utils.ResponseAnnotationUtils;
+import com.savvato.tribeapp.controllers.annotations.requests.DocumentedRequestBody;
+import com.savvato.tribeapp.controllers.annotations.responses.Response;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -18,6 +17,8 @@ import org.springframework.web.method.HandlerMethod;
 public class OperationCustomizer implements org.springdoc.core.customizers.OperationCustomizer {
   protected Set<Response> customResponses = new HashSet<>();
   protected DocumentedRequestBody customRequest;
+  private final List<String> WHITELISTED_TAGS =
+      new ArrayList<>(Arrays.asList("public", "public/user"));
 
   @Override
   public Operation customize(Operation operation, HandlerMethod handlerMethod) {
@@ -26,6 +27,7 @@ public class OperationCustomizer implements org.springdoc.core.customizers.Opera
     customRequest = handlerMethod.getMethodAnnotation(DocumentedRequestBody.class);
     handleCustomRequestBody(operation);
     handleCustomResponses(operation);
+    addUnauthorizedResponse(operation);
     return operation;
   }
 
@@ -49,6 +51,14 @@ public class OperationCustomizer implements org.springdoc.core.customizers.Opera
         operation.responses(
             operation.getResponses().addApiResponse(customResponse.responseCode(), apiResponse));
       }
+    }
+  }
+
+  private void addUnauthorizedResponse(Operation operation) {
+    if (operation.getTags().stream().noneMatch(WHITELISTED_TAGS::contains)) {
+      ApiResponse unauthorizedResponse =
+          new ApiResponse().content(null).description("User is not authorized for this action.");
+      operation.getResponses().addApiResponse("401", unauthorizedResponse);
     }
   }
 

@@ -196,16 +196,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 
 		List<UserDTO> userDTOS = new ArrayList<>();
 		for (User user : users){
-			UserDTO userDTO = UserDTO.builder()
-					.name(user.getName())
-					.password(user.getPassword())
-					.phone(user.getPhone())
-					.email(user.getEmail())
-					.enabled(user.getEnabled())
-					.created(user.getCreated().toString())
-					.lastUpdated(user.getLastUpdated().toString())
-					.build();
-			userDTOS.add(userDTO);
+			userDTOS.add(getUserDTO(user));
 		}
 
 		Mockito.when(userRepository.findAll()).thenReturn(users);

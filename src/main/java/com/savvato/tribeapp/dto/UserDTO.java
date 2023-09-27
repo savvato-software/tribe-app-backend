@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public class UserDTO {
+    public Long id;
     public String name;
     public String password;
     public String phone;

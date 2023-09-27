@@ -147,6 +147,7 @@ public class UserServiceImpl implements UserService {
 		List<UserDTO> rtn = new ArrayList<>();
 		for (User user : users){
 			UserDTO userDTO = UserDTO.builder()
+					.id(user.getId())
 					.name(user.getName())
 					.password(user.getPassword())
 					.phone(user.getPhone())

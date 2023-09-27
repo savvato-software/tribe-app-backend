@@ -135,17 +135,7 @@ public class UserServiceImpl implements UserService {
 				user.setPassword(passwordEncoder.encode(pw));
 				this.userRepo.save(user);
 
-				UserDTO userDTO = UserDTO.builder()
-						.name(user.getName())
-						.password(user.getPassword())
-						.phone(user.getPhone())
-						.email(user.getEmail())
-						.enabled(user.getEnabled())
-						.created(user.getCreated().toString())
-						.lastUpdated(user.getLastUpdated().toString())
-						.build();
-
-				rtn = userDTO;
+				rtn = getUserDTO(user);
 			}
 		}
 
@@ -156,18 +146,23 @@ public class UserServiceImpl implements UserService {
 		Iterable<User> users = userRepo.findAll();
 		List<UserDTO> rtn = new ArrayList<>();
 		for (User user : users){
-			UserDTO userDTO = UserDTO.builder()
-					.name(user.getName())
-					.password(user.getPassword())
-					.phone(user.getPhone())
-					.email(user.getEmail())
-					.enabled(user.getEnabled())
-					.created(user.getCreated().toString())
-					.lastUpdated(user.getLastUpdated().toString())
-					.build();
-			rtn.add(userDTO);
+			rtn.add(getUserDTO(user));
 		}
 		return rtn;
+	}
+
+	private UserDTO getUserDTO(User user) {
+		UserDTO userDTO = UserDTO.builder()
+				.name(user.getName())
+				.password(user.getPassword())
+				.phone(user.getPhone())
+				.email(user.getEmail())
+				.enabled(user.getEnabled())
+				.created(user.getCreated().toString())
+				.lastUpdated(user.getLastUpdated().toString())
+				.build();
+
+		return userDTO;
 	}
 
 }

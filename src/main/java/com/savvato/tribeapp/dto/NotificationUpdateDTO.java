@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "A notification DTO")
 public class NotificationUpdateDTO {
-    @Schema(example="true", required=true, allowableValues={"true", "false"})
-    private boolean isRead;
+  @Schema(example = "true", implementation = Boolean.class)
+  private boolean isRead;
 }

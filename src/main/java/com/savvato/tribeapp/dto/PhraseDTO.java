@@ -4,15 +4,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
+@Schema(description = "A phrase DTO")
 public class PhraseDTO {
 
-    @Schema(example= "enthusiastically", required=true)
-    public String adverb;
-    @Schema(example= "volunteers", required=true)
-    public String verb;
-    @Schema(example= "at", required=true)
-    public String preposition;
-    @Schema(example= "UNICEF", required=true)
-    public String noun;
+  @Schema(example = "enthusiastically")
+  public String adverb;
 
+  @Schema(example = "volunteers")
+  public String verb;
+
+  @Schema(example = "at")
+  public String preposition;
+
+  @Schema(example = "UNICEF")
+  public String noun;
 }

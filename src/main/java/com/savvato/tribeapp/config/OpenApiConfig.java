@@ -24,7 +24,7 @@ public class OpenApiConfig {
                     new License()
                         .name("Apache 2.0")
                         .url("https://www.apache.org/licenses/LICENSE-2.0"))
-                .contact(new Contact().email("me")))
+                .contact(new Contact().email("info@savvato.com")))
         .servers(
             List.of(
                 new io.swagger.v3.oas.models.servers.Server()

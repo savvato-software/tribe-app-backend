@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.controllers.annotations.controllers.NotificationController;
 
 import com.savvato.tribeapp.controllers.annotations.requests.DocumentedRequestBody;
+import com.savvato.tribeapp.controllers.annotations.responses.NotFound;
 import com.savvato.tribeapp.controllers.annotations.responses.Success;
 import io.swagger.v3.oas.annotations.Operation;
 import java.lang.annotation.*;
@@ -17,4 +18,5 @@ import java.lang.annotation.*;
     example = "1",
     implementation = Integer.class)
 @Success(description = "Successfully deleted notification", example = "Notification deleted")
+@NotFound
 public @interface DeleteNotification {}

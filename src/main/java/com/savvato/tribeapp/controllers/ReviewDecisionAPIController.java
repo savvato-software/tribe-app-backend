@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.controllers;
 
+import com.savvato.tribeapp.controllers.annotations.controllers.ReviewDecisionAPIController.SaveReviewDecision;
 import com.savvato.tribeapp.controllers.dto.ReviewDecisionRequest;
 import com.savvato.tribeapp.dto.ReviewDecisionDTO;
 import com.savvato.tribeapp.entities.ReviewDecision;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewDecisionAPIController {
   @Autowired ReviewDecisionService reviewDecisionService;
 
+  @SaveReviewDecision
   @PostMapping
   public ResponseEntity<ReviewDecisionDTO> saveReviewDecision(
       @RequestBody @Valid ReviewDecisionRequest request) {

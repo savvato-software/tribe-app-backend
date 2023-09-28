@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.config.principal.UserPrincipal;
+import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.Connect;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetQRCodeString;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
@@ -39,6 +40,7 @@ public class ConnectAPIController {
     }
   }
 
+  @Connect
   @PostMapping
   public boolean connect(@Valid ConnectRequest connectRequest) {
     if (connectService.validateQRCode(

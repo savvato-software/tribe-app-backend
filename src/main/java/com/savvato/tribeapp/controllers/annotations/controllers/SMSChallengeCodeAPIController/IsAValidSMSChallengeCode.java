@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.controllers.annotations.controllers.SMSChallengeCodeAPIController;
 
 import com.savvato.tribeapp.controllers.annotations.requests.DocumentedRequestBody;
+import com.savvato.tribeapp.controllers.annotations.responses.BadGateway;
 import com.savvato.tribeapp.controllers.annotations.responses.Success;
 import com.savvato.tribeapp.controllers.dto.SMSChallengeRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,4 +25,5 @@ import java.lang.annotation.*;
       @ExampleObject(name = "Valid challenge code", value = "true"),
       @ExampleObject(name = "Invalid challenge code", value = "false"),
     })
+@BadGateway
 public @interface IsAValidSMSChallengeCode {}

@@ -19,6 +19,7 @@ import java.lang.annotation.*;
     description = "Successfully applied phrase",
     examples = {
       @ExampleObject(name = "Phrase applied successfully", value = "true"),
-      @ExampleObject(name = "Failed to apply phrase", value = "false")
+      @ExampleObject(name = "Failed to apply phrase", value = "false"),
+      @ExampleObject(name = "Phrase was invalid", value = "false")
     })
 public @interface ApplyPhraseToUser {}

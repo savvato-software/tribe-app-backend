@@ -19,6 +19,7 @@ import java.lang.annotation.*;
     description = "Status of attempt to establish connection",
     examples = {
       @ExampleObject(name = "Connection established successfully", value = "true"),
-      @ExampleObject(name = "Failed to establish connection", value = "false")
+      @ExampleObject(name = "Connection could not be saved", value = "false"),
+      @ExampleObject(name = "QR code was invalid", value = "false")
     })
 public @interface Connect {}

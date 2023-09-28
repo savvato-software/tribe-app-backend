@@ -18,8 +18,5 @@ import java.lang.annotation.*;
 @Success(
     description = "Successfully retrieved user attributes",
     array = @ArraySchema(schema = @Schema(implementation = PhraseDTO.class), minItems = 2))
-@BadRequest(
-    description = "Failed to retrieve attributes for user.",
-    example = "false",
-    implementation = Boolean.class)
+@BadRequest(description = "Failed to retrieve attributes for user.", noContent = true)
 public @interface GetAttributesForUser {}

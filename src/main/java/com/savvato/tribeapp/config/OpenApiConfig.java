@@ -8,7 +8,9 @@ import io.swagger.v3.oas.models.info.License;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class OpenApiConfig {
   @Bean
   public OpenAPI openApi(@Value("${DEV_SERVER}") String devServer) {
@@ -31,6 +33,6 @@ public class OpenApiConfig {
         .security(
             List.of(
                 new io.swagger.v3.oas.models.security.SecurityRequirement()
-                    .addList("Bearer Authentication")));
+                    .addList("Bearer Authentication", "Bearer Authentication")));
   }
 }

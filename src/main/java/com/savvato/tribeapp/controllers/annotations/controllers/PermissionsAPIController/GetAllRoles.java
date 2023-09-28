@@ -2,6 +2,7 @@ package com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIC
 
 import com.savvato.tribeapp.controllers.annotations.responses.BadGateway;
 import com.savvato.tribeapp.controllers.annotations.responses.Success;
+import com.savvato.tribeapp.entities.UserRole;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,9 +15,6 @@ import java.lang.annotation.*;
 @Operation(summary = "Get all user roles", description = "Get all user roles")
 @Success(
     description = "Found all user roles",
-    array =
-        @ArraySchema(
-            schema =
-                @Schema(enumAsRef = true, ref = "#/components/schemas/UserRole/properties/ROLES")))
+    array = @ArraySchema(schema = @Schema(implementation = UserRole.class)))
 @BadGateway
 public @interface GetAllRoles {}

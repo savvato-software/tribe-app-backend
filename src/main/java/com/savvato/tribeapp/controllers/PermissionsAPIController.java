@@ -1,9 +1,6 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.AddPermissions;
-import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.DeletePermissions;
-import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.GetAllUserRoles;
-import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.GetAllUsers;
+import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.*;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
 import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.UserRole;
@@ -59,6 +56,7 @@ public class PermissionsAPIController {
     }
   }
 
+  @GetAllRoles
   @GetMapping("/user-roles-list")
   public ResponseEntity<Iterable<UserRole>> getAllRoles() {
     Iterable<UserRole> rtn = userRoleService.getRoles();

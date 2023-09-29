@@ -1,11 +1,9 @@
 package com.savvato.tribeapp.services;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -144,9 +142,23 @@ public class UserServiceImpl implements UserService {
 		return rtn;
 	}
 
-	public Iterable<User> getAllUsers() {
-		return userRepo.findAll();
+	public List<UserDTO> getAllUsers() {
+		Iterable<User> users = userRepo.findAll();
+		List<UserDTO> rtn = new ArrayList<>();
+		for (User user : users){
+			UserDTO userDTO = UserDTO.builder()
+					.id(user.getId())
+					.name(user.getName())
+					.password(user.getPassword())
+					.phone(user.getPhone())
+					.email(user.getEmail())
+					.enabled(user.getEnabled())
+					.created(user.getCreated().toString())
+					.lastUpdated(user.getLastUpdated().toString())
+					.build();
+			rtn.add(userDTO);
+		}
+		return rtn;
 	}
-
 
 }

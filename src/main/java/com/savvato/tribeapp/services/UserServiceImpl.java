@@ -147,6 +147,7 @@ public class UserServiceImpl implements UserService {
 		List<UserDTO> rtn = new ArrayList<>();
 		for (User user : users){
 			rtn.add(getUserDTO(user));
+
 		}
 		return rtn;
 	}

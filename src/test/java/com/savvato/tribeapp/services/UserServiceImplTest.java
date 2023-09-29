@@ -204,6 +204,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 		List<UserDTO> rtn = userService.getAllUsers();
 		assertEquals(rtn.size(), 2);
 		for(int i=0; i<rtn.size(); i++) {
+			assertEquals(rtn.get(i).id, userDTOS.get(i).id);
 			assertEquals(rtn.get(i).name, userDTOS.get(i).name);
 			assertEquals(rtn.get(i).password, userDTOS.get(i).password);
 			assertEquals(rtn.get(i).phone, userDTOS.get(i).phone);

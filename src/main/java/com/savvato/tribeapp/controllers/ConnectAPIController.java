@@ -54,7 +54,7 @@ public class ConnectAPIController {
     }
 
     @MessageMapping("/connect/room")
-    public void connect(@Payload ConnectIncomingMessageDTO incoming, UserPrincipal user, @Header("simpSessionId") String sessionId) {
-        connectService.connect(incoming, user);
+    public void connect(@Payload ConnectIncomingMessageDTO incoming, @Header("simpSessionId") String sessionId) {
+        connectService.connect(incoming);
     }
 }

@@ -113,7 +113,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         ConnectService connectServiceSpy = spy(connectService);
         doReturn(false).when(connectServiceSpy).validateQRCode(Mockito.any(), Mockito.any());
 
-        connectServiceSpy.connect(incoming, user);
+        connectServiceSpy.connect(incoming);
 
         verify(connectServiceSpy, never()).handleConnectionIntent(Mockito.any(), Mockito.any(), Mockito.any());
         ArgumentCaptor<String> recipientArg = ArgumentCaptor.forClass(String.class);
@@ -140,7 +140,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         doReturn(true).when(connectServiceSpy).validateQRCode(Mockito.any(), Mockito.any());
         doReturn(outgoing).when(connectServiceSpy).handleConnectionIntent(Mockito.any(), Mockito.any(), Mockito.any());
 
-        connectServiceSpy.connect(incoming, user);
+        connectServiceSpy.connect(incoming);
 
         ArgumentCaptor<String> connectionIntentArg = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Long> requestingUserIdArg = ArgumentCaptor.forClass(Long.class);

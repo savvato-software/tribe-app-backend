@@ -234,6 +234,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 		Mockito.when(passwordEncoder.encode(any(String.class))).thenReturn(password);
 
 		UserDTO rtn = userService.changePassword(password, phoneNumber, smsChallengeCode);
+		assertEquals(rtn.id, userDTO.id);
 		assertEquals(rtn.name, userDTO.name);
 		assertEquals(rtn.password, userDTO.password);
 		assertEquals(rtn.phone, userDTO.phone);
@@ -245,6 +246,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 
 	private UserDTO getUserDTO(User user) {
 		UserDTO userDTO = UserDTO.builder()
+				.id(user.getId())
 				.name(user.getName())
 				.password(user.getPassword())
 				.phone(user.getPhone())

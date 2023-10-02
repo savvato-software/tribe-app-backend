@@ -154,6 +154,7 @@ public class UserServiceImpl implements UserService {
 
 	private UserDTO getUserDTO(User user) {
 		UserDTO userDTO = UserDTO.builder()
+				.id(user.getId())
 				.name(user.getName())
 				.password(user.getPassword())
 				.phone(user.getPhone())

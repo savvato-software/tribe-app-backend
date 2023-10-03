@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -188,7 +189,9 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 	@Test
 	public void testGetAllUsersFindsListOfTwoTestUsers(){
 		User user1 = getUser1();
+		user1.setRoles(getUserRoles_Admin());
 		User user2 = getUser2();
+		user2.setRoles(getUserRoles_AccountHolder());
 
 		List<User> users = new ArrayList<>();
 		users.add(user1);
@@ -212,6 +215,9 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 			assertEquals(rtn.get(i).enabled, userDTOS.get(i).enabled);
 			assertEquals(rtn.get(i).created, userDTOS.get(i).created);
 			assertEquals(rtn.get(i).lastUpdated, userDTOS.get(i).lastUpdated);
+			for(UserRole userRole : users.get(i).getRoles()){
+				assertTrue(rtn.get(i).roles.contains(userRole));
+			}
 		}
 	}
 
@@ -224,6 +230,8 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 		User user = getUser1();
 		user.setPassword(password);
 		user.setPhone(phoneNumber);
+		user.setRoles(getUserRoles_Admin());
+
 		List users = new ArrayList<>();
 		users.add(user);
 		UserDTO userDTO = getUserDTO(user);
@@ -242,6 +250,9 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 		assertEquals(rtn.enabled, userDTO.enabled);
 		assertEquals(rtn.created, userDTO.created);
 		assertEquals(rtn.lastUpdated, userDTO.lastUpdated);
+		for(UserRole userRole : user.getRoles()){
+			assertTrue(rtn.roles.contains(userRole));
+		}
 	}
 
 	private UserDTO getUserDTO(User user) {
@@ -254,6 +265,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 				.enabled(user.getEnabled())
 				.created(user.getCreated().toString())
 				.lastUpdated(user.getLastUpdated().toString())
+				.roles(user.getRoles())
 				.build();
 
 		return userDTO;

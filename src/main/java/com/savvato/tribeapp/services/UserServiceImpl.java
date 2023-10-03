@@ -162,6 +162,7 @@ public class UserServiceImpl implements UserService {
 				.enabled(user.getEnabled())
 				.created(user.getCreated().toString())
 				.lastUpdated(user.getLastUpdated().toString())
+				.roles(user.getRoles())
 				.build();
 
 		return userDTO;

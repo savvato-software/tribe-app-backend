@@ -25,11 +25,14 @@ import org.springframework.web.bind.annotation.*;
     description = "Everything about attributes, e.g. \"plays chess competitively\"")
 public class AttributesAPIController {
 
-  @Autowired AttributesService attributesService;
+  @Autowired 
+  AttributesService attributesService;
 
-  @Autowired PhraseService phraseService;
+  @Autowired
+  PhraseService phraseService;
 
-  @Autowired NotificationService notificationService;
+  @Autowired 
+  NotificationService notificationService;
 
   AttributesAPIController() {}
 

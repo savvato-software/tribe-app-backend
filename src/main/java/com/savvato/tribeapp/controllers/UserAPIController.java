@@ -88,11 +88,6 @@ public class UserAPIController {
 
 		return "{\"response\": true}";
 	}
-    // Deprecated Route moving to api/public/user/changePassword
-	@PostMapping( "/changeLostPassword" )
-	public UserDTO changeLostPassword(@RequestBody @Valid ChangePasswordRequest request) {
-		return userService.changePassword(request.pw, request.phoneNumber, request.smsChallengeCode);
-	}
 
 	@PostMapping( "/changePassword")
 	public UserDTO changePassword(@RequestBody @Valid ChangePasswordRequest request) {

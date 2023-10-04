@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -188,7 +189,9 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 	@Test
 	public void testGetAllUsersFindsListOfTwoTestUsers(){
 		User user1 = getUser1();
+		user1.setRoles(getUserRoles_Admin());
 		User user2 = getUser2();
+		user2.setRoles(getUserRoles_AccountHolder());
 
 		List<User> users = new ArrayList<>();
 		users.add(user1);
@@ -196,16 +199,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 
 		List<UserDTO> userDTOS = new ArrayList<>();
 		for (User user : users){
-			UserDTO userDTO = UserDTO.builder()
-					.name(user.getName())
-					.password(user.getPassword())
-					.phone(user.getPhone())
-					.email(user.getEmail())
-					.enabled(user.getEnabled())
-					.created(user.getCreated().toString())
-					.lastUpdated(user.getLastUpdated().toString())
-					.build();
-			userDTOS.add(userDTO);
+			userDTOS.add(getUserDTO(user));
 		}
 
 		Mockito.when(userRepository.findAll()).thenReturn(users);
@@ -213,6 +207,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 		List<UserDTO> rtn = userService.getAllUsers();
 		assertEquals(rtn.size(), 2);
 		for(int i=0; i<rtn.size(); i++) {
+			assertEquals(rtn.get(i).id, userDTOS.get(i).id);
 			assertEquals(rtn.get(i).name, userDTOS.get(i).name);
 			assertEquals(rtn.get(i).password, userDTOS.get(i).password);
 			assertEquals(rtn.get(i).phone, userDTOS.get(i).phone);
@@ -220,6 +215,60 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
 			assertEquals(rtn.get(i).enabled, userDTOS.get(i).enabled);
 			assertEquals(rtn.get(i).created, userDTOS.get(i).created);
 			assertEquals(rtn.get(i).lastUpdated, userDTOS.get(i).lastUpdated);
+			for(UserRole userRole : users.get(i).getRoles()){
+				assertTrue(rtn.get(i).roles.contains(userRole));
+			}
 		}
 	}
+
+	@Test
+	public void testChangePasswordHappyPath() {
+		String password = "test";
+		String phoneNumber = "3333333333";
+		String smsChallengeCode = "code";
+
+		User user = getUser1();
+		user.setPassword(password);
+		user.setPhone(phoneNumber);
+		user.setRoles(getUserRoles_Admin());
+
+		List users = new ArrayList<>();
+		users.add(user);
+		UserDTO userDTO = getUserDTO(user);
+
+		Mockito.when(smsccs.isAValidSMSChallengeCode(any(String.class),any(String.class))).thenReturn(true);
+		Mockito.when(userRepository.findByPhone(any(String.class))).thenReturn(Optional.of(users));
+		Mockito.when(userRepository.save(any(User.class))).thenReturn(user);
+		Mockito.when(passwordEncoder.encode(any(String.class))).thenReturn(password);
+
+		UserDTO rtn = userService.changePassword(password, phoneNumber, smsChallengeCode);
+		assertEquals(rtn.id, userDTO.id);
+		assertEquals(rtn.name, userDTO.name);
+		assertEquals(rtn.password, userDTO.password);
+		assertEquals(rtn.phone, userDTO.phone);
+		assertEquals(rtn.email, userDTO.email);
+		assertEquals(rtn.enabled, userDTO.enabled);
+		assertEquals(rtn.created, userDTO.created);
+		assertEquals(rtn.lastUpdated, userDTO.lastUpdated);
+		for(UserRole userRole : user.getRoles()){
+			assertTrue(rtn.roles.contains(userRole));
+		}
+	}
+
+	private UserDTO getUserDTO(User user) {
+		UserDTO userDTO = UserDTO.builder()
+				.id(user.getId())
+				.name(user.getName())
+				.password(user.getPassword())
+				.phone(user.getPhone())
+				.email(user.getEmail())
+				.enabled(user.getEnabled())
+				.created(user.getCreated().toString())
+				.lastUpdated(user.getLastUpdated().toString())
+				.roles(user.getRoles())
+				.build();
+
+		return userDTO;
+	}
+
 }

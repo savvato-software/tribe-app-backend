@@ -4,6 +4,7 @@ import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.annotations.controllers.UserAPIController.*;
 import com.savvato.tribeapp.controllers.dto.ChangePasswordRequest;
 import com.savvato.tribeapp.controllers.dto.UserRequest;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.repositories.UserRepository;
 import com.savvato.tribeapp.services.ProfileService;
@@ -101,13 +102,6 @@ public class UserAPIController {
     if (!isEmailAddressAvailable(email)) return "{\"response\": \"email\"}";
 
     return "{\"response\": true}";
-  }
-
-  // Deprecated Route moving to api/public/user/changePassword
-  @ChangeLostPassword
-  @PostMapping("/changeLostPassword")
-  public User changeLostPassword(@RequestBody @Valid ChangePasswordRequest request) {
-    return userService.changePassword(request.pw, request.phoneNumber, request.smsChallengeCode);
   }
 
   @ChangePassword

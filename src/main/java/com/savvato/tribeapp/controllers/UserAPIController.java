@@ -106,7 +106,7 @@ public class UserAPIController {
 
   @ChangePassword
   @PostMapping("/changePassword")
-  public User changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+  public UserDTO changePassword(@RequestBody @Valid ChangePasswordRequest request) {
     return userService.changePassword(request.pw, request.phoneNumber, request.smsChallengeCode);
   }
 }

@@ -10,6 +10,9 @@ import java.util.Set;
 
 @Builder
 public class UserDTO {
+  @Schema(example = "1")
+  public Long id;
+
   @Schema(example = "John Doe")
   public String name;
 
@@ -30,6 +33,6 @@ public class UserDTO {
 
   @Schema(example = "2007-12-13T10:15:30")
   public String lastUpdated;
-  
+
   public Set<UserRole> roles;
 }

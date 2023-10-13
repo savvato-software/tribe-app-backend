@@ -37,7 +37,7 @@ public class NotificationAPIController {
     }
 
     @DeleteMapping("/{id}")
-    public GenericMessageDTO deleteNotification(@PathVariable Long id) {
+    public ResponseEntity <GenericMessageDTO> deleteNotification(@PathVariable Long id) {
         boolean exists = notificationService.checkNotificationExists(id);
         if (exists) {
             notificationService.deleteNotification(id);

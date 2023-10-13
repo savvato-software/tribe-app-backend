@@ -12,6 +12,7 @@ import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.repositories.NotificationRepository;
 import com.savvato.tribeapp.repositories.NotificationTypeRepository;
 import com.savvato.tribeapp.dto.NotificationDTO;
+import com.savvato.tribeapp.dto.GenericMessageDTO;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -56,7 +57,12 @@ public class NotificationServiceImpl implements NotificationService {
                 .isRead(notification.isRead())
                 .build();
     }
+    public GenericMessageDTO createMessageDTO( String message ) {
 
+        return GenericMessageDTO.builder()
+                .responseMessage(message)
+                .build();
+    }
     public String getIconUrlFromNotification(Notification notification) {
         NotificationType type = notification.getType();
         return type != null ? type.getIconUrl() : null;

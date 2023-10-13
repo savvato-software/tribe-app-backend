@@ -79,7 +79,7 @@ public class ConnectServiceImpl implements ConnectService {
     }
 
     @MessageMapping("/connect/room")
-    public void connect(ConnectIncomingMessageDTO incoming, UserPrincipal user) {
+    public void connect(ConnectIncomingMessageDTO incoming) {
         if(!validateQRCode(incoming.qrcodePhrase, incoming.toBeConnectedWithUserId)) {
             ConnectOutgoingMessageDTO msg = ConnectOutgoingMessageDTO.builder()
                                             .connectionError(true)

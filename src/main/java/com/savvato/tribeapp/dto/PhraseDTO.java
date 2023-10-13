@@ -1,13 +1,21 @@
 package com.savvato.tribeapp.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
+@Schema(description = "A phrase DTO")
 public class PhraseDTO {
 
-    public String adverb;
-    public String verb;
-    public String preposition;
-    public String noun;
+  @Schema(example = "enthusiastically")
+  public String adverb;
 
+  @Schema(example = "volunteers")
+  public String verb;
+
+  @Schema(example = "at")
+  public String preposition;
+
+  @Schema(example = "UNICEF")
+  public String noun;
 }

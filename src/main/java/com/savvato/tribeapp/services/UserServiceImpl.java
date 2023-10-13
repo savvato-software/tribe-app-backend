@@ -1,11 +1,9 @@
 package com.savvato.tribeapp.services;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
+import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -119,12 +117,12 @@ public class UserServiceImpl implements UserService {
 		// email.
 	}
 
-	public User changePassword(String pw, String phoneNumber, String smsChallengeCode) {
+	public UserDTO changePassword(String pw, String phoneNumber, String smsChallengeCode) {
 		// This method is for when the user wants to change there password.
 		//  It does not require authentication, but the sms challenge code helps to ensure that
 		//  at least this request came from the phone associated with the account.
 
-		User rtn = null;
+		UserDTO rtn = null;
 
 		if (!phoneNumber.startsWith("0"))
 			phoneNumber = "1" + phoneNumber;
@@ -137,16 +135,37 @@ public class UserServiceImpl implements UserService {
 				user.setPassword(passwordEncoder.encode(pw));
 				this.userRepo.save(user);
 
-				rtn = user;
+				rtn = getUserDTO(user);
 			}
 		}
 
 		return rtn;
 	}
 
-	public Iterable<User> getAllUsers() {
-		return userRepo.findAll();
+	public List<UserDTO> getAllUsers() {
+		Iterable<User> users = userRepo.findAll();
+		List<UserDTO> rtn = new ArrayList<>();
+		for (User user : users){
+			rtn.add(getUserDTO(user));
+
+		}
+		return rtn;
 	}
 
+	private UserDTO getUserDTO(User user) {
+		UserDTO userDTO = UserDTO.builder()
+				.id(user.getId())
+				.name(user.getName())
+				.password(user.getPassword())
+				.phone(user.getPhone())
+				.email(user.getEmail())
+				.enabled(user.getEnabled())
+				.created(user.getCreated().toString())
+				.lastUpdated(user.getLastUpdated().toString())
+				.roles(user.getRoles())
+				.build();
+
+		return userDTO;
+	}
 
 }

@@ -6,6 +6,8 @@ import lombok.Builder;
 @Builder
 public class ToBeReviewedDTO {
 
+  @Schema(example = "1")
+  public Long toBeReviewedId;
   @Schema(implementation = Boolean.class, example = "false")
   public Boolean hasBeenGroomed;
 

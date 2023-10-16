@@ -30,7 +30,7 @@ public class ReviewDecisionAPIController {
   @PostMapping
   public ResponseEntity<ReviewDecisionDTO> saveReviewDecision(@RequestBody @Valid ReviewDecisionRequest request) {
     ReviewDecision decisionSaved =
-        reviewDecisionService.saveReviewDecision(request.reviewId, request.reviewerId, request.reasonId);
+        reviewDecisionService.saveReviewDecision(request.reviewId, request.userId, request.reasonId);
     ReviewDecisionDTO rtn = ReviewDecisionDTO.builder().build();
 
     rtn.reviewId = decisionSaved.getReviewId();
@@ -39,7 +39,7 @@ public class ReviewDecisionAPIController {
     return ResponseEntity.status(HttpStatus.OK).body(rtn);
   }
 
-  @GetMapping("/reasons-list")
+  @GetMapping
   public ResponseEntity getReasonList() {
     List<ReviewDecisionReasonDTO> reasonsList = reviewDecisionReasonService.getReviewDecisionReasons();
     if (!reasonsList.isEmpty()) {

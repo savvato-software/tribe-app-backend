@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.controllers;
 
+import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.ApplyPhraseToUser;
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetAttributesForUser;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
@@ -8,6 +9,7 @@ import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.services.AttributesService;
 import com.savvato.tribeapp.services.NotificationService;
 import com.savvato.tribeapp.services.PhraseService;
+import com.savvato.tribeapp.services.UserPhraseService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -16,6 +18,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,6 +37,9 @@ public class AttributesAPIController {
 
   @Autowired 
   NotificationService notificationService;
+
+  @Autowired
+  UserPhraseService userPhraseService;
 
   AttributesAPIController() {}
 
@@ -64,6 +71,18 @@ public class AttributesAPIController {
     } else {
       sendNotification(false, req.userId);
       return ResponseEntity.status(HttpStatus.OK).body(false);
+    }
+  }
+
+  @DeleteMapping
+  public ResponseEntity deletePhraseFromUser(@RequestParam Long phraseId) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null && authentication.getPrincipal() instanceof UserPrincipal) {
+      Long userId = ((UserPrincipal) authentication.getPrincipal()).getId();
+      userPhraseService.deletePhraseFromUser(phraseId, userId);
+      return ResponseEntity.ok().build();
+    } else {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
     }
   }
 

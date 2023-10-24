@@ -6,9 +6,11 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.models.media.MediaType;
 import java.util.Optional;
+import lombok.Generated;
 import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.fn.builders.schema.Builder;
 
+@Generated
 public class ResponseAnnotationUtils extends AnnotationsUtils {
   private static final Builder SchemaAnnotationBuilder = Builder.schemaBuilder();
 

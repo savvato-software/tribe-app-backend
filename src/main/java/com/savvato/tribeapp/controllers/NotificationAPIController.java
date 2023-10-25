@@ -1,6 +1,5 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.controllers.annotations.controllers.NotificationController.DeleteNotification;
 import com.savvato.tribeapp.controllers.annotations.controllers.NotificationController.GetUserNotifications;
 import com.savvato.tribeapp.controllers.annotations.controllers.NotificationController.UpdateNotification;
 import com.savvato.tribeapp.controllers.dto.NotificationRequest;
@@ -28,16 +27,17 @@ public class NotificationAPIController {
   @UpdateNotification
   @PutMapping
   public ResponseEntity<String> updateNotification(@RequestBody @Valid NotificationRequest req) {
-    boolean isRead = notificationService.checkNotificationReadStatus(req.id);
-    if (isRead) {
-      return ResponseEntity.ok("Notification is already read");
-    } else {
-      notificationService.updateNotificationReadStatus(req.id);
-      return ResponseEntity.ok("Notification read status updated");
-    }
+      boolean isRead = notificationService.checkNotificationReadStatus(req.id);
+      if (isRead) {
+          return ResponseEntity.ok("Notification is already read");
+      } else {
+          notificationService.updateNotificationReadStatus(req.id);
+          return ResponseEntity.ok("Notification read status updated");
+      }
+  }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity <GenericMessageDTO> deleteNotification(@PathVariable Long id) {
+    public GenericMessageDTO deleteNotification(@PathVariable Long id) {
         boolean exists = notificationService.checkNotificationExists(id);
         if (exists) {
             notificationService.deleteNotification(id);
@@ -47,7 +47,6 @@ public class NotificationAPIController {
         }
 
     }
-  }
 
   @GetUserNotifications
   @GetMapping("/user/{user_id}")

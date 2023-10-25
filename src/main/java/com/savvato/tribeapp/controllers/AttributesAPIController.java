@@ -1,7 +1,7 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.ApplyPhraseToUser;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.DeletePhraseFromUser;
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetAttributesForUser;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
@@ -18,8 +18,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -74,16 +72,12 @@ public class AttributesAPIController {
     }
   }
 
+  ///api/attributes/?phraseId=xx&userId=xx
+  @DeletePhraseFromUser
   @DeleteMapping
-  public ResponseEntity deletePhraseFromUser(@RequestParam Long phraseId) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication != null && authentication.getPrincipal() instanceof UserPrincipal) {
-      Long userId = ((UserPrincipal) authentication.getPrincipal()).getId();
+  public ResponseEntity deletePhraseFromUser(@Parameter(description = "Phrase ID of phrase", example = "1") @RequestParam("phraseId") Long phraseId, @Parameter(description = "User ID of user", example = "1") @RequestParam("userId") Long userId) {
       userPhraseService.deletePhraseFromUser(phraseId, userId);
       return ResponseEntity.ok().build();
-    } else {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
-    }
   }
 
   private void sendNotification(Boolean approved, Long userId) {

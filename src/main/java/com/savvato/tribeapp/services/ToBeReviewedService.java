@@ -6,9 +6,7 @@ import com.savvato.tribeapp.entities.ToBeReviewed;
 import java.util.Optional;
 
 public interface ToBeReviewedService {
-    Optional<ToBeReviewedDTO> getReviewPhraseDTO();
-
-    Optional<ToBeReviewed> getReviewPhrase();
+    Optional<ToBeReviewedDTO> getReviewPhrase();
 
     void setLastAssignedForReview(Long id);
 

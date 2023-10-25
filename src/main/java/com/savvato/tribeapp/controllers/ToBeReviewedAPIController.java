@@ -26,7 +26,7 @@ public class ToBeReviewedAPIController {
   @GetPhrase
   @GetMapping
   public ResponseEntity getPhrase() {
-    Optional<ToBeReviewedDTO> opt = toBeReviewedService.getReviewPhraseDTO();
+    Optional<ToBeReviewedDTO> opt = toBeReviewedService.getReviewPhrase();
     if (opt.isPresent()) {
       return ResponseEntity.status(HttpStatus.OK).body(opt.get());
     } else {

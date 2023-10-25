@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface ToBeReviewedRepository extends CrudRepository<ToBeReviewed, Long> {
-
     @Query(nativeQuery = true, value = "select tbr.* from to_be_reviewed tbr where tbr.id>?1 and tbr.has_been_groomed=1 order by id limit 1")
     Optional<ToBeReviewed> findNextReviewEligible(Long id);
     @Query(nativeQuery = true, value = "select tbr.* from to_be_reviewed tbr where tbr.has_been_groomed=0")

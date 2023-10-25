@@ -13,5 +13,5 @@ import java.lang.annotation.*;
     summary = "Delete association of this phrase from this user.",
     description = "Provide a phrase ID, delete UserPhrase record from user_phrase table.")
 @Success(
-    description = "Successfully deleted UserPhrase.")
+    description = "Successfully deleted UserPhrase.", noContent = true)
 public @interface DeletePhraseFromUser {}

@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.dto.NotificationDTO;
 import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.entities.NotificationType;
@@ -10,6 +11,8 @@ public interface NotificationService {
     public List<NotificationDTO> getUserNotifications(Long userId);
 
     public NotificationDTO createNotificationDTO(Notification notification, String formattedLastUpdatedDate , String iconUrl);
+
+    public GenericMessageDTO createMessageDTO( String message);
 
     public boolean checkNotificationReadStatus(Long id);
 

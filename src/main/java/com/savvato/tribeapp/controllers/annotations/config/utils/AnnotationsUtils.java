@@ -5,12 +5,14 @@ import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.util.PrimitiveType;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Generated;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
+@Generated
 public class AnnotationsUtils extends io.swagger.v3.core.util.AnnotationsUtils {
 
   /**

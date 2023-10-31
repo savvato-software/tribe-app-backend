@@ -5,11 +5,9 @@ import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPICon
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetAttributesForUser;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
+import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.entities.NotificationType;
-import com.savvato.tribeapp.services.AttributesService;
-import com.savvato.tribeapp.services.NotificationService;
-import com.savvato.tribeapp.services.PhraseService;
-import com.savvato.tribeapp.services.UserPhraseService;
+import com.savvato.tribeapp.services.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -39,6 +37,9 @@ public class AttributesAPIController {
   @Autowired
   UserPhraseService userPhraseService;
 
+  @Autowired
+  ReviewSubmittingUserService reviewSubmittingUserService;
+
   AttributesAPIController() {}
 
   @GetAttributesForUser
@@ -51,6 +52,19 @@ public class AttributesAPIController {
     if (opt.isPresent()) return ResponseEntity.status(HttpStatus.OK).body(opt.get());
     else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
   }
+
+  @GetUserPhrasesToBeReviewed
+  @GetMapping("/in-review/{userId}")
+  public ResponseEntity<List<ToBeReviewedDTO>> getUserPhrasesToBeReviewed(
+          @Parameter(description = "User ID of user", example = "1")
+          @PathVariable Long userId) {
+    List<ToBeReviewedDTO> rtn =
+            reviewSubmittingUserService.getUserPhrasesToBeReviewed(userId);
+    if(rtn.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    } else {
+      return ResponseEntity.status(HttpStatus.OK).body(rtn);
+    } }
 
   @ApplyPhraseToUser
   @PostMapping

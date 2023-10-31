@@ -3,6 +3,7 @@ package com.savvato.tribeapp.controllers;
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.ApplyPhraseToUser;
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.DeletePhraseFromUser;
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetAttributesForUser;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetUserPhrasesToBeReviewed;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
 import com.savvato.tribeapp.dto.ToBeReviewedDTO;

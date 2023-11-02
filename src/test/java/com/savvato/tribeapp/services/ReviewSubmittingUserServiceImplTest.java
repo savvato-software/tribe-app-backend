@@ -48,45 +48,64 @@ public class ReviewSubmittingUserServiceImplTest extends
         Mockito.when(reviewSubmittingUserRepository.findToBeReviewedIdByUserId(anyLong
                 ())).thenReturn(toBeReviewedIds);
 
-        String testWord = "test";
-        List<ToBeReviewed> tbrs = new ArrayList<>();
-        for (Long toBeReviewedId : toBeReviewedIds) {
-            ToBeReviewed tbr = new ToBeReviewed();
-            tbr.setId(toBeReviewedId);
-            tbr.setHasBeenGroomed(true);
-            tbr.setAdverb(testWord);
-            tbr.setVerb(testWord);
-            tbr.setPreposition(testWord);
-            tbr.setNoun(testWord);
-            tbrs.add(tbr);
-        }
+        String testWord1 = "test";
+        String testWord2 = "test2";
+        ToBeReviewed tbr1 = new ToBeReviewed();
+
+        tbr1.setId(1L);
+        tbr1.setHasBeenGroomed(true);
+        tbr1.setAdverb(testWord1);
+        tbr1.setVerb(testWord1);
+        tbr1.setPreposition(testWord1);
+        tbr1.setNoun(testWord1);
+
+        ToBeReviewed tbr2 = new ToBeReviewed();
+        tbr1.setId(2L);
+        tbr1.setHasBeenGroomed(true);
+        tbr1.setAdverb(testWord2);
+        tbr1.setVerb(testWord2);
+        tbr1.setPreposition(testWord2);
+        tbr1.setNoun(testWord2);
 
         Mockito.when(toBeReviewedRepository.findById(anyLong()))
-                .thenReturn(Optional.of(tbrs.get(0)))
-                .thenReturn(Optional.of(tbrs.get(1)));
+                .thenReturn(Optional.of(tbr1))
+                .thenReturn(Optional.of(tbr2));
 
         List<ToBeReviewedDTO> expectedDTOs = new ArrayList<>();
-        for (ToBeReviewed tbr : tbrs) {
-            ToBeReviewedDTO tbrDTO = ToBeReviewedDTO.builder()
-                    .id(tbr.getId())
-                    .hasBeenGroomed(tbr.isHasBeenGroomed())
-                    .adverb(tbr.getAdverb())
-                    .verb(tbr.getVerb())
-                    .preposition(tbr.getPreposition())
-                    .noun(tbr.getNoun())
-                    .build();
-            expectedDTOs.add(tbrDTO);
-        }
+
+        ToBeReviewedDTO tbrDTO1 = ToBeReviewedDTO.builder()
+                .id(tbr1.getId())
+                .hasBeenGroomed(tbr1.isHasBeenGroomed())
+                .adverb(tbr1.getAdverb())
+                .verb(tbr1.getVerb())
+                .preposition(tbr1.getPreposition())
+                .noun(tbr1.getNoun())
+                .build();
+            expectedDTOs.add(tbrDTO1);
+
+        ToBeReviewedDTO tbrDTO2 = ToBeReviewedDTO.builder()
+                .id(tbr2.getId())
+                .hasBeenGroomed(tbr2.isHasBeenGroomed())
+                .adverb(tbr2.getAdverb())
+                .verb(tbr2.getVerb())
+                .preposition(tbr2.getPreposition())
+                .noun(tbr2.getNoun())
+                .build();
+        expectedDTOs.add(tbrDTO2);
 
         List<ToBeReviewedDTO> rtnDTOs = reviewSubmittingUserService.getUserPhrasesToBeReviewed(1L);
-        for (ToBeReviewedDTO rtnDTO : rtnDTOs) {
-            for (ToBeReviewedDTO expectedDTO : expectedDTOs) {
-                assertEquals(rtnDTO.hasBeenGroomed, expectedDTO.hasBeenGroomed);
-                assertEquals(rtnDTO.adverb, expectedDTO.adverb);
-                assertEquals(rtnDTO.verb, expectedDTO.verb);
-                assertEquals(rtnDTO.preposition, expectedDTO.preposition);
-                assertEquals(rtnDTO.noun, expectedDTO.noun);
-            }
-        }
+
+        assertEquals(rtnDTOs.get(0).hasBeenGroomed, expectedDTOs.get(0).hasBeenGroomed);
+        assertEquals(rtnDTOs.get(0).adverb, expectedDTOs.get(0).adverb);
+        assertEquals(rtnDTOs.get(0).verb, expectedDTOs.get(0).verb);
+        assertEquals(rtnDTOs.get(0).preposition, expectedDTOs.get(0).preposition);
+        assertEquals(rtnDTOs.get(0).noun, expectedDTOs.get(0).noun);
+
+        assertEquals(rtnDTOs.get(1).hasBeenGroomed, expectedDTOs.get(1).hasBeenGroomed);
+        assertEquals(rtnDTOs.get(1).adverb, expectedDTOs.get(1).adverb);
+        assertEquals(rtnDTOs.get(1).verb, expectedDTOs.get(1).verb);
+        assertEquals(rtnDTOs.get(1).preposition, expectedDTOs.get(1).preposition);
+        assertEquals(rtnDTOs.get(1).noun, expectedDTOs.get(1).noun);
+
     }
 }

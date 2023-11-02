@@ -6,16 +6,15 @@ import com.savvato.tribeapp.entities.*;
 import com.savvato.tribeapp.repositories.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -167,7 +166,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(any(Long.class), any(Long.class), any(Long.class), any(Long.class))).thenReturn(Optional.empty());
 
-        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.of(toBeReviewed));
+        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(), anyString())).thenReturn(Optional.of(toBeReviewed));
 
         boolean rtn = phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
 
@@ -198,7 +197,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         Mockito.when(phraseRepository.findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(any(Long.class), any(Long.class), any(Long.class), any(Long.class))).thenReturn(Optional.empty());
 
-        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(),anyString())).thenReturn(Optional.of(toBeReviewed));
+        Mockito.when(toBeReviewedRepository.findByAdverbAndVerbAndNounAndPreposition(anyString(), anyString(), anyString(), anyString())).thenReturn(Optional.of(toBeReviewed));
 
         boolean rtn = phraseService.applyPhraseToUser(user1.getId(), testWord, testWord, testWord, testWord);
 
@@ -211,7 +210,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         User user1 = getUser1();
         String testWord = "test";
         String testEmptyString = "";
-        List<Long> longList = new ArrayList<>(Arrays.asList(1L));
+        List<Long> longList = new ArrayList<>(List.of(1L));
         Phrase testPhrase = getTestPhrase1();
 
         Mockito.when(userPhraseService.findPhraseIdsByUserId(anyLong())).thenReturn(Optional.of(longList));
@@ -225,6 +224,32 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         PhraseDTO phrase = phraseDTOS.get().get(0);
         assertEquals(phrase.adverb, testEmptyString);
         assertEquals(phrase.preposition, testEmptyString);
+    }
+
+    @Test
+    public void getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalueWhenNoMatchingPhraseFound() {
+        Long userId = 1L;
+        Optional<List<Long>> phraseIds = Optional.of(List.of(1L, 2L));
+        when(userPhraseService.findPhraseIdsByUserId(userId)).thenReturn(phraseIds);
+        when(phraseRepository.findPhraseByPhraseId(anyLong())).thenReturn(Optional.empty());
+        assertThrows(IllegalStateException.class, () -> {
+            phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(userId);
+        }, "phrase not found");
+    }
+
+    @Test
+    public void getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalueWhenNoPhraseIdsFound() {
+        Long userId = 1L;
+        when(userPhraseService.findPhraseIdsByUserId(userId)).thenReturn(Optional.empty());
+        Optional<List<PhraseDTO>> expected = Optional.empty();
+
+        Optional<List<PhraseDTO>> actual = phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(userId);
+        verify(phraseRepository, never()).findPhraseByPhraseId(anyLong());
+        verify(adverbRepository, never()).findAdverbById(anyLong());
+        verify(verbRepository, never()).findVerbById(anyLong());
+        verify(nounRepository, never()).findNounById(anyLong());
+        verify(prepositionRepository, never()).findPrepositionById(anyLong());
+        assertEquals(actual, expected);
     }
 
     @Test
@@ -246,7 +271,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         // Should return false if the phrase has not been seen before
         Mockito.when(toBeReviewedRepository.save(any())).thenReturn(tbrSaved);
-        boolean applyPhraseToUser = phraseService.applyPhraseToUser(user1.getId(),testAdverb,testVerb,testPreposition, testNoun);
+        boolean applyPhraseToUser = phraseService.applyPhraseToUser(user1.getId(), testAdverb, testVerb, testPreposition, testNoun);
         assertFalse(applyPhraseToUser);
 
         // Empty Adverb should be converted to "nullvalue"
@@ -254,7 +279,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         ArgumentCaptor<String> argVerb = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> argPreposition = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> argNoun = ArgumentCaptor.forClass(String.class);
-        verify(toBeReviewedRepository, times(1)).findByAdverbAndVerbAndNounAndPreposition(argAdverb.capture(),argVerb.capture(),argNoun.capture(),argPreposition.capture());
+        verify(toBeReviewedRepository, times(1)).findByAdverbAndVerbAndNounAndPreposition(argAdverb.capture(), argVerb.capture(), argNoun.capture(), argPreposition.capture());
         assertEquals(argAdverb.getValue(), testAdverbConverted);
     }
 
@@ -277,7 +302,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         // Should return false if the phrase has not been seen before
         Mockito.when(toBeReviewedRepository.save(any())).thenReturn(tbrSaved);
-        boolean applyPhraseToUser = phraseService.applyPhraseToUser(user1.getId(),testAdverb,testVerb,testPreposition, testNoun);
+        boolean applyPhraseToUser = phraseService.applyPhraseToUser(user1.getId(), testAdverb, testVerb, testPreposition, testNoun);
         assertFalse(applyPhraseToUser);
 
         // Empty Preposition should be converted to "nullvalue"
@@ -285,7 +310,7 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         ArgumentCaptor<String> argVerb = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> argPreposition = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> argNoun = ArgumentCaptor.forClass(String.class);
-        verify(toBeReviewedRepository, times(1)).findByAdverbAndVerbAndNounAndPreposition(argAdverb.capture(),argVerb.capture(),argNoun.capture(),argPreposition.capture());
+        verify(toBeReviewedRepository, times(1)).findByAdverbAndVerbAndNounAndPreposition(argAdverb.capture(), argVerb.capture(), argNoun.capture(), argPreposition.capture());
         assertEquals(argPreposition.getValue(), testPrepositionConverted);
     }
 }

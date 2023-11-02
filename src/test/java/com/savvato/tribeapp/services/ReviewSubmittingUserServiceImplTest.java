@@ -67,13 +67,14 @@ public class ReviewSubmittingUserServiceImplTest extends
 
         List<ToBeReviewedDTO> expectedDTOs = new ArrayList<>();
         for (ToBeReviewed tbr : tbrs) {
-            ToBeReviewedDTO tbrDTO = ToBeReviewedDTO.builder().build();
-            tbrDTO.id = tbr.getId();
-            tbrDTO.hasBeenGroomed = tbr.isHasBeenGroomed();
-            tbrDTO.adverb = tbr.getAdverb();
-            tbrDTO.verb = tbr.getVerb();
-            tbrDTO.preposition = tbr.getPreposition();
-            tbrDTO.noun = tbr.getNoun();
+            ToBeReviewedDTO tbrDTO = ToBeReviewedDTO.builder()
+                    .id(tbr.getId())
+                    .hasBeenGroomed(tbr.isHasBeenGroomed())
+                    .adverb(tbr.getAdverb())
+                    .verb(tbr.getVerb())
+                    .preposition(tbr.getPreposition())
+                    .noun(tbr.getNoun())
+                    .build();
             expectedDTOs.add(tbrDTO);
         }
 

@@ -25,15 +25,17 @@ public class ReviewSubmittingUserServiceImpl implements
         } else {
             List<ToBeReviewedDTO> toBeReviewedDTOS = new ArrayList<>();
             for (Long tbrId : toBeReviewedIds) {
-                Optional<ToBeReviewed> tbr =
-                        toBeReviewedRepository.findById(tbrId);
-                ToBeReviewedDTO tbrDTO = ToBeReviewedDTO.builder().build();
-                tbrDTO.id = tbr.get().getId();
-                tbrDTO.hasBeenGroomed = tbr.get().isHasBeenGroomed();
-                tbrDTO.adverb = tbr.get().getAdverb();
-                tbrDTO.verb = tbr.get().getVerb();
-                tbrDTO.preposition = tbr.get().getPreposition();
-                tbrDTO.noun = tbr.get().getNoun();
+                Optional<ToBeReviewed> tbrOptional = toBeReviewedRepository.findById(tbrId);
+                ToBeReviewed tbr = tbrOptional.get();
+                ToBeReviewedDTO tbrDTO = ToBeReviewedDTO.builder()
+                        .id(tbr.getId())
+                        .hasBeenGroomed(tbr
+                        .isHasBeenGroomed())
+                        .adverb(tbr.getAdverb())
+                        .verb(tbr.getVerb())
+                        .preposition(tbr.getPreposition())
+                        .noun(tbr.getNoun())
+                        .build();
                 toBeReviewedDTOS.add(tbrDTO);
             }
             return toBeReviewedDTOS;

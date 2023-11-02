@@ -59,13 +59,9 @@ public class AttributesAPIController {
   public ResponseEntity<List<ToBeReviewedDTO>> getUserPhrasesToBeReviewed(
           @Parameter(description = "User ID of user", example = "1")
           @PathVariable Long userId) {
-    List<ToBeReviewedDTO> rtn =
-            reviewSubmittingUserService.getUserPhrasesToBeReviewed(userId);
-    if(rtn.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-    } else {
+    List<ToBeReviewedDTO> rtn = reviewSubmittingUserService.getUserPhrasesToBeReviewed(userId);
       return ResponseEntity.status(HttpStatus.OK).body(rtn);
-    } }
+    }
 
   @ApplyPhraseToUser
   @PostMapping

@@ -237,7 +237,6 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest 
                 .checkPartOfSpeech(Mockito.any(), Mockito.any());
 
         toBeReviewedCheckerServiceSpy.validatePhrase(tbr);
-        ArgumentCaptor<Long> arg1 = ArgumentCaptor.forClass(Long.class);
 
         // verify tbr was groomed
         assertEquals(true, tbr.isHasBeenGroomed());
@@ -301,4 +300,5 @@ public class ToBeReviewedCheckerServiceImplTest extends AbstractServiceImplTest 
                 .updateTables(toBeReviewedArgumentCaptor.capture());
         assertEquals(toBeReviewedArgumentCaptor.getValue(), tbr);
     }
+
 }

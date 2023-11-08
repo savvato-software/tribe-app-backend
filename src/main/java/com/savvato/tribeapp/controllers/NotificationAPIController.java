@@ -26,13 +26,13 @@ public class NotificationAPIController {
 
   @UpdateNotification
   @PutMapping
-  public ResponseEntity<String> updateNotification(@RequestBody @Valid NotificationRequest req) {
+  public GenericMessageDTO updateNotification(@RequestBody @Valid NotificationRequest req) {
       boolean isRead = notificationService.checkNotificationReadStatus(req.id);
       if (isRead) {
-          return ResponseEntity.ok("Notification is already read");
+          return notificationService.createMessageDTO("Notification is already read");
       } else {
           notificationService.updateNotificationReadStatus(req.id);
-          return ResponseEntity.ok("Notification read status updated");
+          return notificationService.createMessageDTO("Notification read status updated");
       }
   }
 

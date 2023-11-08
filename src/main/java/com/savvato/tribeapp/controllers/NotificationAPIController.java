@@ -26,7 +26,7 @@ public class NotificationAPIController {
 
   @UpdateNotification
   @PutMapping
-  public GenericMessageDTO updateNotification(@RequestBody @Valid NotificationRequest req) {
+  public ResponseEntity<GenericMessageDTO> updateNotification(@RequestBody @Valid NotificationRequest req) {
       boolean isRead = notificationService.checkNotificationReadStatus(req.id);
       if (isRead) {
           return notificationService.createMessageDTO("Notification is already read");
@@ -38,7 +38,7 @@ public class NotificationAPIController {
   }
 
     @DeleteMapping("/{id}")
-    public GenericMessageDTO deleteNotification(@PathVariable Long id) {
+    public ResponseEntity<GenericMessageDTO> deleteNotification(@PathVariable Long id) {
         boolean exists = notificationService.checkNotificationExists(id);
         if (exists) {
             notificationService.deleteNotification(id);

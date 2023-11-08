@@ -33,6 +33,7 @@ public class NotificationAPIController {
       } else {
           notificationService.updateNotificationReadStatus(req.id);
           return notificationService.createMessageDTO("Notification read status updated");
+
       }
   }
 

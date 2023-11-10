@@ -1,0 +1,16 @@
+name: CodeCov Coverage Collection
+
+on: [ push, pull_request ]
+
+jobs:
+  coverage:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Run tests and collect coverage
+        run: mvn -B test
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3

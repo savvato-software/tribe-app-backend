@@ -1,10 +1,12 @@
 name: CodeCov Coverage Collection
 
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - "develop"
 
 jobs:
   coverage:
-    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,11 +30,12 @@ public class NotificationAPIController {
   public ResponseEntity<GenericMessageDTO> updateNotification(@RequestBody @Valid NotificationRequest req) {
       boolean isRead = notificationService.checkNotificationReadStatus(req.id);
       if (isRead) {
-          return notificationService.createMessageDTO("Notification is already read");
+          GenericMessageDTO rtn = notificationService.createMessageDTO("Notification is already read");
+          return ResponseEntity.ok(rtn);
       } else {
           notificationService.updateNotificationReadStatus(req.id);
-          return notificationService.createMessageDTO("Notification read status updated");
-
+          GenericMessageDTO rtn = notificationService.createMessageDTO("Notification read status updated");
+          return ResponseEntity.ok(rtn);
       }
   }
 
@@ -42,9 +44,13 @@ public class NotificationAPIController {
         boolean exists = notificationService.checkNotificationExists(id);
         if (exists) {
             notificationService.deleteNotification(id);
-            return notificationService.createMessageDTO("Notification deleted");
+            GenericMessageDTO rtn =  notificationService.createMessageDTO("Notification deleted");
+            return ResponseEntity.ok(rtn);
         } else {
-            return notificationService.createMessageDTO("Bad Request");
+            GenericMessageDTO rtn = notificationService.createMessageDTO("Bad Request");
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(rtn);
         }
 
     }
@@ -55,6 +61,5 @@ public class NotificationAPIController {
       @Parameter(description = "A user ID", example = "1") @PathVariable Long user_id) {
     List<NotificationDTO> rtn = notificationService.getUserNotifications(user_id);
     return ResponseEntity.ok(rtn);
-  }
-  ;
+  };
 }

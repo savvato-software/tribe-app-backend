@@ -22,9 +22,11 @@ import java.util.Optional;
 @Tag(name = "reviewer-decision", description = "Decisions made after reviewing an attribute")
 @RequestMapping("/api/reviewer-decision")
 public class ReviewDecisionAPIController {
-  @Autowired ReviewDecisionService reviewDecisionService;
+  @Autowired 
+  ReviewDecisionService reviewDecisionService;
 
-  @Autowired ReviewDecisionReasonService reviewDecisionReasonService;
+  @Autowired 
+  ReviewDecisionReasonService reviewDecisionReasonService;
 
   @SaveReviewDecision
   @PostMapping

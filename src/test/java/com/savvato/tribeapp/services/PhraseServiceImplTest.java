@@ -6,6 +6,9 @@ import com.savvato.tribeapp.entities.*;
 import com.savvato.tribeapp.repositories.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -73,12 +77,70 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
     @MockBean
     ReviewSubmittingUserRepository reviewSubmittingUserRepository;
 
-    // test that illegal argument is thrown when method is called with a null verb or noun
+
     @Test
-    public void testIsMissingVerbOrNounHappyPath() {
+    public void isPhraseValidHappyPath() {
+        String adverb = "competitively";
+        String verb = "plays";
+        String noun = "chess";
+        String preposition = "";
+        when(rejectedPhraseRepository.findByRejectedPhrase(anyString())).thenReturn(Optional.empty());
+        when(rejectedNonEnglishWordRepository.findByWord(anyString())).thenReturn(Optional.empty());
+        boolean rtn = phraseService.isPhraseValid(adverb, verb, preposition, noun);
+        ArgumentCaptor<String> wordCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> phraseCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(rejectedNonEnglishWordRepository, times(4)).findByWord(wordCaptor.capture());
+        verify(rejectedPhraseRepository, times(1)).findByRejectedPhrase(phraseCaptor.capture());
+        assertThat(wordCaptor.getAllValues()).contains(adverb, verb, noun, preposition);
+        assertThat(phraseCaptor.getValue()).contains(adverb, verb, noun, preposition);
+        assertTrue(rtn);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"          "})
+    public void isPhraseValidWhenAdverbOrPrepositionMissing(String value) {
+        String adverb = value;
+        String verb = "plays";
+        String noun = "chess";
+        String preposition = value;
+        when(rejectedPhraseRepository.findByRejectedPhrase(anyString())).thenReturn(Optional.empty());
+        when(rejectedNonEnglishWordRepository.findByWord(anyString())).thenReturn(Optional.empty());
+        boolean rtn = phraseService.isPhraseValid(adverb, verb, preposition, noun);
+        ArgumentCaptor<String> wordCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> phraseCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(rejectedNonEnglishWordRepository, times(4)).findByWord(wordCaptor.capture());
+        verify(rejectedPhraseRepository, times(1)).findByRejectedPhrase(phraseCaptor.capture());
+        assertThat(wordCaptor.getAllValues()).contains(adverb, verb, noun, preposition);
+        assertThat(phraseCaptor.getValue()).contains(noun, verb);
+        assertTrue(rtn);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"          "})
+    public void testIsMissingVerbOrNounWhenVerbMissing(String verb) {
+        String adverb = "competitively";
+        String noun = "chess";
+        String preposition = "";
 
         assertThrows(IllegalArgumentException.class, () -> {
-            phraseService.isPhraseValid("testAdverb", null, "testPreposition", null);
+            phraseService.isPhraseValid(adverb, verb, preposition, noun);
+        });
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"          "})
+    public void testIsMissingVerbOrNounWhenNounMissing(String noun) {
+        String adverb = "competitively";
+        String verb = "plays";
+        String preposition = "";
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            phraseService.isPhraseValid(adverb, verb, preposition, noun);
         });
     }
 
@@ -302,6 +364,8 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
 
         // Should return false if the phrase has not been seen before
         Mockito.when(toBeReviewedRepository.save(any())).thenReturn(tbrSaved);
+        when(nounRepository.findByWord(anyString())).thenReturn(Optional.of(new Noun(testNoun)));
+        when(verbRepository.findByWord(anyString())).thenReturn(Optional.of(new Verb(testVerb)));
         boolean applyPhraseToUser = phraseService.applyPhraseToUser(user1.getId(), testAdverb, testVerb, testPreposition, testNoun);
         assertFalse(applyPhraseToUser);
 
@@ -313,4 +377,5 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
         verify(toBeReviewedRepository, times(1)).findByAdverbAndVerbAndNounAndPreposition(argAdverb.capture(), argVerb.capture(), argNoun.capture(), argPreposition.capture());
         assertEquals(argPreposition.getValue(), testPrepositionConverted);
     }
+
 }

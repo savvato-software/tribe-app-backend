@@ -6,9 +6,7 @@ import java.util.Optional;
 
 public interface SMSTextMessageService {
 
-    boolean sendSMS(String toPhoneNumber, String msg);
+  boolean sendSMS(String toPhoneNumber, String msg);
 
-    void initialize();
-
-    Optional<MessageCreateResponse> createResponse(String toPhoneNumber, String msg);
+  Optional<MessageCreateResponse> createResponse(String toPhoneNumber, String msg);
 }

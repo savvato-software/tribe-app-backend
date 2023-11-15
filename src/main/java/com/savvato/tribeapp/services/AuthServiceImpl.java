@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
-public class AuthServiceImpl  {
+public final class AuthServiceImpl {
+    private AuthServiceImpl() {
+    }
 
     public static String generateAccessToken(User user) {
         return Jwts.builder()

@@ -1,12 +1,14 @@
 package com.savvato.tribeapp.services;
 
-import com.plivo.api.Plivo;
+import com.plivo.api.PlivoClient;
 import com.plivo.api.exceptions.PlivoRestException;
 import com.plivo.api.models.message.Message;
 import com.plivo.api.models.message.MessageCreateResponse;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,18 +27,24 @@ public class SMSTextMessageServiceImpl implements SMSTextMessageService {
     @Value("${PLIVO_SMS_AUTH_TOKEN}")
     private String SMS_API_AUTH_TOKEN;
 
-
-    public void initialize() {
-
-        Plivo.init(SMS_API_AUTH_ID, SMS_API_AUTH_TOKEN);
+    @Generated
+    @Bean
+    public PlivoClient plivoClient() {
+        return new PlivoClient(SMS_API_AUTH_ID, SMS_API_AUTH_TOKEN);
     }
+
+    @Autowired
+    PlivoClient plivoClient;
 
     public Optional<MessageCreateResponse> createResponse(String toPhoneNumber, String msg) {
         try {
-            MessageCreateResponse response = Message.creator("19342227693", toPhoneNumber, msg).create();
+            MessageCreateResponse response =
+                    Message.creator("19342227693", toPhoneNumber, msg).client(plivoClient).create();
             return Optional.of(response);
         } catch (PlivoRestException plivoRestException) {
-            log.debug("PlivoRestException occurred when trying to create response: " + plivoRestException.getMessage());
+            log.debug(
+                    "PlivoRestException occurred when trying to create response: "
+                            + plivoRestException.getMessage());
         } catch (IOException ioException) {
             log.debug("IOException occurred when trying to create response: " + ioException.getMessage());
         }
@@ -47,14 +55,13 @@ public class SMSTextMessageServiceImpl implements SMSTextMessageService {
         boolean rtn = false;
 
         if (toPhoneNumber.startsWith("0")) {
-            rtn = true;    // for use in testing. just act like we did it.
+            rtn = true; // for use in testing. just act like we did it.
 
             log.debug("PRETENDED to send SMS to " + toPhoneNumber + " /  msg: [" + msg + "]");
         } else {
             try {
                 log.debug(SMS_API_AUTH_ID);
                 log.debug(SMS_API_AUTH_TOKEN);
-                initialize();
                 Optional<MessageCreateResponse> responseOpt = createResponse(toPhoneNumber, msg);
                 if (responseOpt.isPresent()) {
                     MessageCreateResponse response = responseOpt.get();

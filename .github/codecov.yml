@@ -1,0 +1,12 @@
+codecov:
+  branch: develop
+coverage:
+  status:
+    project:
+      default:
+        # basic
+        target: 75%
+        threshold: 0%
+        base: auto
+        paths:
+          - "src"

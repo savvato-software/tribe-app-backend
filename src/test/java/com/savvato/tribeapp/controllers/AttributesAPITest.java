@@ -95,6 +95,7 @@ public class AttributesAPITest {
 
     @Test
     public void getAttributesForUserWhenAttributesFound() throws Exception {
+
         Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);

@@ -70,6 +70,12 @@ public class AttributesAPITest {
     @MockBean
     private NotificationService notificationService;
 
+    @MockBean
+    private UserPhraseService userPhraseService;
+
+    @MockBean
+    private ReviewSubmittingUserService reviewSubmittingUserService;
+
     @BeforeEach
     public void setUp() throws Exception {
         mockMvc =

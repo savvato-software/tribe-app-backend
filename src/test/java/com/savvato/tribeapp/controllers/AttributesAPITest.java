@@ -35,8 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AttributesAPIController.class)
@@ -308,4 +307,29 @@ public class AttributesAPITest {
                 NotificationType.ATTRIBUTE_REQUEST_REJECTED.getName());
         assertEquals(notificationContentCaptor.getValue(), notificationContent);
     }
+
+    @Test
+    public void deletePhraseFromUserHappyPath() throws Exception {
+        String phraseId = "1";
+        String userId = "1";
+        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        doNothing().when(userPhraseService).deletePhraseFromUser(anyLong(),anyLong());
+
+        this.mockMvc
+                .perform(
+                        delete("/api/attributes")
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8")
+                                .param("phraseId", phraseId)
+                                .param("userId", userId))
+
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(userPhraseService, times(1)).deletePhraseFromUser(Long.parseLong(phraseId), Long.parseLong(userId));
+    }
+    
 }

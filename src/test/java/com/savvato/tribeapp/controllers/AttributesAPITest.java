@@ -26,10 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -366,6 +363,32 @@ public class AttributesAPITest {
         List<ToBeReviewedDTO> actualAttributes =
                 gson.fromJson(result.getResponse().getContentAsString(), toBeReviewedDTOListType);
         assertThat(actualAttributes).usingRecursiveComparison().isEqualTo(expectedToBeReviewed);
+    }
+
+    @Test
+    public void getUserPhrasesToBeReviewedHappyPathNoPhrases() throws Exception {
+        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+        Long userId = 1L;
+
+        when(reviewSubmittingUserService.getUserPhrasesToBeReviewed(anyLong())).thenReturn(new ArrayList<>());
+
+        MvcResult result =
+                this.mockMvc
+                        .perform(
+                                get("/api/attributes/in-review/{userId}", userId)
+                                        .header("Authorization", "Bearer " + auth)
+                                        .characterEncoding("utf-8"))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        Type toBeReviewedDTOListType = new TypeToken<List<ToBeReviewedDTO>>() {
+        }.getType();
+
+        List<ToBeReviewedDTO> actualAttributes =
+                gson.fromJson(result.getResponse().getContentAsString(), toBeReviewedDTOListType);
+        assertThat(actualAttributes).isEmpty();
     }
 
 }

@@ -7,6 +7,7 @@ import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
 import com.savvato.tribeapp.dto.PhraseDTO;
+import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
@@ -331,5 +332,40 @@ public class AttributesAPITest {
 
         verify(userPhraseService, times(1)).deletePhraseFromUser(Long.parseLong(phraseId), Long.parseLong(userId));
     }
-    
+
+    @Test
+    public void getUserPhrasesToBeReviewedHappyPath() throws Exception {
+        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+        Long userId = 1L;
+        ToBeReviewedDTO toBeReviewedDTO =
+                ToBeReviewedDTO.builder()
+                        .id(1L)
+                        .hasBeenGroomed(true)
+                        .verb("plays")
+                        .noun("sports")
+                        .adverb("never")
+                        .preposition("")
+                        .build();
+        List<ToBeReviewedDTO> expectedToBeReviewed = List.of(toBeReviewedDTO);
+
+        when(reviewSubmittingUserService.getUserPhrasesToBeReviewed(anyLong())).thenReturn(expectedToBeReviewed);
+        MvcResult result =
+                this.mockMvc
+                        .perform(
+                                get("/api/attributes/in-review/{userId}", userId)
+                                        .header("Authorization", "Bearer " + auth)
+                                        .characterEncoding("utf-8"))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        Type toBeReviewedDTOListType = new TypeToken<List<ToBeReviewedDTO>>() {
+        }.getType();
+
+        List<ToBeReviewedDTO> actualAttributes =
+                gson.fromJson(result.getResponse().getContentAsString(), toBeReviewedDTOListType);
+        assertThat(actualAttributes).usingRecursiveComparison().isEqualTo(expectedToBeReviewed);
+    }
+
 }

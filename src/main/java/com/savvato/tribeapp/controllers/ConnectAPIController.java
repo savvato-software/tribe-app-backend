@@ -42,7 +42,7 @@ public class ConnectAPIController {
 
   @Connect
   @PostMapping
-  public boolean connect(@Valid ConnectRequest connectRequest) {
+  public boolean connect(@RequestBody @Valid ConnectRequest connectRequest) {
     if (connectService.validateQRCode(
         connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
       boolean isConnectionSaved =

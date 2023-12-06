@@ -94,16 +94,17 @@ public class AttributesAPIController {
   private void sendNotification(Boolean approved, Long userId) {
     if (approved) {
       notificationService.createNotification(
-          NotificationType.ATTRIBUTE_REQUEST_REJECTED,
-          userId,
-          NotificationType.ATTRIBUTE_REQUEST_REJECTED.getName(),
-          "Your attribute was rejected. This attribute is unsuitable and cannot be applied to users.");
-    } else {
-      notificationService.createNotification(
           NotificationType.ATTRIBUTE_REQUEST_APPROVED,
           userId,
           NotificationType.ATTRIBUTE_REQUEST_APPROVED.getName(),
           "Your attribute has been approved!");
+
+    } else {
+      notificationService.createNotification(
+          NotificationType.ATTRIBUTE_REQUEST_REJECTED,
+          userId,
+          NotificationType.ATTRIBUTE_REQUEST_REJECTED.getName(),
+          "Your attribute was rejected. This attribute is unsuitable and cannot be applied to users.");
     }
   }
 }

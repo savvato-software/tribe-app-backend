@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.entities.UserPhraseId;
 import com.savvato.tribeapp.repositories.UserPhraseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,15 @@ public class UserPhraseServiceImpl implements UserPhraseService{
 
         return optPhraseIdsForUser;
 
+    }
+
+    @Override
+    public void deletePhraseFromUser(Long phraseId, Long userId) {
+        UserPhraseId userPhraseId = new UserPhraseId();
+        userPhraseId.setPhraseId(phraseId);
+        userPhraseId.setUserId(userId);
+
+        userPhraseRepository.deleteById(userPhraseId);
     }
 
 }

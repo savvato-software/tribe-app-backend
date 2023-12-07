@@ -7,6 +7,7 @@ import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
 import com.savvato.tribeapp.dto.PhraseDTO;
+import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
@@ -25,18 +26,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AttributesAPIController.class)
@@ -69,6 +66,12 @@ public class AttributesAPITest {
 
     @MockBean
     private NotificationService notificationService;
+
+    @MockBean
+    private UserPhraseService userPhraseService;
+
+    @MockBean
+    private ReviewSubmittingUserService reviewSubmittingUserService;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -302,4 +305,90 @@ public class AttributesAPITest {
                 NotificationType.ATTRIBUTE_REQUEST_REJECTED.getName());
         assertEquals(notificationContentCaptor.getValue(), notificationContent);
     }
+
+    @Test
+    public void deletePhraseFromUserHappyPath() throws Exception {
+        String phraseId = "1";
+        String userId = "1";
+        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        doNothing().when(userPhraseService).deletePhraseFromUser(anyLong(),anyLong());
+
+        this.mockMvc
+                .perform(
+                        delete("/api/attributes")
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8")
+                                .param("phraseId", phraseId)
+                                .param("userId", userId))
+
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(userPhraseService, times(1)).deletePhraseFromUser(Long.parseLong(phraseId), Long.parseLong(userId));
+    }
+
+    @Test
+    public void getUserPhrasesToBeReviewedHappyPath() throws Exception {
+        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+        Long userId = 1L;
+        ToBeReviewedDTO toBeReviewedDTO =
+                ToBeReviewedDTO.builder()
+                        .id(1L)
+                        .hasBeenGroomed(true)
+                        .verb("plays")
+                        .noun("sports")
+                        .adverb("never")
+                        .preposition("")
+                        .build();
+        List<ToBeReviewedDTO> expectedToBeReviewed = List.of(toBeReviewedDTO);
+
+        when(reviewSubmittingUserService.getUserPhrasesToBeReviewed(anyLong())).thenReturn(expectedToBeReviewed);
+        MvcResult result =
+                this.mockMvc
+                        .perform(
+                                get("/api/attributes/in-review/{userId}", userId)
+                                        .header("Authorization", "Bearer " + auth)
+                                        .characterEncoding("utf-8"))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        Type toBeReviewedDTOListType = new TypeToken<List<ToBeReviewedDTO>>() {
+        }.getType();
+
+        List<ToBeReviewedDTO> actualAttributes =
+                gson.fromJson(result.getResponse().getContentAsString(), toBeReviewedDTOListType);
+        assertThat(actualAttributes).usingRecursiveComparison().isEqualTo(expectedToBeReviewed);
+    }
+
+    @Test
+    public void getUserPhrasesToBeReviewedHappyPathNoPhrases() throws Exception {
+        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+        Long userId = 1L;
+
+        when(reviewSubmittingUserService.getUserPhrasesToBeReviewed(anyLong())).thenReturn(new ArrayList<>());
+
+        MvcResult result =
+                this.mockMvc
+                        .perform(
+                                get("/api/attributes/in-review/{userId}", userId)
+                                        .header("Authorization", "Bearer " + auth)
+                                        .characterEncoding("utf-8"))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        Type toBeReviewedDTOListType = new TypeToken<List<ToBeReviewedDTO>>() {
+        }.getType();
+
+        List<ToBeReviewedDTO> actualAttributes =
+                gson.fromJson(result.getResponse().getContentAsString(), toBeReviewedDTOListType);
+        assertThat(actualAttributes).isEmpty();
+    }
+
 }

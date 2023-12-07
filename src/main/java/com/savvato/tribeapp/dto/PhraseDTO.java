@@ -7,6 +7,9 @@ import lombok.Builder;
 @Schema(description = "A phrase DTO")
 public class PhraseDTO {
 
+  @Schema(example = "1")
+  public long id;
+
   @Schema(example = "enthusiastically")
   public String adverb;
 

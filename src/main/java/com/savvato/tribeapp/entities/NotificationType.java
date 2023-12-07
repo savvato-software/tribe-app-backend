@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class NotificationType {
 
     public static final NotificationType ATTRIBUTE_REQUEST_APPROVED = new NotificationType(1L, "Attribute request approved", null);
-    public static final NotificationType ATTRIBUTE_REQUEST_REJECTED = new NotificationType(1L, "Attribute request approved", null);
+    public static final NotificationType ATTRIBUTE_REQUEST_REJECTED = new NotificationType(1L, "Attribute request rejected", null);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

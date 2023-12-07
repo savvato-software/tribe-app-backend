@@ -35,6 +35,7 @@ public class ToBeReviewedServiceImpl implements ToBeReviewedService {
             setLastAssignedForReview(tbr.getId());
 
             ToBeReviewedDTO rtn = ToBeReviewedDTO.builder()
+                    .id(tbr.getId())
                     .hasBeenGroomed(tbr.isHasBeenGroomed())
                     .adverb(tbr.getAdverb())
                     .verb(tbr.getVerb())

@@ -128,4 +128,17 @@ public class ConnectServiceImpl implements ConnectService {
         }
         return null;
     }
+
+    public List<ConnectOutgoingMessageDTO> getAllConnectionsForAUser(Long userId) {
+        List<Connection> connections = connectionsRepository.findAllByToBeConnectedWithUserId(userId);
+        List<ConnectOutgoingMessageDTO> outgoingMessages = new ArrayList<>();
+        for (Connection connection : connections) {
+            ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
+                    .connectionSuccess(true)
+                    .to(new ArrayList<>(Arrays.asList(connection.getToBeConnectedWithUserId())))
+                    .message("Successfully saved connection!").build();
+            outgoingMessages.add(outgoingMessage);
+        }
+        return outgoingMessages;
+    }
 }

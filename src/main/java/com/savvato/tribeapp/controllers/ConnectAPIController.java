@@ -5,9 +5,12 @@ import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIContro
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetQRCodeString;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
+import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.services.ConnectService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,19 @@ public class ConnectAPIController {
   @Autowired ConnectService connectService;
 
   ConnectAPIController() {}
+
+  @GetMapping("/all/{userId}")
+  public ResponseEntity<List<ConnectOutgoingMessageDTO>> getConnections(
+      @Parameter(description = "The user ID of a user", example = "1") @PathVariable Long userId) {
+
+    List<ConnectOutgoingMessageDTO> list = connectService.getAllConnectionsForAUser(userId);
+
+    if (list != null) {
+      return ResponseEntity.status(HttpStatus.OK).body(list);
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+  }
 
   @GetQRCodeString
   @GetMapping("/{userId}")

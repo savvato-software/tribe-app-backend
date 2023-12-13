@@ -1,16 +1,17 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.controllers.annotations.controllers.NotificationController.DeleteNotification;
 import com.savvato.tribeapp.controllers.annotations.controllers.NotificationController.GetUserNotifications;
 import com.savvato.tribeapp.controllers.annotations.controllers.NotificationController.UpdateNotification;
 import com.savvato.tribeapp.controllers.dto.NotificationRequest;
 import com.savvato.tribeapp.dto.NotificationDTO;
+import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.services.NotificationService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,28 +27,33 @@ public class NotificationAPIController {
 
   @UpdateNotification
   @PutMapping
-  public ResponseEntity<String> updateNotification(@RequestBody @Valid NotificationRequest req) {
-    boolean isRead = notificationService.checkNotificationReadStatus(req.id);
-    if (isRead) {
-      return ResponseEntity.ok("Notification is already read");
-    } else {
-      notificationService.updateNotificationReadStatus(req.id);
-      return ResponseEntity.ok("Notification read status updated");
-    }
+  public ResponseEntity<GenericMessageDTO> updateNotification(@RequestBody @Valid NotificationRequest req) {
+      boolean isRead = notificationService.checkNotificationReadStatus(req.id);
+      if (isRead) {
+          GenericMessageDTO rtn = notificationService.createMessageDTO("Notification is already read");
+          return ResponseEntity.ok(rtn);
+      } else {
+          notificationService.updateNotificationReadStatus(req.id);
+          GenericMessageDTO rtn = notificationService.createMessageDTO("Notification read status updated");
+          return ResponseEntity.ok(rtn);
+      }
   }
 
-  @DeleteNotification
-  @DeleteMapping("/{id}")
-  public ResponseEntity<String> deleteNotification(
-      @Parameter(description = "A notification ID", example = "1") @PathVariable Long id) {
-    boolean exists = notificationService.checkNotificationExists(id);
-    if (exists) {
-      notificationService.deleteNotification(id);
-      return ResponseEntity.ok("Notification deleted");
-    } else {
-      return ResponseEntity.notFound().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<GenericMessageDTO> deleteNotification(@PathVariable Long id) {
+        boolean exists = notificationService.checkNotificationExists(id);
+        if (exists) {
+            notificationService.deleteNotification(id);
+            GenericMessageDTO rtn =  notificationService.createMessageDTO("Notification deleted");
+            return ResponseEntity.ok(rtn);
+        } else {
+            GenericMessageDTO rtn = notificationService.createMessageDTO("Bad Request");
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(rtn);
+        }
+
     }
-  }
 
   @GetUserNotifications
   @GetMapping("/user/{user_id}")
@@ -55,6 +61,5 @@ public class NotificationAPIController {
       @Parameter(description = "A user ID", example = "1") @PathVariable Long user_id) {
     List<NotificationDTO> rtn = notificationService.getUserNotifications(user_id);
     return ResponseEntity.ok(rtn);
-  }
-  ;
+  };
 }

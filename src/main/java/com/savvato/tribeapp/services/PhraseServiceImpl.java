@@ -261,7 +261,9 @@ public class PhraseServiceImpl implements PhraseService {
 
             // loop through phrases and get words. replace nullvalue placeholders with empty string
             for (Phrase phrase : phrases) {
-                PhraseDTO phraseDTO = PhraseDTO.builder().build();
+                PhraseDTO phraseDTO = PhraseDTO.builder()
+                        .id(phrase.getId())
+                        .build();
 
                 Optional<String> optAdverb = adverbRepository.findAdverbById(phrase.getAdverbId());
                 Optional<String> optVerb = verbRepository.findVerbById(phrase.getVerbId());

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet author="maryam" id="202311141812-01">
+        <sql dbms="mysql">
+            <!-- Password is "admin" for all, and the accounts are all enabled. -->
+            INSERT INTO user
+            (name, phone, email, password, enabled)
+            VALUES
+            ("testuser6", "1598755426", "testuser6@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1),
+
+            ("testuser7", "1234567890", "testuser7@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1),
+
+            ("testuser8", "9876543210", "testuser8@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1),
+
+            ("testuser9", "5555555555", "testuser9@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1),
+
+            ("testuser10", "1231231234", "testuser10@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1),
+
+            ("testuser11", "5556667777", "testuser11@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1),
+
+            ("testuser12", "9879879876", "testuser12@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1),
+
+            ("testuser13", "1112223333", "testuser13@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1),
+
+            ("testuser14", "9998887777", "testuser14@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1),
+
+            ("testuser15", "4443332222", "testuser15@tribeapp.com",
+            "$2a$10$wGcNuV0Kodg7uz6qI/l/1uz1mMcpmAGZqfuZ3JxY9cAeejtYXUbWC", 1);
+
+        </sql>
+    </changeSet>
+    <changeSet id="202311141812-02" author="maryam">
+        <sql dbms="mysql">
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (7, 1);
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (8, 1);
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (9, 1);
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (10, 1);
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (11, 1);
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (12, 1);
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (13, 1);
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (14, 1);
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (15, 1);
+            INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (16, 1);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

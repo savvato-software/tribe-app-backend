@@ -49,6 +49,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         expectedToBeReviewed.setNoun("Python");
 
         ToBeReviewedDTO expectedToBeReviewedDTO = ToBeReviewedDTO.builder()
+                .id(expectedToBeReviewed.getId())
                 .hasBeenGroomed(expectedToBeReviewed.isHasBeenGroomed())
                 .adverb(expectedToBeReviewed.getAdverb())
                 .verb(expectedToBeReviewed.getVerb())
@@ -93,6 +94,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         expectedToBeReviewed.setNoun("Python");
 
         ToBeReviewedDTO expectedToBeReviewedDTO = ToBeReviewedDTO.builder()
+                .id(expectedToBeReviewed.getId())
                 .hasBeenGroomed(expectedToBeReviewed.isHasBeenGroomed())
                 .adverb(expectedToBeReviewed.getAdverb())
                 .verb(expectedToBeReviewed.getVerb())
@@ -119,6 +121,7 @@ public class ToBeReviewedServiceImplTest extends AbstractServiceImplTest {
         expectedToBeReviewed.setNoun("Scala");
 
         ToBeReviewedDTO expectedToBeReviewedDTO2 = ToBeReviewedDTO.builder()
+                .id(expectedToBeReviewed.getId())
                 .hasBeenGroomed(expectedToBeReviewed.isHasBeenGroomed())
                 .adverb(expectedToBeReviewed.getAdverb())
                 .verb(expectedToBeReviewed.getVerb())

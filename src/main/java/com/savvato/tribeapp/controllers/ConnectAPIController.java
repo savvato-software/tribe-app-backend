@@ -2,6 +2,7 @@ package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.Connect;
+import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetConnections;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetQRCodeString;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
@@ -29,6 +30,7 @@ public class ConnectAPIController {
 
   ConnectAPIController() {}
 
+  @GetConnections
   @GetMapping("/all/{userId}")
   public ResponseEntity<List<ConnectOutgoingMessageDTO>> getConnections(
       @Parameter(description = "The user ID of a user", example = "1") @PathVariable Long userId) {

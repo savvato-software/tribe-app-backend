@@ -135,8 +135,9 @@ public class ConnectServiceImpl implements ConnectService {
         for (Connection connection : connections) {
             ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
                     .connectionSuccess(true)
-                    .to(new ArrayList<>(Arrays.asList(connection.getToBeConnectedWithUserId())))
-                    .message("Successfully saved connection!").build();
+                    .to(new ArrayList<>(Arrays.asList(connection.getRequestingUserId())))
+                    .message("")
+                    .build();
             outgoingMessages.add(outgoingMessage);
         }
         return outgoingMessages;

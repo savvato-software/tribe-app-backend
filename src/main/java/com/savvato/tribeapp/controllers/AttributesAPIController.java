@@ -6,7 +6,6 @@ import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPICon
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetUserPhrasesToBeReviewed;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.services.*;
@@ -45,7 +44,7 @@ public class AttributesAPIController {
 
     AttributesAPIController() {
     }
-    
+
 
     @GetAttributesForUser
     @GetMapping("/{userId}")

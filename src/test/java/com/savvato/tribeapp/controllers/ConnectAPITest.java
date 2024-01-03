@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
-import com.savvato.tribeapp.controllers.dto.ConnectionDeleteRequest;
+import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.*;
@@ -196,11 +196,11 @@ public class ConnectAPITest {
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
 
-        ConnectionDeleteRequest connectionDeleteRequest = new ConnectionDeleteRequest();
+        ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
         connectionDeleteRequest.requestingUserId = 1L;
         connectionDeleteRequest.connectedWithUserId = 2L;
         when(connectService.removeConnection(any())).thenReturn(true);
-        ArgumentCaptor<ConnectionDeleteRequest> connectionDeleteRequestCaptor = ArgumentCaptor.forClass(ConnectionDeleteRequest.class);
+        ArgumentCaptor<ConnectionRemovalRequest> connectionDeleteRequestCaptor = ArgumentCaptor.forClass(ConnectionRemovalRequest.class);
         this.mockMvc
                 .perform(
                         delete("/api/connect")
@@ -222,11 +222,11 @@ public class ConnectAPITest {
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
 
-        ConnectionDeleteRequest connectionDeleteRequest = new ConnectionDeleteRequest();
+        ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
         connectionDeleteRequest.requestingUserId = 1L;
         connectionDeleteRequest.connectedWithUserId = 2L;
         when(connectService.removeConnection(any())).thenReturn(false);
-        ArgumentCaptor<ConnectionDeleteRequest> connectionDeleteRequestCaptor = ArgumentCaptor.forClass(ConnectionDeleteRequest.class);
+        ArgumentCaptor<ConnectionRemovalRequest> connectionDeleteRequestCaptor = ArgumentCaptor.forClass(ConnectionRemovalRequest.class);
         this.mockMvc
                 .perform(
                         delete("/api/connect")

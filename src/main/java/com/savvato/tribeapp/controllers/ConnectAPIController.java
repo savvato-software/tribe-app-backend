@@ -3,7 +3,7 @@ package com.savvato.tribeapp.controllers;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.Connect;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetQRCodeString;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
-import com.savvato.tribeapp.controllers.dto.ConnectionDeleteRequest;
+import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.services.ConnectService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -58,7 +58,7 @@ public class ConnectAPIController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Boolean> removeConnection(@RequestBody @Valid ConnectionDeleteRequest connectionDeleteRequest) {
+    public ResponseEntity<Boolean> removeConnection(@RequestBody @Valid ConnectionRemovalRequest connectionDeleteRequest) {
         if (connectService.removeConnection(connectionDeleteRequest)) {
             return ResponseEntity.ok().body(true);
         }

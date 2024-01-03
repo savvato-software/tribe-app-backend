@@ -1,6 +1,6 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.controllers.dto.ConnectionDeleteRequest;
+import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.entities.Connection;
@@ -126,7 +126,7 @@ public class ConnectServiceImpl implements ConnectService {
         return null;
     }
 
-    public boolean removeConnection(ConnectionDeleteRequest connectionDeleteRequest) {
+    public boolean removeConnection(ConnectionRemovalRequest connectionDeleteRequest) {
         if (Objects.equals(connectionDeleteRequest.requestingUserId, connectionDeleteRequest.connectedWithUserId)) {
             return false;
         }

@@ -1,6 +1,6 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.controllers.dto.ConnectionDeleteRequest;
+import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 
@@ -20,5 +20,5 @@ public interface ConnectService {
 
     ConnectOutgoingMessageDTO handleConnectionIntent(String connectionIntent, Long requestingUserId, Long toBeRequestedWithUserId);
 
-    boolean removeConnection(ConnectionDeleteRequest connectionDeleteRequest);
+    boolean removeConnection(ConnectionRemovalRequest connectionDeleteRequest);
 }

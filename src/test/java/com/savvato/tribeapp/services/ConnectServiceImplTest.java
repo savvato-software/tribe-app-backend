@@ -1,7 +1,7 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.config.principal.UserPrincipal;
-import com.savvato.tribeapp.controllers.dto.ConnectionDeleteRequest;
+import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.entities.Connection;
@@ -237,7 +237,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void removeConnectionHappyPath() {
-        ConnectionDeleteRequest connectionDeleteRequest = new ConnectionDeleteRequest();
+        ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
         connectionDeleteRequest.requestingUserId = 1L;
         connectionDeleteRequest.connectedWithUserId = 2L;
         ArgumentCaptor<Long> requestingUserIdCaptor = ArgumentCaptor.forClass(Long.class);
@@ -250,7 +250,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void removeConnectionWhenDatabaseDeleteFails() {
-        ConnectionDeleteRequest connectionDeleteRequest = new ConnectionDeleteRequest();
+        ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
         connectionDeleteRequest.requestingUserId = 1L;
         connectionDeleteRequest.connectedWithUserId = 2L;
         ArgumentCaptor<Long> requestingUserIdCaptor = ArgumentCaptor.forClass(Long.class);
@@ -264,10 +264,10 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void removeConnectionWhenBothIdsAreTheSame() {
-        ConnectionDeleteRequest connectionDeleteRequest = new ConnectionDeleteRequest();
-        connectionDeleteRequest.requestingUserId = 1L;
-        connectionDeleteRequest.connectedWithUserId = 1L;
-        assertFalse(connectService.removeConnection(connectionDeleteRequest));
+        ConnectionRemovalRequest connectionRemovalRequest = new ConnectionRemovalRequest();
+        connectionRemovalRequest.requestingUserId = 1L;
+        connectionRemovalRequest.connectedWithUserId = 1L;
+        assertFalse(connectService.removeConnection(connectionRemovalRequest));
         verify(connectionsRepository, never()).removeConnection(anyLong(), anyLong());
     }
 }

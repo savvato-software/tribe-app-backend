@@ -58,8 +58,8 @@ public class ConnectAPIController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Boolean> removeConnection(@RequestBody @Valid ConnectionRemovalRequest connectionDeleteRequest) {
-        if (connectService.removeConnection(connectionDeleteRequest)) {
+    public ResponseEntity<Boolean> removeConnection(@RequestBody @Valid ConnectionRemovalRequest connectionRemovalRequest) {
+        if (connectService.removeConnection(connectionRemovalRequest)) {
             return ResponseEntity.ok().body(true);
         }
         return ResponseEntity.badRequest().body(false);

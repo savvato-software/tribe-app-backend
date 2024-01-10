@@ -126,12 +126,12 @@ public class ConnectServiceImpl implements ConnectService {
         return null;
     }
 
-    public boolean removeConnection(ConnectionRemovalRequest connectionDeleteRequest) {
-        if (Objects.equals(connectionDeleteRequest.requestingUserId, connectionDeleteRequest.connectedWithUserId)) {
+    public boolean removeConnection(ConnectionRemovalRequest connectionRemovalRequest) {
+        if (Objects.equals(connectionRemovalRequest.requestingUserId, connectionRemovalRequest.connectedWithUserId)) {
             return false;
         }
         try {
-            connectionsRepository.removeConnection(connectionDeleteRequest.requestingUserId, connectionDeleteRequest.connectedWithUserId);
+            connectionsRepository.removeConnection(connectionRemovalRequest.requestingUserId, connectionRemovalRequest.connectedWithUserId);
             return true;
         } catch (Exception e) {
             return false;

@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.entities.Cosign;
 import com.savvato.tribeapp.repositories.CosignRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +15,13 @@ public class CosignServiceImpl implements CosignService {
     CosignRepository cosignRepository;
 
     @Override
-    public void saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
+    public void saveCosign(CosignRequest cosignRequest) {
 
         Cosign cosign = new Cosign();
-        cosign.setUserIdIssuing(userIdIssuing);
-        cosign.setUserIdReceiving(userIdReceiving);
-        cosign.setPhraseId(phraseId);
+        cosign.setUserIdIssuing(cosignRequest.userIdIssuing);
+        cosign.setUserIdReceiving(cosign.userIdReceiving);
+        cosign.setPhraseId(cosign.phraseId);
         cosignRepository.save(cosign);
-        log.info("Cosign from user: " + userIdIssuing + " to user: " + userIdReceiving + " added." );
+        log.info("Cosign from user: " + cosignRequest.userIdIssuing + " to user: " + cosignRequest.userIdReceiving + " added." );
     }
 }

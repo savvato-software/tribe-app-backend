@@ -91,7 +91,7 @@ public class ConnectAPIController {
   @PostMapping("/cosign")
   public ResponseEntity saveCosign(@RequestBody @Valid CosignRequest cosignRequest) {
 
-      cosignService.saveCosign(cosignRequest);
+      cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
       return ResponseEntity.status(HttpStatus.OK).build();
 
   }

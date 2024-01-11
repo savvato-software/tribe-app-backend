@@ -15,13 +15,13 @@ public class CosignServiceImpl implements CosignService {
     CosignRepository cosignRepository;
 
     @Override
-    public void saveCosign(CosignRequest cosignRequest) {
+    public void saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
 
         Cosign cosign = new Cosign();
-        cosign.setUserIdIssuing(cosignRequest.userIdIssuing);
-        cosign.setUserIdReceiving(cosignRequest.userIdReceiving);
-        cosign.setPhraseId(cosignRequest.phraseId);
+        cosign.setUserIdIssuing(userIdIssuing);
+        cosign.setUserIdReceiving(userIdReceiving);
+        cosign.setPhraseId(phraseId);
         cosignRepository.save(cosign);
-        log.info("Cosign from user: " + cosignRequest.userIdIssuing + " to user: " + cosignRequest.userIdReceiving + " added." );
+        log.info("Cosign from user: " + userIdIssuing + " to user: " + userIdReceiving + " added." );
     }
 }

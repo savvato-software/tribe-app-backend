@@ -5,6 +5,7 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
+import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.CosignRepository;
@@ -199,24 +200,33 @@ public class ConnectAPITest {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
+
+        Long userIdIssuing = 1L;
+        Long userIdReceiving = 1L;
+        Long phraseId = 1L;
+
         CosignRequest cosignRequest = new CosignRequest();
+        cosignRequest.userIdIssuing = userIdIssuing;
+        cosignRequest.userIdReceiving = userIdReceiving;
+        cosignRequest.phraseId = phraseId;
 
-        cosignRequest.userIdIssuing = 1L;
-        cosignRequest.userIdReceiving = 2L;
-        cosignRequest.phraseId = 1L;
+        CosignDTO cosignDTO = CosignDTO.builder().build();
+        cosignDTO.userIdIssuing = userIdIssuing;
+        cosignDTO.userIdReceiving = userIdReceiving;
+        cosignDTO.phraseId = phraseId;
 
-        // to be implemented
+        when(cosignService.saveCosign(anyLong(), anyLong(), anyLong())).thenReturn(cosignDTO);
 
         this.mockMvc
                 .perform(
-                        post("/api/connect")
+                        post("/api/connect/cosign")
                                 .content(gson.toJson(cosignRequest))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"userIdIssuing\":1,\"userIdReceiving\":1,\"phraseId\":1}"));
 
-        // to be implemented
     }
 
 }

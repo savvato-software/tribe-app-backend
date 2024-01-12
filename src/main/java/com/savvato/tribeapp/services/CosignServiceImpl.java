@@ -26,7 +26,7 @@ public class CosignServiceImpl implements CosignService {
         cosign.setPhraseId(phraseId);
 
         Cosign savedCosign = cosignRepository.save(cosign);
-        log.info("Cosign from user: " + userIdIssuing + " to user: " + userIdReceiving + " added." );
+        log.info("Cosign from user " + userIdIssuing + " to user " + userIdReceiving + " added." );
 
         CosignDTO cosignDTO = CosignDTO
                 .builder()

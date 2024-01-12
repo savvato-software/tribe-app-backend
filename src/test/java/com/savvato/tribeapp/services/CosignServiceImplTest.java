@@ -60,4 +60,35 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
         assertEquals(cosignDTO.userIdReceiving, expectedCosignDTO.userIdReceiving);
         assertEquals(cosignDTO.phraseId, expectedCosignDTO.phraseId);
     }
+
+    @Test
+    public void saveCosignAlreadyExisting() {
+        Long userIdIssuing = 1L;
+        Long userIdReceiving = 1L;
+        Long phraseId = 1L;
+
+        Cosign cosign = new Cosign();
+        cosign.setUserIdIssuing(userIdIssuing);
+        cosign.setUserIdReceiving(userIdReceiving);
+        cosign.setPhraseId(phraseId);
+
+        CosignDTO cosignDTO = CosignDTO.builder().build();
+        cosignDTO.userIdIssuing = userIdIssuing;
+        cosignDTO.userIdReceiving = userIdReceiving;
+        cosignDTO.phraseId = phraseId;
+
+        when(cosignRepository.save(Mockito.any())).thenReturn(cosign).thenReturn(cosign);
+
+        CosignDTO expectedCosignDTO = cosignService.saveCosign(userIdIssuing, userIdReceiving, phraseId);
+
+        assertEquals(cosignDTO.userIdIssuing, expectedCosignDTO.userIdIssuing);
+        assertEquals(cosignDTO.userIdReceiving, expectedCosignDTO.userIdReceiving);
+        assertEquals(cosignDTO.phraseId, expectedCosignDTO.phraseId);
+
+        CosignDTO expectedCosignDTORepeat = cosignService.saveCosign(userIdIssuing, userIdReceiving, phraseId);
+
+        assertEquals(cosignDTO.userIdIssuing, expectedCosignDTORepeat.userIdIssuing);
+        assertEquals(cosignDTO.userIdReceiving, expectedCosignDTORepeat.userIdReceiving);
+        assertEquals(cosignDTO.phraseId, expectedCosignDTORepeat.phraseId);
+    }
 }

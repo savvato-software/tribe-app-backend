@@ -1,6 +1,10 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.dto.CosignDTO;
+
+import java.util.Optional;
+
 public interface CosignService {
 
-    void saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId);
+    CosignDTO saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId);
 }

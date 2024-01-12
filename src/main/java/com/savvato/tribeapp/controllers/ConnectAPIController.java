@@ -9,6 +9,7 @@ import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
+import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.services.ConnectService;
 import com.savvato.tribeapp.services.CosignService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -89,10 +90,11 @@ public class ConnectAPIController {
 
   @SaveCosign
   @PostMapping("/cosign")
-  public ResponseEntity saveCosign(@RequestBody @Valid CosignRequest cosignRequest) {
+  public ResponseEntity<CosignDTO> saveCosign(@RequestBody @Valid CosignRequest cosignRequest) {
 
-      cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
-      return ResponseEntity.status(HttpStatus.OK).build();
+      CosignDTO cosignDTO = cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
+      
+      return ResponseEntity.status(HttpStatus.OK).body(cosignDTO);
 
   }
 }

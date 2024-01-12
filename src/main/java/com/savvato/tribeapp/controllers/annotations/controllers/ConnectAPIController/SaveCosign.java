@@ -13,5 +13,5 @@ import java.lang.annotation.*;
     summary = "Save a cosigned phrase applied to one user by another user.",
     description = "Provide an issuing user ID, receiving user ID and phrase ID, save as record in cosign table.")
 @Success(
-    description = "Successfully saved cosign.", noContent = true)
+    description = "Successfully saved cosign.")
 public @interface SaveCosign {}

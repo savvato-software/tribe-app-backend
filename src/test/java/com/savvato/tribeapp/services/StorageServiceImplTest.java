@@ -84,4 +84,17 @@ public class StorageServiceImplTest {
             directory.delete();
         }
     }
+
+    @Test
+    public void isFileExistingSadPath() throws IOException {
+        String resourceType = "testResourceType";
+        String filename = "testFile.txt";
+        String directoryPath = "/";
+
+        when(resourceTypeService.getDirectoryForResourceType(anyString())).thenReturn(directoryPath);
+
+        long result = storageService.isFileExisting(resourceType, filename);
+        assertTrue(result == 0);
+        
+    }
 }

@@ -95,6 +95,40 @@ public class StorageServiceImplTest {
 
         long result = storageService.isFileExisting(resourceType, filename);
         assertTrue(result == 0);
-        
+
+    }
+
+    @Test
+    public void deleteHappyPath() throws IOException {
+        String resourceType = "testResourceType";
+        String filename = "testFile.txt";
+        String directoryPath = System.getProperty("java.io.tmpdir") + File.separator + "testFiles";
+
+        // Create the directory if it doesn't exist
+        File directory = new File(directoryPath);
+        directory.mkdirs();
+
+        // Create a temporary file in the specified directory
+        File tempFile = new File(directory, filename);
+        tempFile.createNewFile();
+
+        when(resourceTypeService.getDirectoryForResourceType(anyString())).thenReturn(directoryPath);
+
+        try {
+            // confirm new temporary file exists
+            long result = storageService.isFileExisting(resourceType, filename);
+            if(result > 0) {
+                // delete file and confirm it is deleted
+                storageService.delete(resourceType, filename);
+                long resultAfterDelete = storageService.isFileExisting(resourceType, filename);
+                assertEquals(0, resultAfterDelete);
+            }
+        } finally {
+            // Clean up: Delete the temporary file
+            tempFile.delete();
+
+            // Clean up: Delete the temporary directory
+            directory.delete();
+        }
     }
 }

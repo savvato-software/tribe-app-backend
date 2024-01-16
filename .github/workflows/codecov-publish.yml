@@ -3,7 +3,12 @@ name: CodeCov Coverage Collection
 on:
   push:
     branches:
+      - "main"
       - "develop"
+      - "feature/connect-page"
+      - "feature/notifications-page"
+      - "feature/attributes-page"
+      - "feature/attribute-phrase-review"
 
 jobs:
   coverage:

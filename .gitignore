@@ -14,3 +14,5 @@ application.properties
 .vscode
 
 CREATE
+
+__pycache__

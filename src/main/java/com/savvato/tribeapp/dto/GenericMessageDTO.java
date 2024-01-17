@@ -6,4 +6,9 @@ import lombok.Builder;
 public class GenericMessageDTO {
        public String responseMessage;
 
+       public Boolean booleanMessage;
+
+       public Iterable<String> iterableMessage;
+
+
 }

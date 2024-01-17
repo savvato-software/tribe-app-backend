@@ -1,6 +1,5 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.dto.NotificationDTO;
 import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.entities.NotificationType;

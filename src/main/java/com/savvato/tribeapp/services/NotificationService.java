@@ -12,7 +12,6 @@ public interface NotificationService {
 
     public NotificationDTO createNotificationDTO(Notification notification, String formattedLastUpdatedDate , String iconUrl);
 
-    public GenericMessageDTO createMessageDTO( String message);
 
     public boolean checkNotificationReadStatus(Long id);
 

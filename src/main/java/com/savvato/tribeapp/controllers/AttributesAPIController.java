@@ -4,8 +4,10 @@ import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPICon
 import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetAttributesForUser;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
+import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.services.AttributesService;
+import com.savvato.tribeapp.services.GenericMessageService;
 import com.savvato.tribeapp.services.NotificationService;
 import com.savvato.tribeapp.services.PhraseService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,6 +30,8 @@ public class AttributesAPIController {
   @Autowired 
   AttributesService attributesService;
 
+  @Autowired private GenericMessageService genericMessageService;
+
   @Autowired
   PhraseService phraseService;
 
@@ -49,21 +53,24 @@ public class AttributesAPIController {
 
   @ApplyPhraseToUser
   @PostMapping
-  public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
+  public ResponseEntity<GenericMessageDTO> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
     if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
       boolean isPhraseApplied =
           phraseService.applyPhraseToUser(
               req.userId, req.adverb, req.verb, req.preposition, req.noun);
       if (isPhraseApplied) {
         sendNotification(true, req.userId);
-        return ResponseEntity.status(HttpStatus.OK).body(true);
+        GenericMessageDTO rtn = genericMessageService.createMessageDTO("true");
+        return ResponseEntity.status(HttpStatus.OK).body(rtn);
       } else {
         sendNotification(false, req.userId);
-        return ResponseEntity.status(HttpStatus.OK).body(false);
+        GenericMessageDTO rtn = genericMessageService.createMessageDTO("false");
+        return ResponseEntity.status(HttpStatus.OK).body(rtn);
       }
     } else {
       sendNotification(false, req.userId);
-      return ResponseEntity.status(HttpStatus.OK).body(false);
+      GenericMessageDTO rtn = genericMessageService.createMessageDTO("false");
+      return ResponseEntity.status(HttpStatus.OK).body(rtn);
     }
   }
 

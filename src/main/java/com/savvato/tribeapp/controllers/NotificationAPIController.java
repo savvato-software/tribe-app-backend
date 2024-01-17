@@ -5,6 +5,7 @@ import com.savvato.tribeapp.controllers.annotations.controllers.NotificationCont
 import com.savvato.tribeapp.controllers.dto.NotificationRequest;
 import com.savvato.tribeapp.dto.NotificationDTO;
 import com.savvato.tribeapp.dto.GenericMessageDTO;
+import com.savvato.tribeapp.services.GenericMessageService;
 import com.savvato.tribeapp.services.NotificationService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,17 +25,18 @@ import org.springframework.web.bind.annotation.*;
 public class NotificationAPIController {
 
   @Autowired private NotificationService notificationService;
+  @Autowired private GenericMessageService genericMessageService;
 
   @UpdateNotification
   @PutMapping
   public ResponseEntity<GenericMessageDTO> updateNotification(@RequestBody @Valid NotificationRequest req) {
       boolean isRead = notificationService.checkNotificationReadStatus(req.id);
       if (isRead) {
-          GenericMessageDTO rtn = notificationService.createMessageDTO("Notification is already read");
+          GenericMessageDTO rtn = genericMessageService.createMessageDTO("Notification is already read");
           return ResponseEntity.ok(rtn);
       } else {
           notificationService.updateNotificationReadStatus(req.id);
-          GenericMessageDTO rtn = notificationService.createMessageDTO("Notification read status updated");
+          GenericMessageDTO rtn = genericMessageService.createMessageDTO("Notification read status updated");
           return ResponseEntity.ok(rtn);
       }
   }
@@ -44,10 +46,10 @@ public class NotificationAPIController {
         boolean exists = notificationService.checkNotificationExists(id);
         if (exists) {
             notificationService.deleteNotification(id);
-            GenericMessageDTO rtn =  notificationService.createMessageDTO("Notification deleted");
+            GenericMessageDTO rtn =  genericMessageService.createMessageDTO("Notification deleted");
             return ResponseEntity.ok(rtn);
         } else {
-            GenericMessageDTO rtn = notificationService.createMessageDTO("Bad Request");
+            GenericMessageDTO rtn = genericMessageService.createMessageDTO("Bad Request");
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(rtn);

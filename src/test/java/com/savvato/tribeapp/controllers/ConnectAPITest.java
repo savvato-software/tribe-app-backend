@@ -4,8 +4,11 @@ import com.google.gson.Gson;
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
+import com.savvato.tribeapp.controllers.dto.CosignRequest;
+import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
+import com.savvato.tribeapp.repositories.CosignRepository;
 import com.savvato.tribeapp.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,6 +58,11 @@ public class ConnectAPITest {
 
     @MockBean
     private ConnectService connectService;
+
+    @MockBean CosignService cosignService;
+
+    @MockBean
+    private CosignRepository repository;
 
     @Captor
     private ArgumentCaptor<Long> userIdCaptor;
@@ -187,5 +195,38 @@ public class ConnectAPITest {
         assertEquals(toBeConnectedWithUserIdCaptor.getValue(), connectRequest.toBeConnectedWithUserId);
     }
 
+    @Test
+    public void saveCosign() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        Long userIdIssuing = 1L;
+        Long userIdReceiving = 1L;
+        Long phraseId = 1L;
+
+        CosignRequest cosignRequest = new CosignRequest();
+        cosignRequest.userIdIssuing = userIdIssuing;
+        cosignRequest.userIdReceiving = userIdReceiving;
+        cosignRequest.phraseId = phraseId;
+
+        CosignDTO cosignDTO = CosignDTO.builder().build();
+        cosignDTO.userIdIssuing = userIdIssuing;
+        cosignDTO.userIdReceiving = userIdReceiving;
+        cosignDTO.phraseId = phraseId;
+
+        when(cosignService.saveCosign(anyLong(), anyLong(), anyLong())).thenReturn(cosignDTO);
+
+        this.mockMvc
+                .perform(
+                        post("/api/connect/cosign")
+                                .content(gson.toJson(cosignRequest))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"userIdIssuing\":1,\"userIdReceiving\":1,\"phraseId\":1}"));
+
+    }
 
 }

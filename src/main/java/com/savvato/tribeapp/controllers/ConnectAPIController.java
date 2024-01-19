@@ -4,10 +4,14 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.Connect;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetConnections;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetQRCodeString;
+import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.SaveCosign;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
+import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
+import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.services.ConnectService;
+import com.savvato.tribeapp.services.CosignService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -27,6 +31,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/connect")
 public class ConnectAPIController {
   @Autowired ConnectService connectService;
+
+  @Autowired
+  CosignService cosignService;
 
   ConnectAPIController() {}
 
@@ -79,5 +86,15 @@ public class ConnectAPIController {
   @MessageMapping("/connect/room")
   public void connect(@Payload ConnectIncomingMessageDTO incoming, @Header("simpSessionId") String sessionId) {
       connectService.connect(incoming);
+  }
+
+  @SaveCosign
+  @PostMapping("/cosign")
+  public ResponseEntity<CosignDTO> saveCosign(@RequestBody @Valid CosignRequest cosignRequest) {
+
+      CosignDTO cosignDTO = cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
+      
+      return ResponseEntity.status(HttpStatus.OK).body(cosignDTO);
+
   }
 }

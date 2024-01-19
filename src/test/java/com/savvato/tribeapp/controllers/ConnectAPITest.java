@@ -229,4 +229,33 @@ public class ConnectAPITest {
 
     }
 
+    @Test
+    public void deleteCosign() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        Long userIdIssuing = 1L;
+        Long userIdReceiving = 1L;
+        Long phraseId = 1L;
+
+        CosignRequest cosignRequest = new CosignRequest();
+        cosignRequest.userIdIssuing = userIdIssuing;
+        cosignRequest.userIdReceiving = userIdReceiving;
+        cosignRequest.phraseId = phraseId;
+
+        doNothing().when(cosignService).deleteCosign(anyLong(), anyLong(), anyLong());
+
+        this.mockMvc
+                .perform(
+                        post("/api/connect/cosign")
+                                .content(gson.toJson(cosignRequest))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+    }
+
 }

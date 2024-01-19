@@ -1,10 +1,7 @@
 package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.config.principal.UserPrincipal;
-import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.Connect;
-import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetConnections;
-import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetQRCodeString;
-import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.SaveCosign;
+import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.*;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
@@ -95,6 +92,15 @@ public class ConnectAPIController {
       CosignDTO cosignDTO = cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
       
       return ResponseEntity.status(HttpStatus.OK).body(cosignDTO);
+
+  }
+  @DeleteCosign
+  @DeleteMapping("/cosign")
+  public ResponseEntity deleteCosign(@RequestBody @Valid CosignRequest cosignRequest) {
+
+    cosignService.deleteCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
+
+    return ResponseEntity.status(HttpStatus.OK).build();
 
   }
 }

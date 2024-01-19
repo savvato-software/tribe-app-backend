@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface PhraseRepository extends CrudRepository<Phrase, Long> {
 
-    @Query(nativeQuery = true, value = "select * from phrase where id = ?")
+    @Query(nativeQuery = true, value = "SELECT p.*, COUNT(u.phrase_id) AS user_count FROM phrase p LEFT JOIN user_phrase u ON p.id = u.phrase_id GROUP BY p.id HAVING p.id = ?")
     Optional<Phrase> findPhraseByPhraseId(Long Id);
 
     Optional<Phrase> findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(Long AdverbId, Long VerbId, Long PrepositionId, Long NounId);

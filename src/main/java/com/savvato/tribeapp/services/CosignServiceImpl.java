@@ -3,11 +3,13 @@ package com.savvato.tribeapp.services;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.entities.Cosign;
+import com.savvato.tribeapp.entities.CosignId;
 import com.savvato.tribeapp.repositories.CosignRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -37,4 +39,21 @@ public class CosignServiceImpl implements CosignService {
 
         return cosignDTO;
     }
+
+    @Override
+    public void deleteCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
+        CosignId cosignId = new CosignId();
+        cosignId.setUserIdIssuing(userIdIssuing);
+        cosignId.setUserIdReceiving(userIdReceiving);
+        cosignId.setPhraseId(phraseId);
+
+        Optional<Cosign> optCosign = cosignRepository.findById(cosignId);
+
+        if(optCosign.isPresent()) {
+            cosignRepository.deleteById(cosignId);
+        } else {
+            throw new NoSuchElementException("Cosign not found for the specified ids");
+        }
+    }
+
 }

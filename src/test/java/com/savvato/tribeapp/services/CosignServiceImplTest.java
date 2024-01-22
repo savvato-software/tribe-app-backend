@@ -6,6 +6,7 @@ import com.savvato.tribeapp.entities.CosignId;
 import com.savvato.tribeapp.repositories.CosignRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -13,10 +14,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static net.bytebuddy.matcher.ElementMatchers.any;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({SpringExtension.class})
@@ -127,9 +129,11 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
         cosign.setPhraseId(phraseId);
 
         when(cosignRepository.findById(Mockito.any())).thenReturn(Optional.empty());
-        doNothing().when(cosignRepository).deleteById(Mockito.any());
+        doThrow(new NoSuchElementException("Cosign not found for the specified ids")).when(cosignRepository)
+                .deleteById(Mockito.any());
 
-        cosignService.deleteCosign(userIdIssuing,userIdReceiving,phraseId);
+        Exception exception = assertThrows(Exception.class, () -> cosignService.deleteCosign(userIdIssuing,userIdReceiving,phraseId));
+        assertEquals("Cosign not found for the specified ids", exception.getMessage());
 
         verify(cosignRepository, times(1)).findById(Mockito.any());
         verify(cosignRepository, times (0)).deleteById(Mockito.any());

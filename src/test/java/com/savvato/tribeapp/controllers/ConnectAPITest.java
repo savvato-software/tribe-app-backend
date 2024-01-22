@@ -24,12 +24,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -257,5 +259,35 @@ public class ConnectAPITest {
                 .andReturn();
 
     }
+
+    @Test
+    public void deleteCosignWhenExceptionThrown() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        Long userIdIssuing = 1L;
+        Long userIdReceiving = 1L;
+        Long phraseId = 1L;
+
+        CosignRequest cosignRequest = new CosignRequest();
+        cosignRequest.userIdIssuing = userIdIssuing;
+        cosignRequest.userIdReceiving = userIdReceiving;
+        cosignRequest.phraseId = phraseId;
+
+        doThrow(new NoSuchElementException("Cosign not found for the specified ids")).when(cosignService)
+                .deleteCosign(any(Long.class), any(Long.class), any(Long.class));
+
+        this.mockMvc
+                .perform(
+                        delete("/api/connect/cosign")
+                                .content(gson.toJson(cosignRequest))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("Error: Cosign not found for the specified ids"));;
+    }
+
 
 }

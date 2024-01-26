@@ -2,7 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.dto.PhraseDTO;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface PhraseService {
@@ -13,5 +13,5 @@ public interface PhraseService {
 
     Optional<Long> findPreviouslyApprovedPhraseId(String adverb, String verb, String preposition, String noun);
 
-    Optional<List<PhraseDTO>> getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(Long id);
+    Optional<Map<PhraseDTO, Integer>> getPhraseInformationByUserId(Long userId);
 }

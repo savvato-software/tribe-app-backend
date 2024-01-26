@@ -9,6 +9,8 @@ on:
       - "feature/notifications-page"
       - "feature/attributes-page"
       - "feature/attribute-phrase-review"
+      - "feature/attributes-page-temp"
+      - "feature/review-attributes-page"
 
 jobs:
   coverage:

@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,24 +43,29 @@ public class AttributesServiceImplTest {
     @Test
     public void getAttributesByUserIdWhenAttributesExist() {
         Long userId = 1L;
-        List<PhraseDTO> phraseDTOs =
-                List.of(
-                        PhraseDTO.builder().adverb("competitively").verb("plays").noun("chess").build(),
+        Map<PhraseDTO, Integer> phraseInformation =
+                Map.of(
+                        PhraseDTO.builder().adverb("competitively").verb("plays").noun("chess").build(), 1,
                         PhraseDTO.builder()
                                 .adverb("enthusiastically")
                                 .verb("volunteers")
                                 .preposition("for")
                                 .noun("UNICEF")
-                                .build());
-        List<AttributeDTO> attributeDTOs =
-                phraseDTOs.stream().map(phrase -> AttributeDTO.builder().phrase(phrase).build()).toList();
+                                .build(), 2);
+        List<AttributeDTO> attributes = phraseInformation
+                .entrySet()
+                .stream()
+                .map(
+                        entry -> AttributeDTO.builder().phrase(entry.getKey()).userCount(entry.getValue()).build()
+                )
+                .toList();
         ArgumentCaptor<Long> userIdArgumentCaptor = ArgumentCaptor.forClass(Long.class);
 
-        Optional<List<AttributeDTO>> expected = Optional.of(attributeDTOs);
-        when(phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(anyLong()))
-                .thenReturn(Optional.of(phraseDTOs));
+        Optional<List<AttributeDTO>> expected = Optional.of(attributes);
+        when(phraseService.getPhraseInformationByUserId(anyLong()))
+                .thenReturn(Optional.of(phraseInformation));
         Optional<List<AttributeDTO>> actual = attributesService.getAttributesByUserId(userId);
-        verify(phraseService, times(1)).getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(userIdArgumentCaptor.capture());
+        verify(phraseService, times(1)).getPhraseInformationByUserId(userIdArgumentCaptor.capture());
         assertEquals(userIdArgumentCaptor.getValue(), userId);
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -69,12 +75,12 @@ public class AttributesServiceImplTest {
         Long userId = 1L;
         Optional<List<AttributeDTO>> expected = Optional.of(new ArrayList<>());
         ArgumentCaptor<Long> userIdArgumentCaptor = ArgumentCaptor.forClass(Long.class);
-        when(phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(anyLong()))
+        when(phraseService.getPhraseInformationByUserId(anyLong()))
                 .thenReturn(Optional.empty());
 
         Optional<List<AttributeDTO>> actual = attributesService.getAttributesByUserId(userId);
 
-        verify(phraseService, times(1)).getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(userIdArgumentCaptor.capture());
+        verify(phraseService, times(1)).getPhraseInformationByUserId(userIdArgumentCaptor.capture());
         assertEquals(userIdArgumentCaptor.getValue(), userId);
         assertThat(actual).isEqualTo(expected);
     }

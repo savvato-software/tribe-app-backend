@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
+import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.*;
@@ -24,11 +25,13 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -187,5 +190,55 @@ public class ConnectAPITest {
         assertEquals(toBeConnectedWithUserIdCaptor.getValue(), connectRequest.toBeConnectedWithUserId);
     }
 
+    @Test
+    public void removeConnectionHappyPath() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
 
+        ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
+        connectionDeleteRequest.requestingUserId = 1L;
+        connectionDeleteRequest.connectedWithUserId = 2L;
+        when(connectService.removeConnection(any())).thenReturn(true);
+        ArgumentCaptor<ConnectionRemovalRequest> connectionDeleteRequestCaptor = ArgumentCaptor.forClass(ConnectionRemovalRequest.class);
+        this.mockMvc
+                .perform(
+                        delete("/api/connect")
+                                .content(gson.toJson(connectionDeleteRequest))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"))
+                .andReturn();
+        verify(connectService, times(1)).removeConnection(connectionDeleteRequestCaptor.capture());
+        assertThat(connectionDeleteRequestCaptor.getValue()).usingRecursiveComparison().isEqualTo(connectionDeleteRequest);
+
+    }
+
+    @Test
+    public void removeConnectionWhenRemovalUnsuccessful() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
+        connectionDeleteRequest.requestingUserId = 1L;
+        connectionDeleteRequest.connectedWithUserId = 2L;
+        when(connectService.removeConnection(any())).thenReturn(false);
+        ArgumentCaptor<ConnectionRemovalRequest> connectionDeleteRequestCaptor = ArgumentCaptor.forClass(ConnectionRemovalRequest.class);
+        this.mockMvc
+                .perform(
+                        delete("/api/connect")
+                                .content(gson.toJson(connectionDeleteRequest))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("false"))
+                .andReturn();
+        verify(connectService, times(1)).removeConnection(connectionDeleteRequestCaptor.capture());
+        assertThat(connectionDeleteRequestCaptor.getValue()).usingRecursiveComparison().isEqualTo(connectionDeleteRequest);
+
+    }
 }

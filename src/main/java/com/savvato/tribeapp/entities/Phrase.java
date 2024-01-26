@@ -1,11 +1,14 @@
 package com.savvato.tribeapp.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Phrase {
 
     @Id
@@ -60,4 +63,13 @@ public class Phrase {
     public void setNounId(Long nounID) {
         this.nounId = nounID;
     }
+
+    @OneToMany
+    @JoinTable(
+            name = "user_phrase",
+            joinColumns = {@JoinColumn(name = "phraseId")},
+            inverseJoinColumns = {@JoinColumn(name = "userId")})
+    private List<User> users;
+
+
 }

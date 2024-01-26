@@ -1,7 +1,6 @@
 codecov:
   branch: develop
 coverage:
-  round: nearest
   status:
     project:
       default:
@@ -11,6 +10,3 @@ coverage:
         base: auto
         paths:
           - "src"
-parsers:
-  jacoco:
-    partials_as_hits: true

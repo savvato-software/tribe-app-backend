@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -22,24 +23,25 @@ public class AttributesServiceImpl implements AttributesService {
     @Override
     public Optional<List<AttributeDTO>> getAttributesByUserId(Long userId) {
 
-        List<AttributeDTO> attributes = new ArrayList<>();
 
         // Get all user phrases as phraseDTOs
-        Optional<List<PhraseDTO>> optUserPhraseDTOs = phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(userId);
+        Optional<Map<PhraseDTO, Integer>> optUserPhraseDTOs = phraseService.getPhraseInformationByUserId(userId);
 
         // If there are phrases, build DTO and add to attributes list
         if (optUserPhraseDTOs.isPresent()) {
-            List<PhraseDTO> phrases = optUserPhraseDTOs.get();
-            for (PhraseDTO phrase : phrases) {
-                AttributeDTO attributeDTO = AttributeDTO.builder()
-                        .phrase(phrase)
-                        .build();
-                attributes.add(attributeDTO);
-            }
+            Map<PhraseDTO, Integer> phraseDTOUserCountMap = optUserPhraseDTOs.get();
+            List<AttributeDTO> attributes = phraseDTOUserCountMap
+                    .entrySet()
+                    .stream()
+                    .map(
+                            entry -> AttributeDTO.builder().phrase(entry.getKey()).userCount(entry.getValue()).build()
+                    )
+                    .toList();
+            return Optional.of(attributes);
         }
 
         // Returns list of attributeDTOs. Can be empty.
-        return Optional.of(attributes);
+        return Optional.of(new ArrayList<>());
     }
 
     @Override

@@ -84,32 +84,4 @@ public class AttributesServiceImplTest {
         assertEquals(userIdArgumentCaptor.getValue(), userId);
         assertThat(actual).isEqualTo(expected);
     }
-
-    @Test
-    public void getNumberOfUsersWithAttributeWhenAttributeExists() {
-        Long attributeId = 1L;
-        Integer userCount = 2;
-        Optional<Integer> expected = Optional.of(userCount);
-        ArgumentCaptor<Long> attributeIdCaptor = ArgumentCaptor.forClass(Long.class);
-        when(userPhraseRepository.countUsersWithAttribute(anyLong())).thenReturn(userCount);
-        Optional<Integer> actual = attributesService.getNumberOfUsersWithAttribute(attributeId);
-        verify(userPhraseRepository, times(1)).countUsersWithAttribute(attributeIdCaptor.capture());
-        assertEquals(attributeIdCaptor.getValue(), attributeId);
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    public void getNumberOfUsersWithAttributeWhenErrorOccurs() {
-        Long attributeId = 1L;
-        String errorMessage = "An error occurred";
-        Optional<Integer> expected = Optional.empty();
-        ArgumentCaptor<Long> attributeIdCaptor = ArgumentCaptor.forClass(Long.class);
-        when(userPhraseRepository.countUsersWithAttribute(anyLong())).thenThrow(new IllegalArgumentException(errorMessage));
-        Optional<Integer> actual = attributesService.getNumberOfUsersWithAttribute(attributeId);
-
-        verify(userPhraseRepository, times(1)).countUsersWithAttribute(attributeIdCaptor.capture());
-        assertEquals(attributeIdCaptor.getValue(), attributeId);
-        assertThat(actual).isEqualTo(expected);
-
-    }
 }

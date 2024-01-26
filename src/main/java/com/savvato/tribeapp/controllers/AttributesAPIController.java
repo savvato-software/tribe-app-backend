@@ -44,7 +44,7 @@ public class AttributesAPIController {
 
     AttributesAPIController() {
     }
-    
+
 
     @GetAttributesForUser
     @GetMapping("/{userId}")

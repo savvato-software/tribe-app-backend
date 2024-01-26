@@ -43,14 +43,4 @@ public class AttributesServiceImpl implements AttributesService {
         // Returns list of attributeDTOs. Can be empty.
         return Optional.of(new ArrayList<>());
     }
-
-    @Override
-    public Optional<Integer> getNumberOfUsersWithAttribute(Long attributeId) {
-        try {
-            Integer numberOfUsers = userPhraseRepository.countUsersWithAttribute(attributeId);
-            return Optional.of(numberOfUsers);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
 }

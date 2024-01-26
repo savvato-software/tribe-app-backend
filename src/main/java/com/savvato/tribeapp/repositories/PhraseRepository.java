@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.repositories;
 
 
+import com.savvato.tribeapp.dto.projections.PhraseWithUserCountDTO;
 import com.savvato.tribeapp.entities.Phrase;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,8 +12,10 @@ import java.util.Optional;
 @Repository
 public interface PhraseRepository extends CrudRepository<Phrase, Long> {
 
-    @Query(nativeQuery = true, value = "SELECT p.*, COUNT(u.phrase_id) AS user_count FROM phrase p LEFT JOIN user_phrase u ON p.id = u.phrase_id GROUP BY p.id HAVING p.id = ?")
-    Optional<Phrase> findPhraseByPhraseId(Long Id);
+    @Query("""
+            SELECT new com.savvato.tribeapp.dto.projections.PhraseWithUserCountDTO(p.id, p.adverbId, p.verbId, p.prepositionId, p.nounId, COUNT(u.id) AS userCount) FROM Phrase p LEFT JOIN p.users u GROUP BY p HAVING p.id = :id
+            """)
+    Optional<PhraseWithUserCountDTO> findPhraseByPhraseId(Long id);
 
     Optional<Phrase> findByAdverbIdAndVerbIdAndPrepositionIdAndNounId(Long AdverbId, Long VerbId, Long PrepositionId, Long NounId);
 

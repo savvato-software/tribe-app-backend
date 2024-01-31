@@ -60,16 +60,16 @@ public class AttributesAPIController {
               req.userId, req.adverb, req.verb, req.preposition, req.noun);
       if (isPhraseApplied) {
         sendNotification(true, req.userId);
-        GenericMessageDTO rtn = genericMessageService.createMessageDTO("true");
+        GenericMessageDTO rtn = genericMessageService.createDTO("true");
         return ResponseEntity.status(HttpStatus.OK).body(rtn);
       } else {
         sendNotification(false, req.userId);
-        GenericMessageDTO rtn = genericMessageService.createMessageDTO("false");
+        GenericMessageDTO rtn = genericMessageService.createDTO("false");
         return ResponseEntity.status(HttpStatus.OK).body(rtn);
       }
     } else {
       sendNotification(false, req.userId);
-      GenericMessageDTO rtn = genericMessageService.createMessageDTO("false");
+      GenericMessageDTO rtn = genericMessageService.createDTO("false");
       return ResponseEntity.status(HttpStatus.OK).body(rtn);
     }
   }

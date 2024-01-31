@@ -3,8 +3,8 @@ package com.savvato.tribeapp.services;
 import com.savvato.tribeapp.dto.GenericMessageDTO;
 
 public interface GenericMessageService {
-    public GenericMessageDTO createMessageDTO(String message);
-    public GenericMessageDTO createBooleanDTO(boolean val);
-    public GenericMessageDTO createIterableDTO(Iterable<String> message);
+    public GenericMessageDTO createDTO(String message);
+    public GenericMessageDTO createDTO(boolean val);
+    public GenericMessageDTO createDTO(Iterable<String> message);
 
 }

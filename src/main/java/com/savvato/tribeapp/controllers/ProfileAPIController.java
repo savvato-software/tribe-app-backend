@@ -3,7 +3,9 @@ package com.savvato.tribeapp.controllers;
 import com.savvato.tribeapp.controllers.annotations.controllers.ProfileAPIController.GetById;
 import com.savvato.tribeapp.controllers.annotations.controllers.ProfileAPIController.Update;
 import com.savvato.tribeapp.controllers.dto.ProfileRequest;
+import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.dto.ProfileDTO;
+import com.savvato.tribeapp.services.GenericMessageService;
 import com.savvato.tribeapp.services.ProfileService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +24,8 @@ public class ProfileAPIController {
 
 	@Autowired
     ProfileService profileService;
+
+	@Autowired private GenericMessageService genericMessageService;
 
 	ProfileAPIController() {
 			
@@ -42,10 +46,10 @@ public class ProfileAPIController {
 
 	@Update
 	@PutMapping
-	public ResponseEntity<Boolean> update(@RequestBody @Valid ProfileRequest request) {
-		boolean rtn = profileService.update(request.userId, request.name, request.email, request.phone);
-		
-		if (rtn) {
+	public ResponseEntity<GenericMessageDTO> update(@RequestBody @Valid ProfileRequest request) {
+		boolean val = profileService.update(request.userId, request.name, request.email, request.phone);
+		GenericMessageDTO rtn =  genericMessageService.createDTO(val);
+		if (val) {
 			return ResponseEntity.status(HttpStatus.OK).body(rtn);
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);

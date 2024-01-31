@@ -8,6 +8,8 @@ import com.savvato.tribeapp.services.AuthServiceImpl;
 import com.savvato.tribeapp.services.GenericMessageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +28,8 @@ public class AuthAPIController {
 
   private final AuthenticationManager authenticationManager;
 
-  @Autowired private GenericMessageService genericMessageService;
+  @Autowired
+  private GenericMessageService genericMessageService;
 
   public AuthAPIController(AuthenticationManager authenticationManager) {
     this.authenticationManager = authenticationManager;

@@ -32,11 +32,11 @@ public class NotificationAPIController {
   public ResponseEntity<GenericMessageDTO> updateNotification(@RequestBody @Valid NotificationRequest req) {
       boolean isRead = notificationService.checkNotificationReadStatus(req.id);
       if (isRead) {
-          GenericMessageDTO rtn = genericMessageService.createMessageDTO("Notification is already read");
+          GenericMessageDTO rtn = genericMessageService.createDTO("Notification is already read");
           return ResponseEntity.ok(rtn);
       } else {
           notificationService.updateNotificationReadStatus(req.id);
-          GenericMessageDTO rtn = genericMessageService.createMessageDTO("Notification read status updated");
+          GenericMessageDTO rtn = genericMessageService.createDTO("Notification read status updated");
           return ResponseEntity.ok(rtn);
       }
   }
@@ -46,10 +46,10 @@ public class NotificationAPIController {
         boolean exists = notificationService.checkNotificationExists(id);
         if (exists) {
             notificationService.deleteNotification(id);
-            GenericMessageDTO rtn =  genericMessageService.createMessageDTO("Notification deleted");
+            GenericMessageDTO rtn =  genericMessageService.createDTO("Notification deleted");
             return ResponseEntity.ok(rtn);
         } else {
-            GenericMessageDTO rtn = genericMessageService.createMessageDTO("Bad Request");
+            GenericMessageDTO rtn = genericMessageService.createDTO("Bad Request");
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(rtn);

@@ -9,5 +9,6 @@ public interface AttributesService {
 
     Optional<List<AttributeDTO>> getAttributesByUserId(Long id);
 
+    Optional<Integer> getNumberOfUsersWithAttribute(Long attributeId);
 }
 

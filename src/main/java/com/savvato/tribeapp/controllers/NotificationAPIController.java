@@ -37,6 +37,7 @@ public class NotificationAPIController {
       } else {
           notificationService.updateNotificationReadStatus(req.id);
           GenericMessageDTO rtn = genericMessageService.createDTO("Notification read status updated");
+
           return ResponseEntity.ok(rtn);
       }
   }

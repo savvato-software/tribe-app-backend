@@ -14,4 +14,6 @@ public interface UserPhraseRepository extends CrudRepository<UserPhrase, UserPhr
     @Query(nativeQuery = true, value = "select phrase_id from user_phrase where user_id = ?")
     Optional<List<Long>> findPhraseIdsByUserId(Long Id);
 
+    @Query(nativeQuery = true, value = "select COUNT(*) FROM user_phrase where attribute_id = ?")
+    Integer countUsersWithAttribute(Long attributeId);
 }

@@ -1,10 +1,12 @@
 package com.savvato.tribeapp.controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
+import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
@@ -20,14 +22,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
+import java.lang.reflect.Type;
+import java.util.*;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -289,5 +291,45 @@ public class ConnectAPITest {
                 .andExpect(content().string("Error: Cosign not found for the specified ids"));;
     }
 
+    @Test
+    public void testGetConnectionsHappyPath() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        Long userId = 1L;
+
+        List expectedUserToBeReviewedList = new ArrayList<>();
+        expectedUserToBeReviewedList.add(userId);
+
+        ConnectOutgoingMessageDTO returnDTO = ConnectOutgoingMessageDTO
+                .builder()
+                .connectionError(null)
+                .connectionSuccess(true)
+                .message("")
+                .to(expectedUserToBeReviewedList)
+                .build();
+
+        List expectedReturnDtoList = new ArrayList<>();
+        expectedReturnDtoList.add(returnDTO);
+
+        when(connectService.getAllConnectionsForAUser(anyLong())).thenReturn(expectedReturnDtoList);
+
+        MvcResult result =
+            this.mockMvc
+                    .perform(
+                            get("/api/connect/{userId}/all", userId)
+                                    .header("Authorization", "Bearer " + auth)
+                                    .characterEncoding("utf-8"))
+                    .andExpect(status().isOk())
+                    .andReturn();
+
+        Type connectOutgoingMessageListDTOType = new TypeToken<List<ConnectOutgoingMessageDTO>>(){}.getType();
+
+        List<ConnectOutgoingMessageDTO> actualConnectOutingMessages =
+                gson.fromJson(result.getResponse().getContentAsString(), connectOutgoingMessageListDTOType);
+
+        assertThat(actualConnectOutingMessages).usingRecursiveComparison().isEqualTo(expectedReturnDtoList);
+    }
 
 }

@@ -332,4 +332,25 @@ public class ConnectAPITest {
         assertThat(actualConnectOutingMessages).usingRecursiveComparison().isEqualTo(expectedReturnDtoList);
     }
 
+    @Test
+    public void testGetConnectionsSadPath() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        Long userId = 1L;
+
+        when(connectService.getAllConnectionsForAUser(anyLong())).thenReturn(null);
+
+        MvcResult result =
+                this.mockMvc
+                        .perform(
+                                get("/api/connect/{userId}/all", userId)
+                                        .header("Authorization", "Bearer " + auth)
+                                        .characterEncoding("utf-8"))
+                        .andExpect(status().isBadRequest())
+                        .andReturn();
+
+    }
+
 }

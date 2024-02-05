@@ -297,17 +297,19 @@ public class ConnectAPITest {
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
 
-        Long userId = 1L;
+        Long toBeConnectedWithUserId = 1L;
+        List requestingUserIds = new ArrayList<Long>();
+        requestingUserIds.add(2L);
 
-        List expectedUserToBeReviewedList = new ArrayList<>();
-        expectedUserToBeReviewedList.add(userId);
+        //List expectedUserToBeReviewedList = new ArrayList<>();
+        //expectedUserToBeReviewedList.add(toBeConnectedWithUserId);
 
         ConnectOutgoingMessageDTO returnDTO = ConnectOutgoingMessageDTO
                 .builder()
                 .connectionError(null)
                 .connectionSuccess(true)
                 .message("")
-                .to(expectedUserToBeReviewedList)
+                .to(requestingUserIds)
                 .build();
 
         List expectedReturnDtoList = new ArrayList<>();
@@ -318,7 +320,7 @@ public class ConnectAPITest {
         MvcResult result =
             this.mockMvc
                     .perform(
-                            get("/api/connect/{userId}/all", userId)
+                            get("/api/connect/{userId}/all", toBeConnectedWithUserId)
                                     .header("Authorization", "Bearer " + auth)
                                     .characterEncoding("utf-8"))
                     .andExpect(status().isOk())

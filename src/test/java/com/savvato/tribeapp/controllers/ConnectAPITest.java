@@ -301,9 +301,6 @@ public class ConnectAPITest {
         List requestingUserIds = new ArrayList<Long>();
         requestingUserIds.add(2L);
 
-        //List expectedUserToBeReviewedList = new ArrayList<>();
-        //expectedUserToBeReviewedList.add(toBeConnectedWithUserId);
-
         ConnectOutgoingMessageDTO returnDTO = ConnectOutgoingMessageDTO
                 .builder()
                 .connectionError(null)

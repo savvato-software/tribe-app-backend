@@ -258,4 +258,16 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(expectedOutgoingMessageDTOS);
 
     }
+
+    @Test
+    public void testGetAllConnectionsForAUserWhenConnectionsDoNotExist() {
+        Long toBeConnectedUserId = 2L;
+
+        when(connectionsRepository.findAllByToBeConnectedWithUserId(anyLong())).thenReturn(Collections.emptyList());
+
+        List<ConnectOutgoingMessageDTO> actualMessageDTOs = connectService.getAllConnectionsForAUser(toBeConnectedUserId);
+
+        assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(Collections.emptyList());
+
+    }
 }

@@ -68,6 +68,9 @@ public class NotificationAPITest {
     @MockBean
     private NotificationService notificationService;
 
+    @MockBean
+    private GenericMessageService genericMessageService;
+
     @Captor
     private ArgumentCaptor<Long> notificationIdCaptor;
 
@@ -103,7 +106,7 @@ public class NotificationAPITest {
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.id = 1L;
         when(notificationService.checkNotificationReadStatus(1L)).thenReturn(true);
-        when(notificationService.createMessageDTO(anyString()))
+        when(genericMessageService.createDTO(anyString()))
                 .thenReturn(GenericMessageDTO.builder().responseMessage("Notification is already read").build());
 
         MvcResult result = this.mockMvc
@@ -140,7 +143,7 @@ public class NotificationAPITest {
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.id = 1L;
         when(notificationService.checkNotificationReadStatus(1L)).thenReturn(false);
-        when(notificationService.createMessageDTO(anyString()))
+        when(genericMessageService.createDTO(anyString()))
                 .thenReturn(GenericMessageDTO.builder().responseMessage("Notification read status updated").build());
 
         MvcResult result = this.mockMvc
@@ -181,7 +184,7 @@ public class NotificationAPITest {
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.id = 1L;
         when(notificationService.checkNotificationExists(1L)).thenReturn(true); // any other value will return false
-        when(notificationService.createMessageDTO(anyString()))
+        when(genericMessageService.createDTO(anyString()))
                 .thenReturn(GenericMessageDTO.builder().responseMessage("Notification deleted").build());
 
         MvcResult result = this.mockMvc

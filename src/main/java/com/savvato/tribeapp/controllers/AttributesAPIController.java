@@ -96,10 +96,10 @@ public class AttributesAPIController {
           return ResponseEntity.status(HttpStatus.OK).body(rtn);
         }
       } else {
-        sendNotification(false, req.userId);
-        GenericMessageDTO rtn = genericMessageService.createDTO("false");
-        return ResponseEntity.status(HttpStatus.OK).body(rtn);
-
+          sendNotification(false, req.userId);
+          GenericMessageDTO rtn = genericMessageService.createDTO("false");
+          return ResponseEntity.status(HttpStatus.OK).body(rtn);
+      }
     }
 
     ///api/attributes/?phraseId=xx&userId=xx

@@ -18,10 +18,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -236,6 +234,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     }
 
     @Test
+<<<<<<< HEAD
     public void removeConnectionHappyPath() {
         ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
         connectionDeleteRequest.requestingUserId = 1L;
@@ -269,5 +268,42 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         connectionRemovalRequest.connectedWithUserId = 1L;
         assertFalse(connectService.removeConnection(connectionRemovalRequest));
         verify(connectionsRepository, never()).removeConnection(anyLong(), anyLong());
+=======
+    public void testGetAllConnectionsForAUserWhenConnectionsExist() {
+        Long toBeConnectedUserId = 2L;
+
+        Connection connection = new Connection();
+        connection.setCreated();
+        connection.setId(1L);
+        connection.setRequestingUserId(1L);
+        connection.setToBeConnectedWithUserId(toBeConnectedUserId);
+
+        when(connectionsRepository.findAllByToBeConnectedWithUserId(anyLong())).thenReturn(List.of(connection));
+
+        List<ConnectOutgoingMessageDTO> expectedOutgoingMessageDTOS = new ArrayList<>();
+        ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
+                .connectionSuccess(true)
+                .to(new ArrayList<>(Arrays.asList(connection.getRequestingUserId())))
+                .message("")
+                .build();
+        expectedOutgoingMessageDTOS.add(outgoingMessage);
+
+        List<ConnectOutgoingMessageDTO> actualMessageDTOs = connectService.getAllConnectionsForAUser(toBeConnectedUserId);
+
+        assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(expectedOutgoingMessageDTOS);
+
+    }
+
+    @Test
+    public void testGetAllConnectionsForAUserWhenConnectionsDoNotExist() {
+        Long toBeConnectedUserId = 2L;
+
+        when(connectionsRepository.findAllByToBeConnectedWithUserId(anyLong())).thenReturn(Collections.emptyList());
+
+        List<ConnectOutgoingMessageDTO> actualMessageDTOs = connectService.getAllConnectionsForAUser(toBeConnectedUserId);
+
+        assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(Collections.emptyList());
+
+>>>>>>> feature/connect-page
     }
 }

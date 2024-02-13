@@ -76,16 +76,8 @@ public class ConnectAPIController {
   @Connect
   @PostMapping
   public boolean connect(@RequestBody @Valid ConnectRequest connectRequest) {
-    if (connectService.validateQRCode(
-        connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
-      boolean isConnectionSaved =
-          connectService.saveConnectionDetails(
-              connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId);
-      if (isConnectionSaved) {
-        return true;
-      } else {
-        return false;
-      }
+    if (connectService.validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
+      return connectService.saveConnectionDetails(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId);
     } else {
       return false;
     }

@@ -98,6 +98,28 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     }
 
     @Test
+    public void saveConnectionDetailsWhenExistingConnectionWithReversedUserIdsExists() {
+        Long requestingUserId = 1L;
+        Long toBeConnectedWithUserId = 2L;
+        Connection existingConnection = new Connection(requestingUserId, toBeConnectedWithUserId);
+        when(connectionsRepository.findExistingConnectionWithReversedUserIds(anyLong(), anyLong())).thenReturn(Optional.of(existingConnection));
+        Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
+        assertEquals(connectionStatus, false);
+        verify(connectionsRepository, never()).save(any());
+    }
+
+    @Test
+    public void saveConnectionDetailsWhenIdsAreTheSame() {
+        Long requestingUserId = 2L;
+        Long toBeConnectedWithUserId = 2L;
+        Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
+        assertEquals(connectionStatus, false);
+
+        verify(connectionsRepository, never()).findExistingConnectionWithReversedUserIds(anyLong(), anyLong());
+        verify(connectionsRepository, never()).save(any());
+    }
+
+    @Test
     public void connectWhenQrCodeIsInvalid() {
         UserPrincipal user = new UserPrincipal(getUser1());
         Long requestingUserId = 1L;

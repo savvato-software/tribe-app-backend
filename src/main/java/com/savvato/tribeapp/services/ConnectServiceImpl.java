@@ -126,6 +126,7 @@ public class ConnectServiceImpl implements ConnectService {
         return null;
     }
 
+<<<<<<< HEAD
     public boolean removeConnection(ConnectionRemovalRequest connectionRemovalRequest) {
         if (Objects.equals(connectionRemovalRequest.requestingUserId, connectionRemovalRequest.connectedWithUserId)) {
             return false;
@@ -136,5 +137,19 @@ public class ConnectServiceImpl implements ConnectService {
         } catch (Exception e) {
             return false;
         }
+=======
+    public List<ConnectOutgoingMessageDTO> getAllConnectionsForAUser(Long userId) {
+        List<Connection> connections = connectionsRepository.findAllByToBeConnectedWithUserId(userId);
+        List<ConnectOutgoingMessageDTO> outgoingMessages = new ArrayList<>();
+        for (Connection connection : connections) {
+            ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
+                    .connectionSuccess(true)
+                    .to(new ArrayList<>(Arrays.asList(connection.getRequestingUserId())))
+                    .message("")
+                    .build();
+            outgoingMessages.add(outgoingMessage);
+        }
+        return outgoingMessages;
+>>>>>>> feature/connect-page
     }
 }

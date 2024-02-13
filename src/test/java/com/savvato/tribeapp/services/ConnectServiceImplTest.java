@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.config.principal.UserPrincipal;
+import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.entities.Connection;
@@ -17,14 +18,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({SpringExtension.class})
@@ -233,5 +231,79 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         doReturn(qrCodeOpt).when(connectServiceSpy).getQRCodeString(anyLong());
         Boolean isValid = connectServiceSpy.validateQRCode(providedQRCode, toBeConnectedWithUserId);
         assertTrue(isValid);
+    }
+
+    @Test
+<<<<<<< HEAD
+    public void removeConnectionHappyPath() {
+        ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
+        connectionDeleteRequest.requestingUserId = 1L;
+        connectionDeleteRequest.connectedWithUserId = 2L;
+        ArgumentCaptor<Long> requestingUserIdCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> connectedWithUserIdCaptor = ArgumentCaptor.forClass(Long.class);
+        assertTrue(connectService.removeConnection(connectionDeleteRequest));
+        verify(connectionsRepository, times(1)).removeConnection(requestingUserIdCaptor.capture(), connectedWithUserIdCaptor.capture());
+        assertEquals(requestingUserIdCaptor.getValue(), connectionDeleteRequest.requestingUserId);
+        assertEquals(connectedWithUserIdCaptor.getValue(), connectionDeleteRequest.connectedWithUserId);
+    }
+
+    @Test
+    public void removeConnectionWhenDatabaseDeleteFails() {
+        ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
+        connectionDeleteRequest.requestingUserId = 1L;
+        connectionDeleteRequest.connectedWithUserId = 2L;
+        ArgumentCaptor<Long> requestingUserIdCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> connectedWithUserIdCaptor = ArgumentCaptor.forClass(Long.class);
+        doThrow(new IllegalArgumentException("Database delete failed.")).when(connectionsRepository).removeConnection(anyLong(), anyLong());
+        assertFalse(connectService.removeConnection(connectionDeleteRequest));
+        verify(connectionsRepository, times(1)).removeConnection(requestingUserIdCaptor.capture(), connectedWithUserIdCaptor.capture());
+        assertEquals(requestingUserIdCaptor.getValue(), connectionDeleteRequest.requestingUserId);
+        assertEquals(connectedWithUserIdCaptor.getValue(), connectionDeleteRequest.connectedWithUserId);
+    }
+
+    @Test
+    public void removeConnectionWhenBothIdsAreTheSame() {
+        ConnectionRemovalRequest connectionRemovalRequest = new ConnectionRemovalRequest();
+        connectionRemovalRequest.requestingUserId = 1L;
+        connectionRemovalRequest.connectedWithUserId = 1L;
+        assertFalse(connectService.removeConnection(connectionRemovalRequest));
+        verify(connectionsRepository, never()).removeConnection(anyLong(), anyLong());
+=======
+    public void testGetAllConnectionsForAUserWhenConnectionsExist() {
+        Long toBeConnectedUserId = 2L;
+
+        Connection connection = new Connection();
+        connection.setCreated();
+        connection.setId(1L);
+        connection.setRequestingUserId(1L);
+        connection.setToBeConnectedWithUserId(toBeConnectedUserId);
+
+        when(connectionsRepository.findAllByToBeConnectedWithUserId(anyLong())).thenReturn(List.of(connection));
+
+        List<ConnectOutgoingMessageDTO> expectedOutgoingMessageDTOS = new ArrayList<>();
+        ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
+                .connectionSuccess(true)
+                .to(new ArrayList<>(Arrays.asList(connection.getRequestingUserId())))
+                .message("")
+                .build();
+        expectedOutgoingMessageDTOS.add(outgoingMessage);
+
+        List<ConnectOutgoingMessageDTO> actualMessageDTOs = connectService.getAllConnectionsForAUser(toBeConnectedUserId);
+
+        assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(expectedOutgoingMessageDTOS);
+
+    }
+
+    @Test
+    public void testGetAllConnectionsForAUserWhenConnectionsDoNotExist() {
+        Long toBeConnectedUserId = 2L;
+
+        when(connectionsRepository.findAllByToBeConnectedWithUserId(anyLong())).thenReturn(Collections.emptyList());
+
+        List<ConnectOutgoingMessageDTO> actualMessageDTOs = connectService.getAllConnectionsForAUser(toBeConnectedUserId);
+
+        assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(Collections.emptyList());
+
+>>>>>>> feature/connect-page
     }
 }

@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.dto.AttributeDTO;
 import com.savvato.tribeapp.dto.PhraseDTO;
+import com.savvato.tribeapp.repositories.UserPhraseRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -35,6 +36,8 @@ public class AttributesServiceImplTest {
     AttributesService attributesService;
     @MockBean
     PhraseService phraseService;
+    @MockBean
+    UserPhraseRepository userPhraseRepository;
 
     @Test
     public void getAttributesByUserIdWhenAttributesExist() {
@@ -74,5 +77,33 @@ public class AttributesServiceImplTest {
         verify(phraseService, times(1)).getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(userIdArgumentCaptor.capture());
         assertEquals(userIdArgumentCaptor.getValue(), userId);
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void getNumberOfUsersWithAttributeWhenAttributeExists() {
+        Long attributeId = 1L;
+        Integer userCount = 2;
+        Optional<Integer> expected = Optional.of(userCount);
+        ArgumentCaptor<Long> attributeIdCaptor = ArgumentCaptor.forClass(Long.class);
+        when(userPhraseRepository.countUsersWithAttribute(anyLong())).thenReturn(userCount);
+        Optional<Integer> actual = attributesService.getNumberOfUsersWithAttribute(attributeId);
+        verify(userPhraseRepository, times(1)).countUsersWithAttribute(attributeIdCaptor.capture());
+        assertEquals(attributeIdCaptor.getValue(), attributeId);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void getNumberOfUsersWithAttributeWhenErrorOccurs() {
+        Long attributeId = 1L;
+        String errorMessage = "An error occurred";
+        Optional<Integer> expected = Optional.empty();
+        ArgumentCaptor<Long> attributeIdCaptor = ArgumentCaptor.forClass(Long.class);
+        when(userPhraseRepository.countUsersWithAttribute(anyLong())).thenThrow(new IllegalArgumentException(errorMessage));
+        Optional<Integer> actual = attributesService.getNumberOfUsersWithAttribute(attributeId);
+
+        verify(userPhraseRepository, times(1)).countUsersWithAttribute(attributeIdCaptor.capture());
+        assertEquals(attributeIdCaptor.getValue(), attributeId);
+        assertThat(actual).isEqualTo(expected);
+
     }
 }

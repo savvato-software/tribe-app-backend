@@ -6,6 +6,7 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
+import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.dto.PhraseDTO;
 import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.entities.NotificationType;
@@ -314,7 +315,7 @@ public class AttributesAPITest {
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
 
-        doNothing().when(userPhraseService).deletePhraseFromUser(anyLong(),anyLong());
+        doNothing().when(userPhraseService).deletePhraseFromUser(anyLong(), anyLong());
 
         this.mockMvc
                 .perform(
@@ -391,4 +392,48 @@ public class AttributesAPITest {
         assertThat(actualAttributes).isEmpty();
     }
 
+    @Test
+    public void getNumberOfUsersWithAttributeHappyPath() throws Exception {
+        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+        Long attributeId = 1L;
+        Integer userCount = 2;
+        Optional<Integer> expectedNumberOfUsers = Optional.of(userCount);
+        GenericMessageDTO expectedResponse = GenericMessageDTO.builder().responseMessage(userCount.toString()).build();
+
+
+        when(attributesService.getNumberOfUsersWithAttribute(anyLong())).thenReturn(expectedNumberOfUsers);
+        MvcResult result =
+                this.mockMvc
+                        .perform(
+                                get("/api/attributes/total/{attributeId}", attributeId)
+                                        .header("Authorization", "Bearer " + auth)
+                                        .characterEncoding("utf-8"))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        GenericMessageDTO actualResponse =
+                gson.fromJson(result.getResponse().getContentAsString(), GenericMessageDTO.class);
+        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
+    }
+
+    @Test
+    public void getNumberOfUsersWithAttributeWhenUserCountFails() throws Exception {
+        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+        Long attributeId = 1L;
+
+        when(attributesService.getNumberOfUsersWithAttribute(anyLong())).thenReturn(Optional.empty());
+        this.mockMvc
+                .perform(
+                        get("/api/attributes/total/{attributeId}", attributeId)
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").doesNotExist()) // ensure body is empty
+                .andReturn();
+
+    }
 }

@@ -1,8 +1,6 @@
 package com.savvato.tribeapp.entities;
 
 
-import lombok.Generated;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;

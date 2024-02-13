@@ -1,26 +1,23 @@
 package com.savvato.tribeapp.entities;
 
-import javax.persistence.*;
+
+import lombok.Generated;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
 import java.util.Calendar;
 
 @Entity
-@Table(name="connections")
+@IdClass(ConnectionId.class)
+@Table(name = "connections")
 public class Connection {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private Long requestingUserId;
+    @Id
     private Long toBeConnectedWithUserId;
     private java.sql.Timestamp createdTimestamp;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getRequestingUserId() {
         return requestingUserId;
@@ -52,6 +49,7 @@ public class Connection {
 
         setCreated();
     }
+
     public Connection() {
 
         setCreated();

@@ -43,19 +43,15 @@ public class ConnectAPIController {
         }
     }
 
-    @Connect
-    @PostMapping
-    public boolean connect(@RequestBody @Valid ConnectRequest connectRequest) {
-        if (connectService.validateQRCode(
-                connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
-            boolean isConnectionSaved =
-                    connectService.saveConnectionDetails(
-                            connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId);
-            return isConnectionSaved;
-        } else {
-            return false;
-        }
+  @Connect
+  @PostMapping
+  public boolean connect(@RequestBody @Valid ConnectRequest connectRequest) {
+    if (connectService.validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
+      return connectService.saveConnectionDetails(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId);
+    } else {
+      return false;
     }
+  }
 
     @DeleteMapping
     public ResponseEntity<Boolean> removeConnection(@RequestBody @Valid ConnectionRemovalRequest connectionRemovalRequest) {

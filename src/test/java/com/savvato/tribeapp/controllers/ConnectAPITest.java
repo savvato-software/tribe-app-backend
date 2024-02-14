@@ -161,6 +161,33 @@ public class ConnectAPITest {
     }
 
     @Test
+    public void connectSadPath() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+        ConnectRequest connectRequest = new ConnectRequest();
+
+        connectRequest.requestingUserId = 1L;
+        connectRequest.toBeConnectedWithUserId = 2L;
+        connectRequest.qrcodePhrase = "ABCDEFGHIJKL";
+
+        when(connectService.validateQRCode(anyString(), anyLong())).thenReturn(true);
+        when(connectService.saveConnectionDetails(anyLong(), anyLong())).thenReturn(false);
+        this.mockMvc
+                .perform(
+                        post("/api/connect")
+                                .content(gson.toJson(connectRequest))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"))
+                .andReturn();
+
+    }
+
+
+    @Test
     public void connectWhenQrCodeInvalid() throws Exception {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));

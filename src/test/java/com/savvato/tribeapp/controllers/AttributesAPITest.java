@@ -69,6 +69,9 @@ public class AttributesAPITest {
     private NotificationService notificationService;
 
     @MockBean
+    private GenericMessageService genericMessageService;
+
+    @MockBean
     private UserPhraseService userPhraseService;
 
     @MockBean
@@ -170,6 +173,11 @@ public class AttributesAPITest {
         when(notificationService.createNotification(
                 any(NotificationType.class), anyLong(), anyString(), anyString()))
                 .thenReturn(null);
+        when(genericMessageService.createDTO(
+                anyString()))
+                .thenReturn(GenericMessageDTO.builder()
+                        .responseMessage("true")
+                        .build());
         ArgumentCaptor<NotificationType> notificationTypeCaptor =
                 ArgumentCaptor.forClass(NotificationType.class);
         ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
@@ -184,7 +192,7 @@ public class AttributesAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"))
+                .andExpect(jsonPath("responseMessage").value("true"))
                 .andReturn();
 
         verify(notificationService, times(1))
@@ -223,6 +231,11 @@ public class AttributesAPITest {
         when(notificationService.createNotification(
                 any(NotificationType.class), anyLong(), anyString(), anyString()))
                 .thenReturn(null);
+        when(genericMessageService.createDTO(
+                anyString()))
+                .thenReturn(GenericMessageDTO.builder()
+                        .responseMessage("false")
+                        .build());
         ArgumentCaptor<NotificationType> notificationTypeCaptor =
                 ArgumentCaptor.forClass(NotificationType.class);
         ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
@@ -238,7 +251,7 @@ public class AttributesAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("false"))
+                .andExpect(jsonPath("responseMessage").value("false"))
                 .andReturn();
 
         verify(notificationService, times(1))
@@ -274,6 +287,11 @@ public class AttributesAPITest {
         when(notificationService.createNotification(
                 any(NotificationType.class), anyLong(), anyString(), anyString()))
                 .thenReturn(null);
+        when(genericMessageService.createDTO(
+                anyString()))
+                .thenReturn(GenericMessageDTO.builder()
+                        .responseMessage("false")
+                        .build());
         ArgumentCaptor<NotificationType> notificationTypeCaptor =
                 ArgumentCaptor.forClass(NotificationType.class);
         ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
@@ -289,7 +307,7 @@ public class AttributesAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("false"))
+                .andExpect(jsonPath("responseMessage").value("false"))
                 .andReturn();
         verify(phraseService, never())
                 .applyPhraseToUser(anyLong(), anyString(), anyString(), anyString(), anyString());

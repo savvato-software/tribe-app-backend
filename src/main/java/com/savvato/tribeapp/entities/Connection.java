@@ -15,11 +15,8 @@ public class Connection {
     private Long requestingUserId;
     private Long toBeConnectedWithUserId;
     private java.sql.Timestamp created;
-<<<<<<< HEAD
 
     @Generated
-=======
->>>>>>> feature/connect-page
     public Long getId() {
         return id;
     }

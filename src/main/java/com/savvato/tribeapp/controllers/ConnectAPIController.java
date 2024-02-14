@@ -2,10 +2,17 @@ package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.Connect;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetQRCodeString;
+import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.GetConnections;
+import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.SaveCosign;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
+
+import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
+import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
+import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.services.ConnectService;
+import com.savvato.tribeapp.services.CosignService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
+import java.util.List;
 
 @RestController
 @Tag(name = "connect", description = "Connections between users")
@@ -26,8 +34,24 @@ public class ConnectAPIController {
     @Autowired
     ConnectService connectService;
 
-    ConnectAPIController() {
+  @Autowired
+  CosignService cosignService;
+
+  ConnectAPIController() {}
+
+  @GetConnections
+  @GetMapping("/all/{userId}")
+  public ResponseEntity<List<ConnectOutgoingMessageDTO>> getConnections(
+      @Parameter(description = "The user ID of a user", example = "1") @PathVariable Long userId) {
+
+    List<ConnectOutgoingMessageDTO> list = connectService.getAllConnectionsForAUser(userId);
+
+    if (list != null) {
+      return ResponseEntity.status(HttpStatus.OK).body(list);
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
+  }
 
     @GetQRCodeString
     @GetMapping("/{userId}")
@@ -61,8 +85,13 @@ public class ConnectAPIController {
         return ResponseEntity.badRequest().body(false);
     }
 
-    @MessageMapping("/connect/room")
-    public void connect(@Payload ConnectIncomingMessageDTO incoming, @Header("simpSessionId") String sessionId) {
-        connectService.connect(incoming);
-    }
+  @SaveCosign
+  @PostMapping("/cosign")
+  public ResponseEntity<CosignDTO> saveCosign(@RequestBody @Valid CosignRequest cosignRequest) {
+
+      CosignDTO cosignDTO = cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
+      
+      return ResponseEntity.status(HttpStatus.OK).body(cosignDTO);
+
+  }
 }

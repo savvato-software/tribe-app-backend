@@ -10,8 +10,15 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -48,5 +55,80 @@ public class StorageServiceImplTest {
         String filename = "";
         when(resourceTypeService.getDirectoryForResourceType(anyString())).thenReturn(dir);
         storageService.store(resourceType, file, filename);
+    }
+
+    @Test
+    public void isFileExistingHappyPath() throws IOException {
+        String resourceType = "testResourceType";
+        String filename = "testFile.txt";
+        String directoryPath = System.getProperty("java.io.tmpdir") + File.separator + "testFiles";
+
+        // Create the directory if it doesn't exist
+        File directory = new File(directoryPath);
+        directory.mkdirs();
+
+        // Create a temporary file in the specified directory
+        File tempFile = new File(directory, filename);
+        tempFile.createNewFile();
+
+        when(resourceTypeService.getDirectoryForResourceType(anyString())).thenReturn(directoryPath);
+
+        try {
+            long result = storageService.isFileExisting(resourceType, filename);
+            assertTrue(result > 0);
+        } finally {
+            // Clean up: Delete the temporary file
+            tempFile.delete();
+
+            // Clean up: Delete the temporary directory
+            directory.delete();
+        }
+    }
+
+    @Test
+    public void isFileExistingSadPath() throws IOException {
+        String resourceType = "testResourceType";
+        String filename = "testFile.txt";
+        String directoryPath = "/";
+
+        when(resourceTypeService.getDirectoryForResourceType(anyString())).thenReturn(directoryPath);
+
+        long result = storageService.isFileExisting(resourceType, filename);
+        assertTrue(result == 0);
+
+    }
+
+    @Test
+    public void deleteHappyPath() throws IOException {
+        String resourceType = "testResourceType";
+        String filename = "testFile.txt";
+        String directoryPath = System.getProperty("java.io.tmpdir") + File.separator + "testFiles";
+
+        // Create the directory if it doesn't exist
+        File directory = new File(directoryPath);
+        directory.mkdirs();
+
+        // Create a temporary file in the specified directory
+        File tempFile = new File(directory, filename);
+        tempFile.createNewFile();
+
+        when(resourceTypeService.getDirectoryForResourceType(anyString())).thenReturn(directoryPath);
+
+        try {
+            // confirm new temporary file exists
+            long result = storageService.isFileExisting(resourceType, filename);
+            if(result > 0) {
+                // delete file and confirm it is deleted
+                storageService.delete(resourceType, filename);
+                long resultAfterDelete = storageService.isFileExisting(resourceType, filename);
+                assertEquals(0, resultAfterDelete);
+            }
+        } finally {
+            // Clean up: Delete the temporary file
+            tempFile.delete();
+
+            // Clean up: Delete the temporary directory
+            directory.delete();
+        }
     }
 }

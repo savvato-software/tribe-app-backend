@@ -37,4 +37,9 @@ public class CosignServiceImpl implements CosignService {
 
         return cosignDTO;
     }
+
+    @Override
+    public boolean deleteCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
+        return false;
+    }
 }

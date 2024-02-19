@@ -40,7 +40,7 @@ public class ConnectAPIController {
   ConnectAPIController() {}
 
   @GetConnections
-  @GetMapping("/all/{userId}")
+  @GetMapping("/{userId}/all")
   public ResponseEntity<List<ConnectOutgoingMessageDTO>> getConnections(
       @Parameter(description = "The user ID of a user", example = "1") @PathVariable Long userId) {
 

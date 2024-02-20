@@ -69,7 +69,6 @@ public class PermissionsAPIController {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(null);
         }
     }
-  }
 
   @AddPermissions
   @PostMapping

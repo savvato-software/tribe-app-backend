@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
+import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.entities.Connection;
@@ -141,5 +142,17 @@ public class ConnectServiceImpl implements ConnectService {
             outgoingMessages.add(outgoingMessage);
         }
         return outgoingMessages;
+    }
+
+    public boolean removeConnection(ConnectionRemovalRequest connectionRemovalRequest) {
+        if (Objects.equals(connectionRemovalRequest.requestingUserId, connectionRemovalRequest.connectedWithUserId)) {
+            return false;
+        }
+        try {
+            connectionsRepository.removeConnection(connectionRemovalRequest.requestingUserId, connectionRemovalRequest.connectedWithUserId);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

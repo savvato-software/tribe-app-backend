@@ -284,7 +284,7 @@ public class ConnectAPITest {
 
     }
 
-//    @Test
+    @Test
     public void testGetConnectionsHappyPath() throws Exception {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));
@@ -324,7 +324,7 @@ public class ConnectAPITest {
         assertThat(actualConnectOutingMessages).usingRecursiveComparison().isEqualTo(expectedReturnDtoList);
     }
 
-//    @Test
+    @Test
     public void testGetConnectionsSadPath() throws Exception {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));

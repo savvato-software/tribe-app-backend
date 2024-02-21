@@ -8,5 +8,7 @@ import lombok.Builder;
 @Schema(description = "An attribute DTO")
 @Builder
 public class AttributeDTO {
-  public PhraseDTO phrase;
+    public PhraseDTO phrase;
+    @Schema(example = "1")
+    public Integer userCount;
 }

@@ -2,16 +2,14 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.dto.PhraseDTO;
+import com.savvato.tribeapp.dto.projections.PhraseWithUserCountDTO;
 import com.savvato.tribeapp.entities.*;
 import com.savvato.tribeapp.repositories.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
 
 
 @Service
@@ -60,7 +58,7 @@ public class PhraseServiceImpl implements PhraseService {
         String prepositionLowerCase = changeToLowerCase(preposition);
         String nounLowerCase = changeToLowerCase(noun);
 
-        if(isMissingVerbOrNoun(verbLowerCase,nounLowerCase) ||
+        if (isMissingVerbOrNoun(verbLowerCase, nounLowerCase) ||
                 isAnyWordRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase) ||
                 isPhrasePreviouslyRejected(adverbLowerCase, verbLowerCase, prepositionLowerCase, nounLowerCase)) {
             log.warn("Phrase is not valid.");
@@ -72,7 +70,7 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     public String changeToLowerCase(String word) {
-        if(word != null && !word.trim().isEmpty()){
+        if (word != null && !word.trim().isEmpty()) {
             return word.toLowerCase();
         }
         return word;
@@ -91,8 +89,8 @@ public class PhraseServiceImpl implements PhraseService {
     public boolean isAnyWordRejected(String adverb, String verb, String preposition, String noun) {
 
         List<String> words = Arrays.asList(adverb, verb, preposition, noun);
-        for(String word: words) {
-            if(isWordPreviouslyRejected(word)){
+        for (String word : words) {
+            if (isWordPreviouslyRejected(word)) {
                 log.warn(word + " exists in rejected words.");
                 return true;
             }
@@ -108,16 +106,20 @@ public class PhraseServiceImpl implements PhraseService {
     public boolean isPhrasePreviouslyRejected(String adverb, String verb, String preposition, String noun) {
         StringBuilder rejectedPhraseSB = new StringBuilder();
 
-        if(adverb != null && !adverb.trim().isEmpty()) { rejectedPhraseSB.append(adverb + " "); }
+        if (adverb != null && !adverb.trim().isEmpty()) {
+            rejectedPhraseSB.append(adverb + " ");
+        }
         rejectedPhraseSB.append(verb + " ");
-        if(preposition != null && !preposition.trim().isEmpty()) { rejectedPhraseSB.append(preposition + " "); }
+        if (preposition != null && !preposition.trim().isEmpty()) {
+            rejectedPhraseSB.append(preposition + " ");
+        }
         rejectedPhraseSB.append(noun);
 
         String rejectedPhraseString = rejectedPhraseSB.toString().trim();
 
         Optional<RejectedPhrase> rejectedPhrase = rejectedPhraseRepository.findByRejectedPhrase(rejectedPhraseString);
 
-        if(rejectedPhrase.isPresent()) {
+        if (rejectedPhrase.isPresent()) {
             log.warn(rejectedPhraseString + " exits in rejected phrases.");
             return true;
         }
@@ -176,13 +178,13 @@ public class PhraseServiceImpl implements PhraseService {
         Long prepositionId;
         Long nounId;
 
-        if(findVerbIfExists(verb).isPresent()) {
+        if (findVerbIfExists(verb).isPresent()) {
             verbId = verbRepository.findByWord(verb).get().getId();
         } else {
             return Optional.empty();
         }
 
-        if(findNounIfExists(noun).isPresent()) {
+        if (findNounIfExists(noun).isPresent()) {
             nounId = nounRepository.findByWord(noun).get().getId();
         } else {
             return Optional.empty();
@@ -236,66 +238,43 @@ public class PhraseServiceImpl implements PhraseService {
     }
 
     @Override
-    public Optional<List<PhraseDTO>> getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(Long userId) {
-
-        // create list of PhraseDtos
-        List<PhraseDTO> phraseDTOS = new ArrayList<>();
-
+    public Optional<Map<PhraseDTO, Integer>> getPhraseInformationByUserId(Long userId) {
         // Create list of phrase ids
         Optional<List<Long>> optPhraseIds = userPhraseService.findPhraseIdsByUserId(userId);
 
         // Create list of all phrases from those phrase ids
         if (optPhraseIds.isPresent()) {
             List<Long> phraseIds = optPhraseIds.get();
-            List<Phrase> phrases = new ArrayList<>();
-
-            // loop through list of phrase ids and add each phrase to list
+            Map<PhraseDTO, Integer> phraseDTOsWithUserCount = new HashMap<>();
             for (Long phraseId : phraseIds) {
-                Optional<Phrase> optPhrase = phraseRepository.findPhraseByPhraseId(phraseId);
-                if (optPhrase.isPresent()) {
-                    phrases.add(optPhrase.get());
+                Optional<PhraseWithUserCountDTO> optPhraseInformation = phraseRepository.findPhraseByPhraseId(phraseId);
+                if (optPhraseInformation.isPresent()) {
+                    PhraseWithUserCountDTO phraseInformation = optPhraseInformation.get();
+                    PhraseDTO phraseDTO = constructPhraseDTOFromPhraseInformation(phraseInformation.id(), phraseInformation.adverbId(), phraseInformation.verbId(), phraseInformation.prepositionId(), phraseInformation.nounId());
+                    phraseDTOsWithUserCount.put(phraseDTO, phraseInformation.userCount().intValue());
                 } else {
-                    throw new IllegalStateException("phrase not found");
+                    throw new IllegalStateException("message not found");
                 }
             }
-
-            // loop through phrases and get words. replace nullvalue placeholders with empty string
-            for (Phrase phrase : phrases) {
-                PhraseDTO phraseDTO = PhraseDTO.builder()
-                        .id(phrase.getId())
-                        .build();
-
-                Optional<String> optAdverb = adverbRepository.findAdverbById(phrase.getAdverbId());
-                Optional<String> optVerb = verbRepository.findVerbById(phrase.getVerbId());
-                Optional<String> optPreposition = prepositionRepository.findPrepositionById(phrase.getPrepositionId());
-                Optional<String> optNoun = nounRepository.findNounById(phrase.getNounId());
-
-                if (optAdverb.isPresent()) {
-                    String adverbText = optAdverb.get();
-                    phraseDTO.adverb = adverbText.equals(Constants.NULL_VALUE_WORD) ? "" : adverbText;
-                }
-                if (optVerb.isPresent()) {
-                    phraseDTO.verb = optVerb.get();
-                }
-                if (optPreposition.isPresent()) {
-                    String prepositionText = optPreposition.get();
-                    phraseDTO.preposition = prepositionText.equals(Constants.NULL_VALUE_WORD) ? "" : prepositionText;
-                }
-                if (optNoun.isPresent()) {
-                    phraseDTO.noun = optNoun.get();
-                }
-
-                phraseDTOS.add(phraseDTO);
-            }
-
-            return Optional.of(phraseDTOS);
-
-        } else {
-
-            return Optional.empty();
-
+            return Optional.of(phraseDTOsWithUserCount);
         }
+        return Optional.empty();
+    }
 
+    public PhraseDTO constructPhraseDTOFromPhraseInformation(Long phraseId, Long adverbId, Long verbId, Long prepositionId, Long nounId) {
+        Optional<String> optAdverb = adverbRepository.findAdverbById(adverbId);
+        Optional<String> optVerb = verbRepository.findVerbById(verbId);
+        Optional<String> optPreposition = prepositionRepository.findPrepositionById(prepositionId);
+        Optional<String> optNoun = nounRepository.findNounById(nounId);
+
+        return PhraseDTO
+                .builder()
+                .id(phraseId)
+                .adverb(optAdverb.orElse("").replaceFirst(Constants.NULL_VALUE_WORD, ""))
+                .verb(optVerb.orElse(""))
+                .preposition(optPreposition.orElse("").replaceFirst(Constants.NULL_VALUE_WORD, ""))
+                .noun(optNoun.orElse(""))
+                .build();
     }
 
 }

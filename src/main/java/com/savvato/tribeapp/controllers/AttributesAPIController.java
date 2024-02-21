@@ -1,9 +1,11 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.*;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.ApplyPhraseToUser;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.DeletePhraseFromUser;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetAttributesForUser;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetUserPhrasesToBeReviewed;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.services.*;
@@ -46,19 +48,6 @@ public class AttributesAPIController {
     AttributesAPIController() {
     }
 
-    @GetNumberOfUsersWithAttribute
-    @GetMapping("/total/{attributeId}")
-    public ResponseEntity<GenericMessageDTO> getNumberOfUsersWithAttribute(
-            @Parameter(description = "Attribute ID", example = "1") @PathVariable Long attributeId) {
-
-        Optional<Integer> numberOfUsers = attributesService.getNumberOfUsersWithAttribute(attributeId);
-
-        if (numberOfUsers.isPresent()) {
-            String userCount = String.valueOf(numberOfUsers.get());
-            return ResponseEntity.ok(GenericMessageDTO.builder().responseMessage(userCount).build());
-        }
-        return ResponseEntity.badRequest().build();
-    }
 
     @GetAttributesForUser
     @GetMapping("/{userId}")

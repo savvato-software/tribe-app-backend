@@ -69,7 +69,7 @@ public class GenericMessageServiceImplTest {
         It's the thought that counts
         Expected :[Test message 1, Test message 2]
         Actual   :[Test message 1, Test message 2]
-        */
-    }
+
+    }*/
 }
 

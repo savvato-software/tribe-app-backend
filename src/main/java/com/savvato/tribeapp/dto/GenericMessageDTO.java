@@ -9,8 +9,9 @@ import lombok.Builder;
 public class GenericMessageDTO {
        public String responseMessage;
 
-       @JsonPOJOBuilder(withPrefix = "")
-       public static class GenericMessageDTOBuilder {
-              // Lombok will automatically implement the builder
-       }
+       public Boolean booleanMessage;
+
+       public Iterable<String> iterableMessage;
+
+
 }

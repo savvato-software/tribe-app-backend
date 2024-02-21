@@ -12,7 +12,6 @@ import com.savvato.tribeapp.entities.Notification;
 import com.savvato.tribeapp.repositories.NotificationRepository;
 import com.savvato.tribeapp.repositories.NotificationTypeRepository;
 import com.savvato.tribeapp.dto.NotificationDTO;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -55,12 +54,6 @@ public class NotificationServiceImpl implements NotificationService {
                 .lastUpdatedDate(formattedLastUpdatedDate)
                 .iconUrl(iconUrl)
                 .isRead(notification.isRead())
-                .build();
-    }
-    public GenericMessageDTO createMessageDTO( String message ) {
-
-        return GenericMessageDTO.builder()
-                .responseMessage(message)
                 .build();
     }
     public String getIconUrlFromNotification(Notification notification) {

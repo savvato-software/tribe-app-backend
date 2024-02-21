@@ -27,6 +27,9 @@ public class AttributesAPIController {
 
     @Autowired
     AttributesService attributesService;
+      
+    @Autowired 
+    private GenericMessageService genericMessageService;
 
     @Autowired
     PhraseService phraseService;
@@ -76,25 +79,27 @@ public class AttributesAPIController {
         List<ToBeReviewedDTO> rtn = reviewSubmittingUserService.getUserPhrasesToBeReviewed(userId);
         return ResponseEntity.status(HttpStatus.OK).body(rtn);
     }
-
     @ApplyPhraseToUser
     @PostMapping
-    public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
-        if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
-            boolean isPhraseApplied =
-                    phraseService.applyPhraseToUser(
-                            req.userId, req.adverb, req.verb, req.preposition, req.noun);
-            if (isPhraseApplied) {
-                sendNotification(true, req.userId);
-                return ResponseEntity.status(HttpStatus.OK).body(true);
-            } else {
-                sendNotification(false, req.userId);
-                return ResponseEntity.status(HttpStatus.OK).body(false);
-            }
+    public ResponseEntity<GenericMessageDTO> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
+      if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
+        boolean isPhraseApplied =
+            phraseService.applyPhraseToUser(
+                req.userId, req.adverb, req.verb, req.preposition, req.noun);
+        if (isPhraseApplied) {
+          sendNotification(true, req.userId);
+          GenericMessageDTO rtn = genericMessageService.createDTO("true");
+          return ResponseEntity.status(HttpStatus.OK).body(rtn);
         } else {
-            sendNotification(false, req.userId);
-            return ResponseEntity.status(HttpStatus.OK).body(false);
+          sendNotification(false, req.userId);
+          GenericMessageDTO rtn = genericMessageService.createDTO("false");
+          return ResponseEntity.status(HttpStatus.OK).body(rtn);
         }
+      } else {
+          sendNotification(false, req.userId);
+          GenericMessageDTO rtn = genericMessageService.createDTO("false");
+          return ResponseEntity.status(HttpStatus.OK).body(rtn);
+      }
     }
 
     ///api/attributes/?phraseId=xx&userId=xx

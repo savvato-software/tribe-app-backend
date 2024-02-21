@@ -40,8 +40,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(NotificationAPIController.class)
 public class NotificationAPITest {
@@ -117,17 +116,9 @@ public class NotificationAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("responseMessage").value(("Notification is already read")))
                 .andReturn(); // Get the MvcResult
 
-        // Extract response content as String
-        String responseContent = result.getResponse().getContentAsString();
-
-        // Convert the response content to GenericMessageDTO using Jackson or Gson
-        ObjectMapper objectMapper = new ObjectMapper();
-        GenericMessageDTO responseDTO = objectMapper.readValue(responseContent, GenericMessageDTO.class); // HERE
-
-        // Assert the responseMessage
-        assertEquals("Notification is already read", responseDTO.responseMessage);
 
         verify(notificationService, times(1))
                 .checkNotificationReadStatus(notificationIdCaptor.capture());
@@ -154,17 +145,8 @@ public class NotificationAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("responseMessage").value("Notification read status updated"))
                 .andReturn(); // Get the MvcResult
-
-        // Extract response content as String
-        String responseContent = result.getResponse().getContentAsString();
-
-        // Convert the response content to GenericMessageDTO using Jackson or Gson
-        ObjectMapper objectMapper = new ObjectMapper();
-        GenericMessageDTO responseDTO = objectMapper.readValue(responseContent, GenericMessageDTO.class); // HERE
-
-        // Assert the responseMessage
-        assertEquals("Notification read status updated", responseDTO.responseMessage);
 
         verify(notificationService, times(1))
                 .checkNotificationReadStatus(notificationIdCaptor.capture());
@@ -192,18 +174,7 @@ public class NotificationAPITest {
                         .header("Authorization", "Bearer " + auth)
                         .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andReturn(); // Get the MvcResult
-
-        // Extract response content as String
-        String responseContent = result.getResponse().getContentAsString();
-
-        // Convert the response content to GenericMessageDTO using Jackson or Gson
-        ObjectMapper objectMapper = new ObjectMapper();
-        GenericMessageDTO responseDTO = objectMapper.readValue(responseContent, GenericMessageDTO.class); // HERE
-
-        // Assert the responseMessage
-        assertEquals("Notification deleted", responseDTO.responseMessage);
-
+                .andExpect(jsonPath("responseMessage").value("Notification deleted")).andReturn(); // Get the MvcResult
         verify(notificationService, times(1)).deleteNotification(notificationIdCaptor.capture());
         assertEquals(notificationIdCaptor.getValue(), notificationRequest.id);
     }

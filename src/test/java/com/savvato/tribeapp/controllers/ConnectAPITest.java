@@ -284,12 +284,11 @@ public class ConnectAPITest {
 
     }
 
-//    @Test
+    @Test
     public void testGetConnectionsHappyPath() throws Exception {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
-
         Long toBeConnectedWithUserId = 1L;
         List requestingUserIds = new ArrayList<Long>();
         requestingUserIds.add(2L);
@@ -324,7 +323,7 @@ public class ConnectAPITest {
         assertThat(actualConnectOutingMessages).usingRecursiveComparison().isEqualTo(expectedReturnDtoList);
     }
 
-//    @Test
+    @Test
     public void testGetConnectionsSadPath() throws Exception {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));

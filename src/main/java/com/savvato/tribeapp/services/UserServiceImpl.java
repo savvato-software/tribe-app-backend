@@ -3,6 +3,7 @@ package com.savvato.tribeapp.services;
 import java.util.*;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
+import com.savvato.tribeapp.dto.NotificationDTO;
 import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.dto.UserRoleDTO;
 import com.savvato.tribeapp.entities.User;
@@ -162,16 +163,26 @@ public class UserServiceImpl implements UserService {
 				.enabled(user.getEnabled())
 				.created(user.getCreated().toString())
 				.lastUpdated(user.getLastUpdated().toString())
-				.roles(getUserRole(User user))
+				.roles(getUserRoleDTO(user))
 				.build();
 		return userDTO;
 	}
-	private UserRoleDTO getUserRole(User user){
-		/*Some dataType = user.getRoles
-		UserRoleDTO userRoleDTO = UserRoleDTO.builder( Some dataType)
-				.id(id)
+	private List <UserRoleDTO> getUserRoleDTO(User user){
+		Set<UserRole> userRole = user.getRoles();
+		List<UserRoleDTO> rtn = new ArrayList<>();
+		Iterator<UserRole> iterator  = userRole.iterator();
+        while (iterator.hasNext()){
+            UserRole userRoles = iterator.next();
+            Long id = userRoles.getId();
+			String name = userRoles.getName();
+			UserRoleDTO userRoleDTO = UserRoleDTO.builder()
+            	.id(id)
 				.name(name)
-	*/
+				.build();
+            rtn.add(userRoleDTO);
+        }
+        return rtn;
+
 	}
 
 }

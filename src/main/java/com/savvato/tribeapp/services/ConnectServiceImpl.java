@@ -6,12 +6,11 @@ import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.entities.Connection;
 import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import com.savvato.tribeapp.repositories.UserRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +40,6 @@ public class ConnectServiceImpl implements ConnectService {
         String getCode = cache.get("ConnectQRCodeString", userIdToCacheKey);
         Optional<String> opt = Optional.ofNullable(getCode);
         return opt;
-
     }
 
     public Optional<String> storeQRCodeString(long userId) {
@@ -80,7 +78,7 @@ public class ConnectServiceImpl implements ConnectService {
     }
 
     public Boolean validateQRCode(String qrcodePhrase, Long toBeConnectedWithUserId) {
-        return qrcodePhrase.equals(getQRCodeString(toBeConnectedWithUserId).orElse(""));
+        return qrcodePhrase.equals(getQRCodeString(toBeConnectedWithUserId).orElse("")) && StringUtils.isNotBlank(qrcodePhrase);
     }
 
     @MessageMapping("/connect/room")

@@ -325,4 +325,31 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(Collections.emptyList());
 
     }
+
+    @Test
+    public void validateQRCodeWhenQRCodeIsEmpty() {
+        String qrcodePhrase = "";
+        Long userId = 1L;
+        when(cacheService.get(any(), any())).thenReturn("");
+        boolean isValidQRCode = connectService.validateQRCode(qrcodePhrase, userId);
+        assertFalse(isValidQRCode);
+    }
+
+    @Test
+    public void validateQRCodeWhenQRCodeIsValid() {
+        String qrcodePhrase = "ABCDE";
+        Long userId = 1L;
+        when(cacheService.get(any(), any())).thenReturn(qrcodePhrase);
+        boolean isValidQRCode = connectService.validateQRCode(qrcodePhrase, userId);
+        assertTrue(isValidQRCode);
+    }
+
+    @Test
+    public void validateQRCodeWhenNoQRCodeIsCached() {
+        String qrcodePhrase = "ABCDE";
+        Long userId = 1L;
+        when(cacheService.get(any(), any())).thenReturn(null);
+        boolean isValidQRCode = connectService.validateQRCode(qrcodePhrase, userId);
+        assertFalse(isValidQRCode);
+    }
 }

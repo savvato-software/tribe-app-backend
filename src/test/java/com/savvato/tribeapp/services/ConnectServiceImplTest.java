@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -95,6 +94,28 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         doThrow(new IndexOutOfBoundsException()).when(connectionsRepository).save(Mockito.any());
         Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
         assertEquals(connectionStatus, false);
+    }
+
+    @Test
+    public void saveConnectionDetailsWhenExistingConnectionWithReversedUserIdsExists() {
+        Long requestingUserId = 1L;
+        Long toBeConnectedWithUserId = 2L;
+        Connection existingConnection = new Connection(requestingUserId, toBeConnectedWithUserId);
+        when(connectionsRepository.findExistingConnectionWithReversedUserIds(anyLong(), anyLong())).thenReturn(Optional.of(existingConnection));
+        Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
+        assertEquals(connectionStatus, false);
+        verify(connectionsRepository, never()).save(any());
+    }
+
+    @Test
+    public void saveConnectionDetailsWhenIdsAreTheSame() {
+        Long requestingUserId = 2L;
+        Long toBeConnectedWithUserId = 2L;
+        Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
+        assertEquals(connectionStatus, false);
+
+        verify(connectionsRepository, never()).findExistingConnectionWithReversedUserIds(anyLong(), anyLong());
+        verify(connectionsRepository, never()).save(any());
     }
 
     @Test
@@ -274,7 +295,6 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
         Connection connection = new Connection();
         connection.setCreated();
-        connection.setId(1L);
         connection.setRequestingUserId(1L);
         connection.setToBeConnectedWithUserId(toBeConnectedUserId);
 
@@ -283,7 +303,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         List<ConnectOutgoingMessageDTO> expectedOutgoingMessageDTOS = new ArrayList<>();
         ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
                 .connectionSuccess(true)
-                .to(new ArrayList<>(Arrays.asList(connection.getRequestingUserId())))
+                .to(new ArrayList<>(Collections.singletonList(connection.getRequestingUserId())))
                 .message("")
                 .build();
         expectedOutgoingMessageDTOS.add(outgoingMessage);
@@ -304,5 +324,32 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
         assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(Collections.emptyList());
 
+    }
+
+    @Test
+    public void validateQRCodeWhenQRCodeIsEmpty() {
+        String qrcodePhrase = "";
+        Long userId = 1L;
+        when(cacheService.get(any(), any())).thenReturn("");
+        boolean isValidQRCode = connectService.validateQRCode(qrcodePhrase, userId);
+        assertFalse(isValidQRCode);
+    }
+
+    @Test
+    public void validateQRCodeWhenQRCodeIsValid() {
+        String qrcodePhrase = "ABCDE";
+        Long userId = 1L;
+        when(cacheService.get(any(), any())).thenReturn(qrcodePhrase);
+        boolean isValidQRCode = connectService.validateQRCode(qrcodePhrase, userId);
+        assertTrue(isValidQRCode);
+    }
+
+    @Test
+    public void validateQRCodeWhenNoQRCodeIsCached() {
+        String qrcodePhrase = "ABCDE";
+        Long userId = 1L;
+        when(cacheService.get(any(), any())).thenReturn(null);
+        boolean isValidQRCode = connectService.validateQRCode(qrcodePhrase, userId);
+        assertFalse(isValidQRCode);
     }
 }

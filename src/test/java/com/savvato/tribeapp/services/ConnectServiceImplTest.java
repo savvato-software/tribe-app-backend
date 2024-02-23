@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -296,7 +295,6 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
         Connection connection = new Connection();
         connection.setCreated();
-        connection.setId(1L);
         connection.setRequestingUserId(1L);
         connection.setToBeConnectedWithUserId(toBeConnectedUserId);
 
@@ -305,7 +303,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         List<ConnectOutgoingMessageDTO> expectedOutgoingMessageDTOS = new ArrayList<>();
         ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
                 .connectionSuccess(true)
-                .to(new ArrayList<>(Arrays.asList(connection.getRequestingUserId())))
+                .to(new ArrayList<>(Collections.singletonList(connection.getRequestingUserId())))
                 .message("")
                 .build();
         expectedOutgoingMessageDTOS.add(outgoingMessage);

@@ -8,6 +8,7 @@ import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
 import com.savvato.tribeapp.dto.PhraseDTO;
 import com.savvato.tribeapp.dto.ToBeReviewedDTO;
+import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;

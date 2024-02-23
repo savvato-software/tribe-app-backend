@@ -289,7 +289,6 @@ public class ConnectAPITest {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
-
         Long toBeConnectedWithUserId = 1L;
         List requestingUserIds = new ArrayList<Long>();
         requestingUserIds.add(2L);

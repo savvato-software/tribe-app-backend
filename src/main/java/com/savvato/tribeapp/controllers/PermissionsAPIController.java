@@ -2,10 +2,10 @@ package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.*;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.entities.UserRole;
-import com.savvato.tribeapp.services.GenericMessageService;
+import com.savvato.tribeapp.services.GenericResponseService;
 import com.savvato.tribeapp.services.UserRoleMapService;
 import com.savvato.tribeapp.services.UserRoleService;
 import com.savvato.tribeapp.services.UserService;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class PermissionsAPIController {
   @Autowired UserRoleMapService userRoleMapService;
 
-  @Autowired private GenericMessageService genericMessageService;
+  @Autowired private GenericResponseService GenericResponseService;
 
   @Autowired UserRoleService userRoleService;
 
@@ -73,9 +73,9 @@ public class PermissionsAPIController {
 
   @AddPermissions
   @PostMapping
-  public ResponseEntity<GenericMessageDTO> addPermissions(@RequestBody @Valid PermissionsRequest request) {
+  public ResponseEntity<GenericResponseDTO> addPermissions(@RequestBody @Valid PermissionsRequest request) {
     boolean val = userRoleMapService.addRolesToUser(request.id, request.permissions);
-      GenericMessageDTO rtn =  genericMessageService.createDTO(val);
+      GenericResponseDTO rtn =  GenericResponseService.createDTO(val);
       if (val) {
           return ResponseEntity.status(HttpStatus.OK).body(rtn);
     } else {
@@ -85,9 +85,9 @@ public class PermissionsAPIController {
 
   @DeletePermissions
   @DeleteMapping
-  public ResponseEntity<GenericMessageDTO> deletePermissions(@RequestBody @Valid PermissionsRequest request) {
+  public ResponseEntity<GenericResponseDTO> deletePermissions(@RequestBody @Valid PermissionsRequest request) {
     boolean val = userRoleMapService.removeRolesFromUser(request.id, request.permissions);
-    GenericMessageDTO rtn =  genericMessageService.createDTO(val);
+    GenericResponseDTO rtn =  GenericResponseService.createDTO(val);
     if (val) {
       return ResponseEntity.status(HttpStatus.OK).body(rtn);
     } else {

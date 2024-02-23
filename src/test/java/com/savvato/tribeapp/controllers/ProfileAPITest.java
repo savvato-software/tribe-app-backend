@@ -3,7 +3,7 @@ package com.savvato.tribeapp.controllers;
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.dto.ProfileDTO;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.*;
@@ -46,7 +46,7 @@ public class ProfileAPITest {
     private UserDetailsServiceTRIBEAPP userDetailsServiceTRIBEAPP;
 
     @MockBean
-    private GenericMessageService genericMessageService;
+    private GenericResponseService GenericResponseService;
 
     @MockBean
     private UserPrincipalService userPrincipalService;
@@ -136,9 +136,9 @@ public class ProfileAPITest {
         Mockito.when(profileService.update(Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
         .thenReturn(true);
 
-         when(genericMessageService.createDTO(
+         when(GenericResponseService.createDTO(
                  anyBoolean()))
-                 .thenReturn(GenericMessageDTO.builder()
+                 .thenReturn(GenericResponseDTO.builder()
                          .booleanMessage(true)
                          .build());
 
@@ -183,9 +183,9 @@ public void testProfileUnHappyPathUpdate() throws Exception {
     Mockito.when(profileService.update(Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
     .thenReturn(false);
 
-    when(genericMessageService.createDTO(
+    when(GenericResponseService.createDTO(
             anyBoolean()))
-            .thenReturn(GenericMessageDTO.builder()
+            .thenReturn(GenericResponseDTO.builder()
                     .booleanMessage(false)
                     .build());
 

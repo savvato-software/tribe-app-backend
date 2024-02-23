@@ -184,6 +184,7 @@
                 <configuration>
                     <excludes>
                         <exclude>com/savvato/tribeapp/TribeAppApplication.class</exclude>
+                        <exclude>com/savvato/tribeapp/entities/**</exclude>
                         <exclude>**/**/constants/**</exclude>
                     </excludes>
 

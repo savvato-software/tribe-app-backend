@@ -2,10 +2,12 @@ package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.annotations.controllers.PermissionsAPIController.*;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.dto.UserRoleDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
+import com.savvato.tribeapp.services.GenericResponseService;
 import com.savvato.tribeapp.services.UserRoleMapService;
 import com.savvato.tribeapp.services.UserRoleService;
 import com.savvato.tribeapp.services.UserService;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "permissions", description = "Delegation of user permissions")
 public class PermissionsAPIController {
   @Autowired UserRoleMapService userRoleMapService;
+
+  @Autowired private GenericResponseService GenericResponseService;
 
   @Autowired UserRoleService userRoleService;
 
@@ -72,22 +76,22 @@ public class PermissionsAPIController {
 
   @AddPermissions
   @PostMapping
-  public ResponseEntity<Boolean> addPermissions(@RequestBody @Valid PermissionsRequest request) {
-    boolean rtn = userRoleMapService.addRolesToUser(request.id, request.permissions);
-
-    if (rtn) {
-      return ResponseEntity.status(HttpStatus.OK).body(rtn);
+  public ResponseEntity<GenericResponseDTO> addPermissions(@RequestBody @Valid PermissionsRequest request) {
+    boolean val = userRoleMapService.addRolesToUser(request.id, request.permissions);
+      GenericResponseDTO rtn =  GenericResponseService.createDTO(val);
+      if (val) {
+          return ResponseEntity.status(HttpStatus.OK).body(rtn);
     } else {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);
     }
   }
 
   @DeletePermissions
   @DeleteMapping
-  public ResponseEntity<Boolean> deletePermissions(@RequestBody @Valid PermissionsRequest request) {
-    boolean rtn = userRoleMapService.removeRolesFromUser(request.id, request.permissions);
-
-    if (rtn) {
+  public ResponseEntity<GenericResponseDTO> deletePermissions(@RequestBody @Valid PermissionsRequest request) {
+    boolean val = userRoleMapService.removeRolesFromUser(request.id, request.permissions);
+    GenericResponseDTO rtn =  GenericResponseService.createDTO(val);
+    if (val) {
       return ResponseEntity.status(HttpStatus.OK).body(rtn);
     } else {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(rtn);

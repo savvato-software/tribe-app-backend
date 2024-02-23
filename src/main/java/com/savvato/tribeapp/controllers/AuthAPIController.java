@@ -7,6 +7,8 @@ import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.services.AuthServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthAPIController {
 
   private final AuthenticationManager authenticationManager;
+
 
   public AuthAPIController(AuthenticationManager authenticationManager) {
     this.authenticationManager = authenticationManager;

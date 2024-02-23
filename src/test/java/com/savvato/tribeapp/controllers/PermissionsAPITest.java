@@ -6,6 +6,7 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
 import com.savvato.tribeapp.dto.UserDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.*;
@@ -61,6 +62,9 @@ public class PermissionsAPITest {
 
     @MockBean
     private UserPrincipalService userPrincipalService;
+
+    @MockBean
+    private GenericResponseService GenericResponseService;
 
     @MockBean
     private UserService userService;
@@ -248,6 +252,11 @@ public class PermissionsAPITest {
         permissionsRequest.permissions = permissions;
 
         when(userRoleMapService.addRolesToUser(anyLong(), any())).thenReturn(true);
+        when(GenericResponseService.createDTO(
+                anyBoolean()))
+                .thenReturn(GenericResponseDTO.builder()
+                        .booleanMessage(true)
+                        .build());
         this.mockMvc
                 .perform(
                         post("/api/permissions")
@@ -256,8 +265,9 @@ public class PermissionsAPITest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"))
+                .andExpect(jsonPath("booleanMessage").value(true))
                 .andReturn();
+
 
         verify(userRoleMapService, times(1))
                 .addRolesToUser(userIdCaptor.capture(), permissionsCaptor.capture());
@@ -278,6 +288,11 @@ public class PermissionsAPITest {
         permissionsRequest.permissions = permissions;
 
         when(userRoleMapService.addRolesToUser(anyLong(), any())).thenReturn(false);
+        when(GenericResponseService.createDTO(
+                anyBoolean()))
+                .thenReturn(GenericResponseDTO.builder()
+                        .booleanMessage(false)
+                        .build());
         this.mockMvc
                 .perform(
                         post("/api/permissions")
@@ -286,7 +301,7 @@ public class PermissionsAPITest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("false"))
+                .andExpect(jsonPath("booleanMessage").value(false))
                 .andReturn();
 
         verify(userRoleMapService, times(1))
@@ -310,6 +325,11 @@ public class PermissionsAPITest {
         permissionsRequest.permissions = permissions;
 
         when(userRoleMapService.removeRolesFromUser(anyLong(), any())).thenReturn(true);
+        when(GenericResponseService.createDTO(
+                anyBoolean()))
+                .thenReturn(GenericResponseDTO.builder()
+                        .booleanMessage(true)
+                        .build());
         this.mockMvc
                 .perform(
                         delete("/api/permissions")
@@ -318,7 +338,7 @@ public class PermissionsAPITest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"))
+                .andExpect(jsonPath("booleanMessage").value(true))
                 .andReturn();
 
         verify(userRoleMapService, times(1))
@@ -340,6 +360,11 @@ public class PermissionsAPITest {
         permissionsRequest.permissions = permissions;
 
         when(userRoleMapService.removeRolesFromUser(anyLong(), any())).thenReturn(false);
+        when(GenericResponseService.createDTO(
+                anyBoolean()))
+                .thenReturn(GenericResponseDTO.builder()
+                        .booleanMessage(false)
+                        .build());
         this.mockMvc
                 .perform(
                         delete("/api/permissions")
@@ -348,7 +373,7 @@ public class PermissionsAPITest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("false"))
+                .andExpect(jsonPath("booleanMessage").value(false))
                 .andReturn();
 
         verify(userRoleMapService, times(1))

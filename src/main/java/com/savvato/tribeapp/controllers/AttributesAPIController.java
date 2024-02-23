@@ -1,9 +1,12 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.*;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.ApplyPhraseToUser;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.DeletePhraseFromUser;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetAttributesForUser;
+import com.savvato.tribeapp.controllers.annotations.controllers.AttributesAPIController.GetUserPhrasesToBeReviewed;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.dto.ToBeReviewedDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.services.*;
@@ -27,6 +30,9 @@ public class AttributesAPIController {
 
     @Autowired
     AttributesService attributesService;
+      
+    @Autowired 
+    private GenericResponseService GenericResponseService;
 
     @Autowired
     PhraseService phraseService;
@@ -43,19 +49,6 @@ public class AttributesAPIController {
     AttributesAPIController() {
     }
 
-    @GetNumberOfUsersWithAttribute
-    @GetMapping("/total/{attributeId}")
-    public ResponseEntity<GenericMessageDTO> getNumberOfUsersWithAttribute(
-            @Parameter(description = "Attribute ID", example = "1") @PathVariable Long attributeId) {
-
-        Optional<Integer> numberOfUsers = attributesService.getNumberOfUsersWithAttribute(attributeId);
-
-        if (numberOfUsers.isPresent()) {
-            String userCount = String.valueOf(numberOfUsers.get());
-            return ResponseEntity.ok(GenericMessageDTO.builder().responseMessage(userCount).build());
-        }
-        return ResponseEntity.badRequest().build();
-    }
 
     @GetAttributesForUser
     @GetMapping("/{userId}")
@@ -76,25 +69,27 @@ public class AttributesAPIController {
         List<ToBeReviewedDTO> rtn = reviewSubmittingUserService.getUserPhrasesToBeReviewed(userId);
         return ResponseEntity.status(HttpStatus.OK).body(rtn);
     }
-
     @ApplyPhraseToUser
     @PostMapping
-    public ResponseEntity<Boolean> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
-        if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
-            boolean isPhraseApplied =
-                    phraseService.applyPhraseToUser(
-                            req.userId, req.adverb, req.verb, req.preposition, req.noun);
-            if (isPhraseApplied) {
-                sendNotification(true, req.userId);
-                return ResponseEntity.status(HttpStatus.OK).body(true);
-            } else {
-                sendNotification(false, req.userId);
-                return ResponseEntity.status(HttpStatus.OK).body(false);
-            }
+    public ResponseEntity<GenericResponseDTO> applyPhraseToUser(@RequestBody @Valid AttributesRequest req) {
+      if (phraseService.isPhraseValid(req.adverb, req.verb, req.preposition, req.noun)) {
+        boolean isPhraseApplied =
+            phraseService.applyPhraseToUser(
+                req.userId, req.adverb, req.verb, req.preposition, req.noun);
+        if (isPhraseApplied) {
+          sendNotification(true, req.userId);
+          GenericResponseDTO rtn = GenericResponseService.createDTO("true");
+          return ResponseEntity.status(HttpStatus.OK).body(rtn);
         } else {
-            sendNotification(false, req.userId);
-            return ResponseEntity.status(HttpStatus.OK).body(false);
+          sendNotification(false, req.userId);
+          GenericResponseDTO rtn = GenericResponseService.createDTO("false");
+          return ResponseEntity.status(HttpStatus.OK).body(rtn);
         }
+      } else {
+          sendNotification(false, req.userId);
+          GenericResponseDTO rtn = GenericResponseService.createDTO("false");
+          return ResponseEntity.status(HttpStatus.OK).body(rtn);
+      }
     }
 
     ///api/attributes/?phraseId=xx&userId=xx

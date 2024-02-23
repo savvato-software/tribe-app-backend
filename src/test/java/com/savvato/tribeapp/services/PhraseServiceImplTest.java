@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.dto.PhraseDTO;
+import com.savvato.tribeapp.dto.projections.PhraseWithUserCountDTO;
 import com.savvato.tribeapp.entities.*;
 import com.savvato.tribeapp.repositories.*;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -268,44 +270,51 @@ public class PhraseServiceImplTest extends AbstractServiceImplTest {
     }
 
     @Test
-    public void testGetListOfPhraseDTOByUserIdWithoutPlaceholderNullvalueForEmptyStrings() {
+    public void getPhraseInformationByUserId() {
         User user1 = getUser1();
         String testWord = "test";
         String testEmptyString = "";
-        List<Long> longList = new ArrayList<>(List.of(1L));
-        Phrase testPhrase = getTestPhrase1();
+        List<Long> userIds = new ArrayList<>(List.of(1L));
+        Integer userCount = 1;
+        PhraseWithUserCountDTO phraseWithUserCountDTO = new PhraseWithUserCountDTO(1L, 1L, 1L, 1L, 1L, userCount.longValue());
 
-        Mockito.when(userPhraseService.findPhraseIdsByUserId(anyLong())).thenReturn(Optional.of(longList));
-        Mockito.when(phraseRepository.findPhraseByPhraseId(anyLong())).thenReturn(Optional.of(testPhrase));
+
+        Mockito.when(userPhraseService.findPhraseIdsByUserId(anyLong())).thenReturn(Optional.of(userIds));
+        Mockito.when(phraseRepository.findPhraseByPhraseId(anyLong())).thenReturn(Optional.of(phraseWithUserCountDTO));
         Mockito.when(adverbRepository.findAdverbById(anyLong())).thenReturn(Optional.of(Constants.NULL_VALUE_WORD));
         Mockito.when(verbRepository.findVerbById(anyLong())).thenReturn(Optional.of(testWord));
         Mockito.when(prepositionRepository.findPrepositionById(anyLong())).thenReturn(Optional.of(Constants.NULL_VALUE_WORD));
         Mockito.when(nounRepository.findNounById(anyLong())).thenReturn(Optional.of(testWord));
 
-        Optional<List<PhraseDTO>> phraseDTOS = phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(user1.getId());
-        PhraseDTO phrase = phraseDTOS.get().get(0);
+        Optional<Map<PhraseDTO, Integer>> optPhraseInformationMap = phraseService.getPhraseInformationByUserId(user1.getId());
+        Map<PhraseDTO, Integer> phraseInformationMap = optPhraseInformationMap.get();
+        PhraseDTO phrase = phraseInformationMap.keySet().iterator().next(); // get first key
+        assertEquals(userCount, phraseInformationMap.get(phrase));
         assertEquals(phrase.adverb, testEmptyString);
         assertEquals(phrase.preposition, testEmptyString);
+        assertEquals(phrase.verb, testWord);
+        assertEquals(phrase.noun, testWord);
+        assertEquals(phraseInformationMap.size(), 1);
     }
 
     @Test
-    public void getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalueWhenNoMatchingPhraseFound() {
+    public void getPhraseInformationByUserIdWhenNoMatchingPhraseFound() {
         Long userId = 1L;
         Optional<List<Long>> phraseIds = Optional.of(List.of(1L, 2L));
         when(userPhraseService.findPhraseIdsByUserId(userId)).thenReturn(phraseIds);
         when(phraseRepository.findPhraseByPhraseId(anyLong())).thenReturn(Optional.empty());
         assertThrows(IllegalStateException.class, () -> {
-            phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(userId);
+            phraseService.getPhraseInformationByUserId(userId);
         }, "phrase not found");
     }
 
     @Test
-    public void getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalueWhenNoPhraseIdsFound() {
+    public void getPhraseInformationByUserIdWhenNoPhraseIdsFound() {
         Long userId = 1L;
         when(userPhraseService.findPhraseIdsByUserId(userId)).thenReturn(Optional.empty());
-        Optional<List<PhraseDTO>> expected = Optional.empty();
+        Optional<Map<PhraseDTO, Integer>> expected = Optional.empty();
 
-        Optional<List<PhraseDTO>> actual = phraseService.getListOfPhraseDTOByUserIdWithoutPlaceholderNullvalue(userId);
+        Optional<Map<PhraseDTO, Integer>> actual = phraseService.getPhraseInformationByUserId(userId);
         verify(phraseRepository, never()).findPhraseByPhraseId(anyLong());
         verify(adverbRepository, never()).findAdverbById(anyLong());
         verify(verbRepository, never()).findVerbById(anyLong());

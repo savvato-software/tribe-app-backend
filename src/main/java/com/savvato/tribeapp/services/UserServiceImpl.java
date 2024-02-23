@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.UserDTO;
+import com.savvato.tribeapp.dto.UserRoleDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -147,7 +148,6 @@ public class UserServiceImpl implements UserService {
 		List<UserDTO> rtn = new ArrayList<>();
 		for (User user : users){
 			rtn.add(getUserDTO(user));
-
 		}
 		return rtn;
 	}
@@ -162,10 +162,16 @@ public class UserServiceImpl implements UserService {
 				.enabled(user.getEnabled())
 				.created(user.getCreated().toString())
 				.lastUpdated(user.getLastUpdated().toString())
-				.roles(user.getRoles())
+				.roles(getUserRole(User user))
 				.build();
-
 		return userDTO;
+	}
+	private UserRoleDTO getUserRole(User user){
+		/*Some dataType = user.getRoles
+		UserRoleDTO userRoleDTO = UserRoleDTO.builder( Some dataType)
+				.id(id)
+				.name(name)
+	*/
 	}
 
 }

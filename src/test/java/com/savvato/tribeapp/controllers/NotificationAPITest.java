@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.NotificationRequest;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.dto.NotificationDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.entities.User;
@@ -68,7 +68,7 @@ public class NotificationAPITest {
     private NotificationService notificationService;
 
     @MockBean
-    private GenericMessageService genericMessageService;
+    private GenericResponseService GenericResponseService;
 
     @Captor
     private ArgumentCaptor<Long> notificationIdCaptor;
@@ -105,8 +105,8 @@ public class NotificationAPITest {
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.id = 1L;
         when(notificationService.checkNotificationReadStatus(1L)).thenReturn(true);
-        when(genericMessageService.createDTO(anyString()))
-                .thenReturn(GenericMessageDTO.builder().responseMessage("Notification is already read").build());
+        when(GenericResponseService.createDTO(anyString()))
+                .thenReturn(GenericResponseDTO.builder().responseMessage("Notification is already read").build());
 
         MvcResult result = this.mockMvc
                 .perform(
@@ -134,8 +134,8 @@ public class NotificationAPITest {
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.id = 1L;
         when(notificationService.checkNotificationReadStatus(1L)).thenReturn(false);
-        when(genericMessageService.createDTO(anyString()))
-                .thenReturn(GenericMessageDTO.builder().responseMessage("Notification read status updated").build());
+        when(GenericResponseService.createDTO(anyString()))
+                .thenReturn(GenericResponseDTO.builder().responseMessage("Notification read status updated").build());
 
         MvcResult result = this.mockMvc
                 .perform(
@@ -166,8 +166,8 @@ public class NotificationAPITest {
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.id = 1L;
         when(notificationService.checkNotificationExists(1L)).thenReturn(true); // any other value will return false
-        when(genericMessageService.createDTO(anyString()))
-                .thenReturn(GenericMessageDTO.builder().responseMessage("Notification deleted").build());
+        when(GenericResponseService.createDTO(anyString()))
+                .thenReturn(GenericResponseDTO.builder().responseMessage("Notification deleted").build());
 
         MvcResult result = this.mockMvc
                 .perform(delete("/api/notifications/{id}", notificationRequest.id)

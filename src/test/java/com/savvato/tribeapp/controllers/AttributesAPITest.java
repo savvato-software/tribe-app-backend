@@ -8,7 +8,7 @@ import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
 import com.savvato.tribeapp.dto.PhraseDTO;
 import com.savvato.tribeapp.dto.ToBeReviewedDTO;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
@@ -69,7 +69,7 @@ public class AttributesAPITest {
     private NotificationService notificationService;
 
     @MockBean
-    private GenericMessageService genericMessageService;
+    private GenericResponseService GenericResponseService;
 
     @MockBean
     private UserPhraseService userPhraseService;
@@ -173,9 +173,9 @@ public class AttributesAPITest {
         when(notificationService.createNotification(
                 any(NotificationType.class), anyLong(), anyString(), anyString()))
                 .thenReturn(null);
-        when(genericMessageService.createDTO(
+        when(GenericResponseService.createDTO(
                 anyString()))
-                .thenReturn(GenericMessageDTO.builder()
+                .thenReturn(GenericResponseDTO.builder()
                         .responseMessage("true")
                         .build());
         ArgumentCaptor<NotificationType> notificationTypeCaptor =
@@ -231,9 +231,9 @@ public class AttributesAPITest {
         when(notificationService.createNotification(
                 any(NotificationType.class), anyLong(), anyString(), anyString()))
                 .thenReturn(null);
-        when(genericMessageService.createDTO(
+        when(GenericResponseService.createDTO(
                 anyString()))
-                .thenReturn(GenericMessageDTO.builder()
+                .thenReturn(GenericResponseDTO.builder()
                         .responseMessage("false")
                         .build());
         ArgumentCaptor<NotificationType> notificationTypeCaptor =
@@ -287,9 +287,9 @@ public class AttributesAPITest {
         when(notificationService.createNotification(
                 any(NotificationType.class), anyLong(), anyString(), anyString()))
                 .thenReturn(null);
-        when(genericMessageService.createDTO(
+        when(GenericResponseService.createDTO(
                 anyString()))
-                .thenReturn(GenericMessageDTO.builder()
+                .thenReturn(GenericResponseDTO.builder()
                         .responseMessage("false")
                         .build());
         ArgumentCaptor<NotificationType> notificationTypeCaptor =

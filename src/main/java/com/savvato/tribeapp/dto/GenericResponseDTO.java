@@ -1,12 +1,11 @@
 package com.savvato.tribeapp.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 
 @Builder
-@JsonDeserialize(builder = GenericMessageDTO.GenericMessageDTOBuilder.class)
-public class GenericMessageDTO {
+@JsonDeserialize(builder = GenericResponseDTO.GenericResponseDTOBuilder.class)
+public class GenericResponseDTO {
        public String responseMessage;
 
        public Boolean booleanMessage;

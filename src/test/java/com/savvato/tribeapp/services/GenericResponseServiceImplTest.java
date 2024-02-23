@@ -1,43 +1,36 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.dto.GenericMessageDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import static org.hamcrest.Matchers.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-public class GenericMessageServiceImplTest {
+public class GenericResponseServiceImplTest {
 
     @TestConfiguration
-    static class GenericMessageServiceTestContextConfiguration {
+    static class GenericResponseServiceTestContextConfiguration {
 
         @Bean
-        public GenericMessageService genericMessageService() {
-            return new GenericMessageServiceImpl();
+        public GenericResponseService GenericResponseService() {
+            return new GenericResponseServiceImpl();
         }
     }
 
     @Autowired
-    private GenericMessageService genericMessageService;
+    private GenericResponseService GenericResponseService;
 
     @Test
     public void testCreateStringMessageDTO() {
         // Mock data
         String message = "Test message";
-        GenericMessageDTO result = genericMessageService.createDTO(message)
+        GenericResponseDTO result = GenericResponseService.createDTO(message)
                 .builder()
                 .responseMessage(message)
                 .build();
@@ -47,7 +40,7 @@ public class GenericMessageServiceImplTest {
     public void testCreateBooleanMessageDTO() {
         // Mock data
         boolean val = true;
-        GenericMessageDTO result = genericMessageService.createDTO(val)
+        GenericResponseDTO result = GenericResponseService.createDTO(val)
                 .builder()
                 .booleanMessage(val)
                 .build();
@@ -60,7 +53,7 @@ public class GenericMessageServiceImplTest {
         List<String> messages = new ArrayList<>();
         messages.add("Test message 1");
         messages.add("Test message 2");
-        GenericMessageDTO result = genericMessageService.createDTO(messages)
+        GenericResponseDTO result = GenericResponseService.createDTO(messages)
                 .builder()
                 .iterableMessage(messages)
                 .build();

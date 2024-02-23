@@ -6,7 +6,7 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
 import com.savvato.tribeapp.dto.UserDTO;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.*;
@@ -64,7 +64,7 @@ public class PermissionsAPITest {
     private UserPrincipalService userPrincipalService;
 
     @MockBean
-    private GenericMessageService genericMessageService;
+    private GenericResponseService GenericResponseService;
 
     @MockBean
     private UserService userService;
@@ -249,9 +249,9 @@ public class PermissionsAPITest {
         permissionsRequest.permissions = permissions;
 
         when(userRoleMapService.addRolesToUser(anyLong(), any())).thenReturn(true);
-        when(genericMessageService.createDTO(
+        when(GenericResponseService.createDTO(
                 anyBoolean()))
-                .thenReturn(GenericMessageDTO.builder()
+                .thenReturn(GenericResponseDTO.builder()
                         .booleanMessage(true)
                         .build());
         this.mockMvc
@@ -285,9 +285,9 @@ public class PermissionsAPITest {
         permissionsRequest.permissions = permissions;
 
         when(userRoleMapService.addRolesToUser(anyLong(), any())).thenReturn(false);
-        when(genericMessageService.createDTO(
+        when(GenericResponseService.createDTO(
                 anyBoolean()))
-                .thenReturn(GenericMessageDTO.builder()
+                .thenReturn(GenericResponseDTO.builder()
                         .booleanMessage(false)
                         .build());
         this.mockMvc
@@ -322,9 +322,9 @@ public class PermissionsAPITest {
         permissionsRequest.permissions = permissions;
 
         when(userRoleMapService.removeRolesFromUser(anyLong(), any())).thenReturn(true);
-        when(genericMessageService.createDTO(
+        when(GenericResponseService.createDTO(
                 anyBoolean()))
-                .thenReturn(GenericMessageDTO.builder()
+                .thenReturn(GenericResponseDTO.builder()
                         .booleanMessage(true)
                         .build());
         this.mockMvc
@@ -357,9 +357,9 @@ public class PermissionsAPITest {
         permissionsRequest.permissions = permissions;
 
         when(userRoleMapService.removeRolesFromUser(anyLong(), any())).thenReturn(false);
-        when(genericMessageService.createDTO(
+        when(GenericResponseService.createDTO(
                 anyBoolean()))
-                .thenReturn(GenericMessageDTO.builder()
+                .thenReturn(GenericResponseDTO.builder()
                         .booleanMessage(false)
                         .build());
         this.mockMvc

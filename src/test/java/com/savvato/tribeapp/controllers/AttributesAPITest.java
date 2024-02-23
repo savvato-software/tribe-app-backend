@@ -6,9 +6,9 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.AttributesRequest;
 import com.savvato.tribeapp.dto.AttributeDTO;
-import com.savvato.tribeapp.dto.GenericMessageDTO;
 import com.savvato.tribeapp.dto.PhraseDTO;
 import com.savvato.tribeapp.dto.ToBeReviewedDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.entities.NotificationType;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
@@ -67,6 +67,9 @@ public class AttributesAPITest {
 
     @MockBean
     private NotificationService notificationService;
+
+    @MockBean
+    private GenericResponseService GenericResponseService;
 
     @MockBean
     private UserPhraseService userPhraseService;
@@ -170,6 +173,11 @@ public class AttributesAPITest {
         when(notificationService.createNotification(
                 any(NotificationType.class), anyLong(), anyString(), anyString()))
                 .thenReturn(null);
+        when(GenericResponseService.createDTO(
+                anyString()))
+                .thenReturn(GenericResponseDTO.builder()
+                        .responseMessage("true")
+                        .build());
         ArgumentCaptor<NotificationType> notificationTypeCaptor =
                 ArgumentCaptor.forClass(NotificationType.class);
         ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
@@ -184,7 +192,7 @@ public class AttributesAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"))
+                .andExpect(jsonPath("responseMessage").value("true"))
                 .andReturn();
 
         verify(notificationService, times(1))
@@ -223,6 +231,11 @@ public class AttributesAPITest {
         when(notificationService.createNotification(
                 any(NotificationType.class), anyLong(), anyString(), anyString()))
                 .thenReturn(null);
+        when(GenericResponseService.createDTO(
+                anyString()))
+                .thenReturn(GenericResponseDTO.builder()
+                        .responseMessage("false")
+                        .build());
         ArgumentCaptor<NotificationType> notificationTypeCaptor =
                 ArgumentCaptor.forClass(NotificationType.class);
         ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
@@ -238,7 +251,7 @@ public class AttributesAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("false"))
+                .andExpect(jsonPath("responseMessage").value("false"))
                 .andReturn();
 
         verify(notificationService, times(1))
@@ -274,6 +287,11 @@ public class AttributesAPITest {
         when(notificationService.createNotification(
                 any(NotificationType.class), anyLong(), anyString(), anyString()))
                 .thenReturn(null);
+        when(GenericResponseService.createDTO(
+                anyString()))
+                .thenReturn(GenericResponseDTO.builder()
+                        .responseMessage("false")
+                        .build());
         ArgumentCaptor<NotificationType> notificationTypeCaptor =
                 ArgumentCaptor.forClass(NotificationType.class);
         ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
@@ -289,7 +307,7 @@ public class AttributesAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("false"))
+                .andExpect(jsonPath("responseMessage").value("false"))
                 .andReturn();
         verify(phraseService, never())
                 .applyPhraseToUser(anyLong(), anyString(), anyString(), anyString(), anyString());
@@ -390,50 +408,5 @@ public class AttributesAPITest {
         List<ToBeReviewedDTO> actualAttributes =
                 gson.fromJson(result.getResponse().getContentAsString(), toBeReviewedDTOListType);
         assertThat(actualAttributes).isEmpty();
-    }
-
-    @Test
-    public void getNumberOfUsersWithAttributeHappyPath() throws Exception {
-        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
-                .thenReturn(new UserPrincipal(user));
-        String auth = AuthServiceImpl.generateAccessToken(user);
-        Long attributeId = 1L;
-        Integer userCount = 2;
-        Optional<Integer> expectedNumberOfUsers = Optional.of(userCount);
-        GenericMessageDTO expectedResponse = GenericMessageDTO.builder().responseMessage(userCount.toString()).build();
-
-
-        when(attributesService.getNumberOfUsersWithAttribute(anyLong())).thenReturn(expectedNumberOfUsers);
-        MvcResult result =
-                this.mockMvc
-                        .perform(
-                                get("/api/attributes/total/{attributeId}", attributeId)
-                                        .header("Authorization", "Bearer " + auth)
-                                        .characterEncoding("utf-8"))
-                        .andExpect(status().isOk())
-                        .andReturn();
-
-        GenericMessageDTO actualResponse =
-                gson.fromJson(result.getResponse().getContentAsString(), GenericMessageDTO.class);
-        assertThat(actualResponse).usingRecursiveComparison().isEqualTo(expectedResponse);
-    }
-
-    @Test
-    public void getNumberOfUsersWithAttributeWhenUserCountFails() throws Exception {
-        Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
-                .thenReturn(new UserPrincipal(user));
-        String auth = AuthServiceImpl.generateAccessToken(user);
-        Long attributeId = 1L;
-
-        when(attributesService.getNumberOfUsersWithAttribute(anyLong())).thenReturn(Optional.empty());
-        this.mockMvc
-                .perform(
-                        get("/api/attributes/total/{attributeId}", attributeId)
-                                .header("Authorization", "Bearer " + auth)
-                                .characterEncoding("utf-8"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").doesNotExist()) // ensure body is empty
-                .andReturn();
-
     }
 }

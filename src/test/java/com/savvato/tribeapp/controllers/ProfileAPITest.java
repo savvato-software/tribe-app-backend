@@ -3,6 +3,7 @@ package com.savvato.tribeapp.controllers;
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.dto.ProfileDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.*;
@@ -19,6 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,6 +44,9 @@ public class ProfileAPITest {
 
     @MockBean
     private UserDetailsServiceTRIBEAPP userDetailsServiceTRIBEAPP;
+
+    @MockBean
+    private GenericResponseService GenericResponseService;
 
     @MockBean
     private UserPrincipalService userPrincipalService;
@@ -129,6 +136,12 @@ public class ProfileAPITest {
         Mockito.when(profileService.update(Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
         .thenReturn(true);
 
+         when(GenericResponseService.createDTO(
+                 anyBoolean()))
+                 .thenReturn(GenericResponseDTO.builder()
+                         .booleanMessage(true)
+                         .build());
+
         String auth = AuthServiceImpl.generateAccessToken(user);
 
         this.mockMvc.
@@ -141,7 +154,7 @@ public class ProfileAPITest {
         )
         
         .andExpect(status().isOk())
-        .andExpect(content().string("true"));
+        .andExpect(jsonPath("booleanMessage").value(true));
 
 } 
 
@@ -170,6 +183,12 @@ public void testProfileUnHappyPathUpdate() throws Exception {
     Mockito.when(profileService.update(Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
     .thenReturn(false);
 
+    when(GenericResponseService.createDTO(
+            anyBoolean()))
+            .thenReturn(GenericResponseDTO.builder()
+                    .booleanMessage(false)
+                    .build());
+
     String auth = AuthServiceImpl.generateAccessToken(user);
 
     this.mockMvc.
@@ -182,7 +201,7 @@ public void testProfileUnHappyPathUpdate() throws Exception {
     )
     
     .andExpect(status().isBadRequest())
-    .andExpect(content().string("false"));
+    .andExpect(jsonPath("booleanMessage").value(false));
 
 } 
 

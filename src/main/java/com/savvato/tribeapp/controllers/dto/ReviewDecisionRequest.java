@@ -8,7 +8,7 @@ public class ReviewDecisionRequest {
   public Long reviewId;
 
   @Schema(example = "1")
-  public Long reviewerId;
+  public Long userId;
 
   @Schema(example = "1")
   public Long reasonId;

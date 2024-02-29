@@ -2,6 +2,7 @@ package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.controllers.annotations.controllers.ToBeReviewedAPIController.GetPhrase;
 import com.savvato.tribeapp.dto.ToBeReviewedDTO;
+import com.savvato.tribeapp.entities.ToBeReviewed;
 import com.savvato.tribeapp.repositories.ToBeReviewedRepository;
 import com.savvato.tribeapp.services.ToBeReviewedService;
 import io.swagger.v3.oas.annotations.tags.Tag;

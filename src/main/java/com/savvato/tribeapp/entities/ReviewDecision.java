@@ -7,11 +7,19 @@ import java.util.Calendar;
 @IdClass(ReviewDecisionId.class)
 public class ReviewDecision {
     @Id
+    @Column(name = "to_be_reviewed_id")
     private Long reviewId;
+    
     @Id
+    @Column(name = "user_id")
     private Long userId;
+    
+    @Id
+    @Column(name = "review_decision_reason_id")
     private Long reasonId;
     private java.sql.Timestamp created;
+
+
 
     public ReviewDecision() {
         setCreated();

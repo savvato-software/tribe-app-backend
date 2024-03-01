@@ -7,6 +7,7 @@ import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.PermissionsRequest;
 import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.dto.GenericResponseDTO;
+import com.savvato.tribeapp.dto.UserRoleDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.services.*;
@@ -25,10 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -110,7 +108,7 @@ public class PermissionsAPITest {
                         .id(user.getId())
                         .name(user.getName())
                         .email(user.getEmail())
-                        .roles(user.getRoles())
+                        .roles(getUserRoleDTO(user))
                         .password(user.getPassword())
                         .created(user.getCreated().toString())
                         .lastUpdated(user.getLastUpdated().toString())
@@ -133,6 +131,24 @@ public class PermissionsAPITest {
         List<UserDTO> actualUserList =
                 gson.fromJson(result.getResponse().getContentAsString(), userDTOListType);
         assertThat(actualUserList).usingRecursiveComparison().isEqualTo(expectedUserList);
+    }
+
+    private List <UserRoleDTO> getUserRoleDTO(User user){
+        Set<UserRole> userRole = user.getRoles();
+        List<UserRoleDTO> rtn = new ArrayList<>();
+        Iterator<UserRole> iterator  = userRole.iterator();
+        while (iterator.hasNext()){
+            UserRole userRoles = iterator.next();
+            Long id = userRoles.getId();
+            String name = userRoles.getName();
+            UserRoleDTO userRoleDTO = UserRoleDTO.builder()
+                    .id(id)
+                    .name(name)
+                    .build();
+            rtn.add(userRoleDTO);
+        }
+        return rtn;
+
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.UserDTO;
+import com.savvato.tribeapp.dto.UserRoleDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -305,8 +306,11 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
             assertEquals(rtn.get(i).enabled, userDTOS.get(i).enabled);
             assertEquals(rtn.get(i).created, userDTOS.get(i).created);
             assertEquals(rtn.get(i).lastUpdated, userDTOS.get(i).lastUpdated);
-            for (UserRole userRole : users.get(i).getRoles()) {
-                assertTrue(rtn.get(i).roles.contains(userRole));
+            // Compare UserRoleDTOs
+            assertEquals(rtn.get(i).roles.size(), userDTOS.get(i).roles.size());
+            for (int j = 0; j < rtn.get(i).roles.size(); j++) {
+                assertEquals(rtn.get(i).roles.get(j).id, userDTOS.get(i).roles.get(j).id);
+                assertEquals(rtn.get(i).roles.get(j).name, userDTOS.get(i).roles.get(j).name);
             }
         }
     }
@@ -366,8 +370,10 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
         assertEquals(rtn.enabled, userDTO.enabled);
         assertEquals(rtn.created, userDTO.created);
         assertEquals(rtn.lastUpdated, userDTO.lastUpdated);
-        for (UserRole userRole : user.getRoles()) {
-            assertTrue(rtn.roles.contains(userRole));
+        assertEquals(rtn.roles.size(), userDTO.roles.size());
+        for (int i = 0; i < rtn.roles.size(); i++) {
+            assertEquals(rtn.roles.get(i).id, userDTO.roles.get(i).id);
+            assertEquals(rtn.roles.get(i).name, userDTO.roles.get(i).name);
         }
     }
 
@@ -381,10 +387,28 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
                 .enabled(user.getEnabled())
                 .created(user.getCreated().toString())
                 .lastUpdated(user.getLastUpdated().toString())
-                .roles(user.getRoles())
+                .roles(getUserRoleDTO(user))
                 .build();
 
         return userDTO;
+    }
+
+    private List <UserRoleDTO> getUserRoleDTO(User user){
+        Set<UserRole> userRole = user.getRoles();
+        List<UserRoleDTO> rtn = new ArrayList<>();
+        Iterator<UserRole> iterator  = userRole.iterator();
+        while (iterator.hasNext()){
+            UserRole userRoles = iterator.next();
+            Long id = userRoles.getId();
+            String name = userRoles.getName();
+            UserRoleDTO userRoleDTO = UserRoleDTO.builder()
+                    .id(id)
+                    .name(name)
+                    .build();
+            rtn.add(userRoleDTO);
+        }
+        return rtn;
+
     }
 
 }

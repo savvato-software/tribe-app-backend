@@ -1,14 +1,17 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.CosignDTO;
+import com.savvato.tribeapp.dto.UserNameDTO;
 import com.savvato.tribeapp.entities.Cosign;
+import com.savvato.tribeapp.entities.CosignId;
 import com.savvato.tribeapp.repositories.CosignRepository;
+import com.savvato.tribeapp.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -16,6 +19,9 @@ public class CosignServiceImpl implements CosignService {
 
     @Autowired
     CosignRepository cosignRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public CosignDTO saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
@@ -41,5 +47,22 @@ public class CosignServiceImpl implements CosignService {
     @Override
     public boolean deleteCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
         return false;
+    }
+
+    @Override
+    public List<UserNameDTO> getCosignersForUserAttribute(Long userIdReceiving, Long phraseId) {
+
+        List<UserNameDTO> list = new ArrayList<>();
+        List<Long> cosignerIds = cosignRepository.findCosignersByUserIdReceivingAndPhraseId(userIdReceiving, phraseId);
+
+        for(Long id : cosignerIds) {
+            UserNameDTO user = UserNameDTO.builder()
+                .userId(id)
+                .userName(userRepository.findById(id).get().getName())
+                .build();
+            list.add(user);
+        }
+
+        return list;
     }
 }

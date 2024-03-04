@@ -7,11 +7,13 @@ import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.dto.CosignDTO;
+import com.savvato.tribeapp.dto.UserNameDTO;
 import com.savvato.tribeapp.services.ConnectService;
 import com.savvato.tribeapp.services.CosignService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -106,4 +108,13 @@ public class ConnectAPIController {
     return ResponseEntity.status(HttpStatus.OK).build();
 
   }
+
+  @GetMapping("cosign/{userIdReceiving}/{phraseId}")
+  public ResponseEntity getCosignersForUserAttribute(@PathVariable Long userIdReceiving, @PathVariable Long phraseId) {
+
+    List<UserNameDTO> list = cosignService.getCosignersForUserAttribute(userIdReceiving,phraseId);
+
+    return ResponseEntity.status(HttpStatus.OK).body(list);
+  }
+
 }

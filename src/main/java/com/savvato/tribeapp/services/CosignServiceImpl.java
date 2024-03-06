@@ -5,7 +5,6 @@ import com.savvato.tribeapp.dto.CosignsForUserDTO;
 import com.savvato.tribeapp.dto.UserNameDTO;
 import com.savvato.tribeapp.entities.Cosign;
 import com.savvato.tribeapp.repositories.CosignRepository;
-import com.savvato.tribeapp.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ public class CosignServiceImpl implements CosignService {
     CosignRepository cosignRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Override
     public CosignDTO saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
@@ -55,11 +54,7 @@ public class CosignServiceImpl implements CosignService {
         List<Long> cosignerIds = cosignRepository.findCosignersByUserIdReceivingAndPhraseId(userIdReceiving, phraseId);
 
         for(Long id : cosignerIds) {
-            UserNameDTO user = UserNameDTO.builder()
-                .userId(id)
-                .userName(userRepository.findById(id).get().getName())
-                .build();
-            list.add(user);
+            list.add(userService.getUserNameDTO(id));
         }
 
         return list;
@@ -79,11 +74,7 @@ public class CosignServiceImpl implements CosignService {
             Long phraseId = cosign.getPhraseId();
 
             if(!mapOfUserNameDTOs.containsKey(userIdIssuing)) {
-                UserNameDTO userNameDTO = UserNameDTO.builder()
-                        .userId(userIdIssuing)
-                        .userName(userRepository.findById(userIdIssuing).get().getName())
-                        .build();
-                mapOfUserNameDTOs.put(userIdIssuing,userNameDTO);
+                mapOfUserNameDTOs.put(userIdIssuing,userService.getUserNameDTO(userIdIssuing));
             }
 
             if(mapOfPhrasesAndUserIdsIssuing.containsKey(phraseId)){

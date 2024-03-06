@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.UserDTO;
+import com.savvato.tribeapp.dto.UserNameDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -168,4 +169,12 @@ public class UserServiceImpl implements UserService {
 		return userDTO;
 	}
 
+	@Override
+	public UserNameDTO getUserNameDTO(Long userId) {
+		UserNameDTO userNameDTO = UserNameDTO.builder()
+				.userId(userId)
+				.userName(userRepo.findById(userId).get().getName())
+				.build();
+		return userNameDTO;
+	}
 }

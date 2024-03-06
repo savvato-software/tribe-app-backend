@@ -12,4 +12,7 @@ import java.util.List;
 public interface CosignRepository extends CrudRepository<Cosign, CosignId> {
     @Query(nativeQuery = true, value = "select user_id_issuing from cosign where user_id_receiving = ?1 and phrase_id = ?2")
     List<Long> findCosignersByUserIdReceivingAndPhraseId(Long userIdReceiving, Long phraseId);
+
+    @Query(nativeQuery = true, value = "select * from cosign where user_id_receiving = ?")
+    List<Cosign> findAllByUserIdReceiving(Long userIdReceiving);
 }

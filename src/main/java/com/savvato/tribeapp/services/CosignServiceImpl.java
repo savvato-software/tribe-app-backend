@@ -1,17 +1,16 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.dto.CosignDTO;
+import com.savvato.tribeapp.dto.CosignsForUserDTO;
 import com.savvato.tribeapp.dto.UserNameDTO;
 import com.savvato.tribeapp.entities.Cosign;
-import com.savvato.tribeapp.entities.CosignId;
 import com.savvato.tribeapp.repositories.CosignRepository;
 import com.savvato.tribeapp.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -64,5 +63,46 @@ public class CosignServiceImpl implements CosignService {
         }
 
         return list;
+    }
+
+    @Override
+    public List<CosignsForUserDTO> getAllCosignsForUser(Long userIdReceiving) {
+
+        List<CosignsForUserDTO> cosignsForUserDTOs = new ArrayList<>();
+
+        List<Cosign> allCosignsByUserIdReceiving = cosignRepository.findAllByUserIdReceiving(userIdReceiving);
+        Map<Long, List<UserNameDTO>> mapOfPhrasesAndUserIdsIssuing = new HashMap<>();
+        Map<Long, UserNameDTO> mapOfUserNameDTOs = new HashMap<>();
+
+        for(Cosign cosign : allCosignsByUserIdReceiving) {
+            Long userIdIssuing = cosign.getUserIdIssuing();
+            Long phraseId = cosign.getPhraseId();
+
+            if(!mapOfUserNameDTOs.containsKey(userIdIssuing)) {
+                UserNameDTO userNameDTO = UserNameDTO.builder()
+                        .userId(userIdIssuing)
+                        .userName(userRepository.findById(userIdIssuing).get().getName())
+                        .build();
+                mapOfUserNameDTOs.put(userIdIssuing,userNameDTO);
+            }
+
+            if(mapOfPhrasesAndUserIdsIssuing.containsKey(phraseId)){
+                mapOfPhrasesAndUserIdsIssuing.get(phraseId).add(mapOfUserNameDTOs.get(userIdIssuing));
+            } else {
+                List<UserNameDTO> list = new ArrayList<>();
+                list.add(mapOfUserNameDTOs.get(userIdIssuing));
+                mapOfPhrasesAndUserIdsIssuing.put(phraseId,list);
+            }
+        }
+
+        mapOfPhrasesAndUserIdsIssuing.forEach((k,v) -> {
+            CosignsForUserDTO cosignsForUserDTO = CosignsForUserDTO.builder()
+                    .phraseId(k)
+                    .listOfCosigners(v)
+                    .build();
+            cosignsForUserDTOs.add(cosignsForUserDTO);
+        });
+
+        return cosignsForUserDTOs;
     }
 }

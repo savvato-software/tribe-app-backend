@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.UserDTO;
+import com.savvato.tribeapp.dto.UserNameDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -24,8 +25,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -385,6 +385,26 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
                 .build();
 
         return userDTO;
+    }
+
+    @Test
+    public void getUserNameDTOHappyPath(){
+        Long testId = 1L;
+
+        User user = new User();
+        user.setId(testId);
+        user.setName("Marge");
+
+        UserNameDTO expectedUserNameDTO = UserNameDTO.builder()
+                .userId(testId)
+                .userName("Marge")
+                .build();
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+
+        UserNameDTO userNameDTO = userService.getUserNameDTO(testId);
+        assertEquals(userNameDTO.userId,expectedUserNameDTO.userId);
+        assertEquals(userNameDTO.userName,expectedUserNameDTO.userName);
     }
 
 }

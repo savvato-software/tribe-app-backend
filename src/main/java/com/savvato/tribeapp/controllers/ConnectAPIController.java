@@ -106,6 +106,7 @@ public class ConnectAPIController {
 
   }
 
+  @GetCosignersForUserAttribute
   @GetMapping("cosign/{userIdReceiving}/{phraseId}")
   public ResponseEntity<List<UserNameDTO>> getCosignersForUserAttribute(@PathVariable Long userIdReceiving, @PathVariable Long phraseId) {
 

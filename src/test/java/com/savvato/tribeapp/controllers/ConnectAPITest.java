@@ -9,6 +9,7 @@ import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.dto.CosignDTO;
+import com.savvato.tribeapp.dto.UserNameDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.CosignRepository;
@@ -369,5 +370,39 @@ public class ConnectAPITest {
                         .andExpect(status().isBadRequest())
                         .andReturn();
 
+    }
+
+    @Test
+    public void testGetCosignersForUserAttribute() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        // test data
+        Long testUserIdIssuing = 1L;
+        String testUserNameIssuing = "test";
+        Long testUserIdReceiving = 2L;
+        Long testPhraseId = 1L;
+
+        // mock return data
+        UserNameDTO mockUserNameDTO = UserNameDTO.builder()
+                .userId(testUserIdIssuing)
+                .userName(testUserNameIssuing)
+                .build();
+
+        List<UserNameDTO> mockUserNameDTOList = new ArrayList<>();
+        mockUserNameDTOList.add(mockUserNameDTO);
+
+        // mock returns
+        when(cosignService.getCosignersForUserAttribute(anyLong(),anyLong())).thenReturn(mockUserNameDTOList);
+
+        // test
+        this.mockMvc
+                .perform(
+                        get("/api/connect/cosign/{userIdReceiving}/{phraseId}",testUserIdReceiving,testPhraseId)
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\"userId\":1,\"userName\":\"test\"}]"));
     }
 }

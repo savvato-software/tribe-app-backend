@@ -12,6 +12,6 @@ public class CosignsForUserDTO {
     @Schema(example = "1")
     public long phraseId;
 
-    @Schema(example = "[{\"userId\": 1, \"userName\": \"testuser\"}]")
+    @Schema(example = "[{\"userId\": 1, \"username\": \"testuser\"}]")
     public List<UsernameDTO> listOfCosigners;
 }

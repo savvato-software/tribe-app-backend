@@ -10,7 +10,7 @@ import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.dto.CosignsForUserDTO;
-import com.savvato.tribeapp.dto.UserNameDTO;
+import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.CosignRepository;
@@ -381,21 +381,21 @@ public class ConnectAPITest {
 
         // test data
         Long testUserIdIssuing = 1L;
-        String testUserNameIssuing = "test";
+        String testUsernameIssuing = "test";
         Long testUserIdReceiving = 2L;
         Long testPhraseId = 1L;
 
         // mock return data
-        UserNameDTO mockUserNameDTO = UserNameDTO.builder()
+        UsernameDTO mockUsernameDTO = UsernameDTO.builder()
                 .userId(testUserIdIssuing)
-                .userName(testUserNameIssuing)
+                .username(testUsernameIssuing)
                 .build();
 
-        List<UserNameDTO> mockUserNameDTOList = new ArrayList<>();
-        mockUserNameDTOList.add(mockUserNameDTO);
+        List<UsernameDTO> mockUsernameDTOList = new ArrayList<>();
+        mockUsernameDTOList.add(mockUsernameDTO);
 
         // mock returns
-        when(cosignService.getCosignersForUserAttribute(anyLong(),anyLong())).thenReturn(mockUserNameDTOList);
+        when(cosignService.getCosignersForUserAttribute(anyLong(),anyLong())).thenReturn(mockUsernameDTOList);
 
         // test
         this.mockMvc
@@ -404,7 +404,7 @@ public class ConnectAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"userId\":1,\"userName\":\"test\"}]"));
+                .andExpect(content().json("[{\"userId\":1,\"username\":\"test\"}]"));
     }
 
     @Test
@@ -415,22 +415,22 @@ public class ConnectAPITest {
 
         // test data
         Long testUserIdIssuing = 1L;
-        String testUserNameIssuing = "test";
+        String testUsernameIssuing = "test";
         Long testUserIdReceiving = 2L;
         Long testPhraseId = 1L;
 
         // mock return data
-        UserNameDTO mockUserNameDTO = UserNameDTO.builder()
+        UsernameDTO mockUsernameDTO = UsernameDTO.builder()
                 .userId(testUserIdIssuing)
-                .userName(testUserNameIssuing)
+                .username(testUsernameIssuing)
                 .build();
 
-        List<UserNameDTO> mockUserNameDTOList = new ArrayList<>();
-        mockUserNameDTOList.add(mockUserNameDTO);
+        List<UsernameDTO> mockUsernameDTOList = new ArrayList<>();
+        mockUsernameDTOList.add(mockUsernameDTO);
 
         CosignsForUserDTO mockCosignsForUserDTO = CosignsForUserDTO.builder()
                 .phraseId(testPhraseId)
-                .listOfCosigners(mockUserNameDTOList)
+                .listOfCosigners(mockUsernameDTOList)
                 .build();
 
         List<CosignsForUserDTO> mockCosignsForUserDTOList = new ArrayList<>();
@@ -446,6 +446,6 @@ public class ConnectAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"phraseId\":1,\"listOfCosigners\":[{\"userId\":1,\"userName\":\"test\"}]}]"));
+                .andExpect(content().json("[{\"phraseId\":1,\"listOfCosigners\":[{\"userId\":1,\"username\":\"test\"}]}]"));
     }
 }

@@ -2,7 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.dto.CosignsForUserDTO;
-import com.savvato.tribeapp.dto.UserNameDTO;
+import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.Cosign;
 import com.savvato.tribeapp.repositories.CosignRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -48,13 +48,13 @@ public class CosignServiceImpl implements CosignService {
     }
 
     @Override
-    public List<UserNameDTO> getCosignersForUserAttribute(Long userIdReceiving, Long phraseId) {
+    public List<UsernameDTO> getCosignersForUserAttribute(Long userIdReceiving, Long phraseId) {
 
-        List<UserNameDTO> list = new ArrayList<>();
+        List<UsernameDTO> list = new ArrayList<>();
         List<Long> cosignerIds = cosignRepository.findCosignersByUserIdReceivingAndPhraseId(userIdReceiving, phraseId);
 
         for(Long id : cosignerIds) {
-            list.add(userService.getUserNameDTO(id));
+            list.add(userService.getUsernameDTO(id));
         }
 
         return list;
@@ -66,22 +66,22 @@ public class CosignServiceImpl implements CosignService {
         List<CosignsForUserDTO> cosignsForUserDTOs = new ArrayList<>();
 
         List<Cosign> allCosignsByUserIdReceiving = cosignRepository.findAllByUserIdReceiving(userIdReceiving);
-        Map<Long, List<UserNameDTO>> mapOfPhrasesAndUserIdsIssuing = new HashMap<>();
-        Map<Long, UserNameDTO> mapOfUserNameDTOs = new HashMap<>();
+        Map<Long, List<UsernameDTO>> mapOfPhrasesAndUserIdsIssuing = new HashMap<>();
+        Map<Long, UsernameDTO> mapOfUsernameDTOs = new HashMap<>();
 
         for(Cosign cosign : allCosignsByUserIdReceiving) {
             Long userIdIssuing = cosign.getUserIdIssuing();
             Long phraseId = cosign.getPhraseId();
 
-            if(!mapOfUserNameDTOs.containsKey(userIdIssuing)) {
-                mapOfUserNameDTOs.put(userIdIssuing,userService.getUserNameDTO(userIdIssuing));
+            if(!mapOfUsernameDTOs.containsKey(userIdIssuing)) {
+                mapOfUsernameDTOs.put(userIdIssuing,userService.getUsernameDTO(userIdIssuing));
             }
 
             if(mapOfPhrasesAndUserIdsIssuing.containsKey(phraseId)){
-                mapOfPhrasesAndUserIdsIssuing.get(phraseId).add(mapOfUserNameDTOs.get(userIdIssuing));
+                mapOfPhrasesAndUserIdsIssuing.get(phraseId).add(mapOfUsernameDTOs.get(userIdIssuing));
             } else {
-                List<UserNameDTO> list = new ArrayList<>();
-                list.add(mapOfUserNameDTOs.get(userIdIssuing));
+                List<UsernameDTO> list = new ArrayList<>();
+                list.add(mapOfUsernameDTOs.get(userIdIssuing));
                 mapOfPhrasesAndUserIdsIssuing.put(phraseId,list);
             }
         }

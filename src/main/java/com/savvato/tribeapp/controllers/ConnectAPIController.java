@@ -1,6 +1,5 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.*;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
@@ -10,7 +9,6 @@ import com.savvato.tribeapp.services.CosignService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -108,9 +106,9 @@ public class ConnectAPIController {
 
   @GetCosignersForUserAttribute
   @GetMapping("cosign/{userIdReceiving}/{phraseId}")
-  public ResponseEntity<List<UserNameDTO>> getCosignersForUserAttribute(@PathVariable Long userIdReceiving, @PathVariable Long phraseId) {
+  public ResponseEntity<List<UsernameDTO>> getCosignersForUserAttribute(@PathVariable Long userIdReceiving, @PathVariable Long phraseId) {
 
-    List<UserNameDTO> list = cosignService.getCosignersForUserAttribute(userIdReceiving,phraseId);
+    List<UsernameDTO> list = cosignService.getCosignersForUserAttribute(userIdReceiving,phraseId);
 
     return ResponseEntity.status(HttpStatus.OK).body(list);
   }

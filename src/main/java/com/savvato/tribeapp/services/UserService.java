@@ -2,7 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.UserDTO;
-import com.savvato.tribeapp.dto.UserNameDTO;
+import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.User;
 
 import java.util.List;
@@ -19,5 +19,5 @@ public interface UserService {
 
 	List<UserDTO> getAllUsers();
 
-	UserNameDTO getUserNameDTO(Long userId);
+	UsernameDTO getUsernameDTO(Long userId);
 }

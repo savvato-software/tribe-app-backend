@@ -2,7 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.UserDTO;
-import com.savvato.tribeapp.dto.UserNameDTO;
+import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -395,16 +395,16 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
         user.setId(testId);
         user.setName("Marge");
 
-        UserNameDTO expectedUserNameDTO = UserNameDTO.builder()
+        UsernameDTO expectedUsernameDTO = UsernameDTO.builder()
                 .userId(testId)
-                .userName("Marge")
+                .username("Marge")
                 .build();
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
-        UserNameDTO userNameDTO = userService.getUserNameDTO(testId);
-        assertEquals(userNameDTO.userId,expectedUserNameDTO.userId);
-        assertEquals(userNameDTO.userName,expectedUserNameDTO.userName);
+        UsernameDTO usernameDTO = userService.getUsernameDTO(testId);
+        assertEquals(usernameDTO.userId, expectedUsernameDTO.userId);
+        assertEquals(usernameDTO.username, expectedUsernameDTO.username);
     }
 
 }

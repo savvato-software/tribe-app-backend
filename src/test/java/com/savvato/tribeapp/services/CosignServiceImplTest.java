@@ -2,10 +2,9 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.dto.CosignsForUserDTO;
-import com.savvato.tribeapp.dto.UserNameDTO;
+import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.Cosign;
 import com.savvato.tribeapp.repositories.CosignRepository;
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -18,7 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.bytebuddy.matcher.ElementMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -105,14 +103,14 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
     public void testGetCosignersForUser(){
         // test data
         Long testUserIdIssuing = 1L;
-        String testUserNameIssuing = "test";
+        String testUsernameIssuing = "test";
         Long testUserIdReceiving = 2L;
         Long testPhraseId = 1L;
 
         // mock return data
-        UserNameDTO mockUserNameDTO = UserNameDTO.builder()
+        UsernameDTO mockUsernameDTO = UsernameDTO.builder()
                 .userId(testUserIdIssuing)
-                .userName(testUserNameIssuing)
+                .username(testUsernameIssuing)
                 .build();
 
         List<Long> mockCosignerIds = new ArrayList<>();
@@ -120,18 +118,18 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
 
         // mock returns
         when(cosignRepository.findCosignersByUserIdReceivingAndPhraseId(anyLong(),anyLong())).thenReturn(mockCosignerIds);
-        when(userService.getUserNameDTO(anyLong())).thenReturn(mockUserNameDTO);
+        when(userService.getUsernameDTO(anyLong())).thenReturn(mockUsernameDTO);
 
         // expected results
-        List<UserNameDTO> expectedListUserNameDTO = new ArrayList<>();
-        expectedListUserNameDTO.add(mockUserNameDTO);
+        List<UsernameDTO> expectedListUsernameDTO = new ArrayList<>();
+        expectedListUsernameDTO.add(mockUsernameDTO);
 
         // test
-        List<UserNameDTO> userNameDTOS = cosignService.getCosignersForUserAttribute(testUserIdReceiving,testPhraseId);
+        List<UsernameDTO> usernameDTOS = cosignService.getCosignersForUserAttribute(testUserIdReceiving,testPhraseId);
 
-        for(UserNameDTO user : userNameDTOS){
-            assertEquals(user.userId, expectedListUserNameDTO.get(0).userId);
-            assertEquals(user.userName,expectedListUserNameDTO.get(0).userName);
+        for(UsernameDTO user : usernameDTOS){
+            assertEquals(user.userId, expectedListUsernameDTO.get(0).userId);
+            assertEquals(user.username, expectedListUsernameDTO.get(0).username);
         }
     }
 
@@ -139,7 +137,7 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
     public void testGetAllCosignsForUser() {
         // test data
         Long testUserIdIssuing = 1L;
-        String testUserNameIssuing = "test";
+        String testUsernameIssuing = "test";
         Long testPhraseId = 1L;
         Long testUserIdReceiving = 2L;
 
@@ -152,22 +150,22 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
         List<Cosign> mockAllCosignsByUserIdReceivingList = new ArrayList<>();
         mockAllCosignsByUserIdReceivingList.add(mockCosign);
 
-        UserNameDTO mockUserNameDTO = UserNameDTO.builder()
+        UsernameDTO mockUsernameDTO = UsernameDTO.builder()
                 .userId(testUserIdIssuing)
-                .userName(testUserNameIssuing)
+                .username(testUsernameIssuing)
                 .build();
 
-        List<UserNameDTO> mockUserNameDTOSList = new ArrayList<>();
-        mockUserNameDTOSList.add(mockUserNameDTO);
+        List<UsernameDTO> mockUsernameDTOSList = new ArrayList<>();
+        mockUsernameDTOSList.add(mockUsernameDTO);
 
         CosignsForUserDTO mockCosignsForUserDTO = CosignsForUserDTO.builder()
                 .phraseId(testPhraseId)
-                .listOfCosigners(mockUserNameDTOSList)
+                .listOfCosigners(mockUsernameDTOSList)
                 .build();
 
         // mock returns
         when(cosignRepository.findAllByUserIdReceiving(anyLong())).thenReturn(mockAllCosignsByUserIdReceivingList);
-        when(userService.getUserNameDTO(anyLong())).thenReturn(mockUserNameDTO);
+        when(userService.getUsernameDTO(anyLong())).thenReturn(mockUsernameDTO);
 
         // expected results
         List<CosignsForUserDTO> expectedCosignsForUserDTOSList = new ArrayList<>();
@@ -178,9 +176,9 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
 
         for(CosignsForUserDTO testCosignsForUserDTO : testCosignsForUserDTOs) {
             assertEquals(testCosignsForUserDTO.phraseId,expectedCosignsForUserDTOSList.get(0).phraseId);
-            for(UserNameDTO testUserNameDTO : testCosignsForUserDTO.listOfCosigners){
-                assertEquals(testUserNameDTO.userId, expectedCosignsForUserDTOSList.get(0).listOfCosigners.get(0).userId);
-                assertEquals(testUserNameDTO.userName,expectedCosignsForUserDTOSList.get(0).listOfCosigners.get(0).userName);
+            for(UsernameDTO testUsernameDTO : testCosignsForUserDTO.listOfCosigners){
+                assertEquals(testUsernameDTO.userId, expectedCosignsForUserDTOSList.get(0).listOfCosigners.get(0).userId);
+                assertEquals(testUsernameDTO.username,expectedCosignsForUserDTOSList.get(0).listOfCosigners.get(0).username);
             }
         }
     }

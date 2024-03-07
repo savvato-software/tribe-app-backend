@@ -102,7 +102,7 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
     }
 
     @Test
-    public void testGetCosignersForUserAttributeHappyPath(){
+    public void testGetCosignersForUser(){
         // test data
         Long testUserIdIssuing = 1L;
         String testUserNameIssuing = "test";
@@ -110,21 +110,21 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
         Long testPhraseId = 1L;
 
         // mock return data
-        UserNameDTO userNameDTO = UserNameDTO.builder()
+        UserNameDTO mockUserNameDTO = UserNameDTO.builder()
                 .userId(testUserIdIssuing)
                 .userName(testUserNameIssuing)
                 .build();
 
-        List<Long> expectedCosignerIds = new ArrayList<>();
-        expectedCosignerIds.add(testUserIdIssuing);
-
-        List<UserNameDTO> expectedListUserNameDTO = new ArrayList<>();
-        expectedListUserNameDTO.add(userNameDTO);
+        List<Long> mockCosignerIds = new ArrayList<>();
+        mockCosignerIds.add(testUserIdIssuing);
 
         // mock returns
-        when(cosignRepository.findCosignersByUserIdReceivingAndPhraseId(anyLong(),anyLong())).thenReturn(expectedCosignerIds);
+        when(cosignRepository.findCosignersByUserIdReceivingAndPhraseId(anyLong(),anyLong())).thenReturn(mockCosignerIds);
+        when(userService.getUserNameDTO(anyLong())).thenReturn(mockUserNameDTO);
 
-        when(userService.getUserNameDTO(anyLong())).thenReturn(userNameDTO);
+        // expected results
+        List<UserNameDTO> expectedListUserNameDTO = new ArrayList<>();
+        expectedListUserNameDTO.add(mockUserNameDTO);
 
         // test
         List<UserNameDTO> userNameDTOS = cosignService.getCosignersForUserAttribute(testUserIdReceiving,testPhraseId);

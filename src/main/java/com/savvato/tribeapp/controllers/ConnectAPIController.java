@@ -115,6 +115,7 @@ public class ConnectAPIController {
     return ResponseEntity.status(HttpStatus.OK).body(list);
   }
 
+  @GetAllCosignsForUser
   @GetMapping("cosign/{userIdReceiving}/all")
   public ResponseEntity<List<CosignsForUserDTO>> getAllCosignsForUser(@PathVariable Long userIdReceiving) {
 

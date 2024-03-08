@@ -481,12 +481,6 @@ public class ConnectAPITest {
 
         // mock returns
         when(cosignService.getAllCosignsForUser(anyLong())).thenReturn(mockCosignsForUserDTOList);
-        for(CosignsForUserDTO c : mockCosignsForUserDTOList) {
-            System.out.println(c.phraseId);
-            for(UsernameDTO u : c.listOfCosigners){
-                System.out.print(u.userId + " " + u.username + "\n");
-            }
-        }
 
         // test
         this.mockMvc

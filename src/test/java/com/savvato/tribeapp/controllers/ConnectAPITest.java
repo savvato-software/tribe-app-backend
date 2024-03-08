@@ -414,38 +414,109 @@ public class ConnectAPITest {
         String auth = AuthServiceImpl.generateAccessToken(user);
 
         // test data
-        Long testUserIdIssuing = 1L;
-        String testUsernameIssuing = "test";
-        Long testUserIdReceiving = 2L;
-        Long testPhraseId = 1L;
+        Long testUserIdIssuing1 = 1L;
+        Long testUserIdIssuing2 = 2L;
+        Long testUserIdIssuing3 = 3L;
+        String testUsernameIssuing1 = "test1";
+        String testUsernameIssuing2 = "test2";
+        String testUsernameIssuing3 = "test3";
+        Long testPhraseId1 = 1L;
+        Long testPhraseId2 = 2L;
+        Long testPhraseId3 = 3L;
+        Long testUserIdReceiving = 4L;
 
         // mock return data
-        UsernameDTO mockUsernameDTO = UsernameDTO.builder()
-                .userId(testUserIdIssuing)
-                .username(testUsernameIssuing)
+        UsernameDTO mockUsernameDTO1 = UsernameDTO.builder()
+                .userId(testUserIdIssuing1)
+                .username(testUsernameIssuing1)
                 .build();
 
-        List<UsernameDTO> mockUsernameDTOList = new ArrayList<>();
-        mockUsernameDTOList.add(mockUsernameDTO);
-
-        CosignsForUserDTO mockCosignsForUserDTO = CosignsForUserDTO.builder()
-                .phraseId(testPhraseId)
-                .listOfCosigners(mockUsernameDTOList)
+        UsernameDTO mockUsernameDTO2 = UsernameDTO.builder()
+                .userId(testUserIdIssuing2)
+                .username(testUsernameIssuing2)
                 .build();
+
+        UsernameDTO mockUsernameDTO3 = UsernameDTO.builder()
+                .userId(testUserIdIssuing3)
+                .username(testUsernameIssuing3)
+                .build();
+
+
+        List<UsernameDTO> mockUsernameDTOSList1 = new ArrayList<>();
+        mockUsernameDTOSList1.add(mockUsernameDTO1);
+        mockUsernameDTOSList1.add(mockUsernameDTO2);
+        mockUsernameDTOSList1.add(mockUsernameDTO3);
+
+        List<UsernameDTO> mockUsernameDTOSList2 = new ArrayList<>();
+        mockUsernameDTOSList2.add(mockUsernameDTO1);
+        mockUsernameDTOSList2.add(mockUsernameDTO2);
+        mockUsernameDTOSList2.add(mockUsernameDTO3);
+
+        List<UsernameDTO> mockUsernameDTOSList3 = new ArrayList<>();
+        mockUsernameDTOSList3.add(mockUsernameDTO1);
+        mockUsernameDTOSList3.add(mockUsernameDTO2);
+        mockUsernameDTOSList3.add(mockUsernameDTO3);
+
+
+        CosignsForUserDTO mockCosignsForUserDTO1 = CosignsForUserDTO.builder()
+                .phraseId(testPhraseId1)
+                .listOfCosigners(mockUsernameDTOSList1)
+                .build();
+
+        CosignsForUserDTO mockCosignsForUserDTO2 = CosignsForUserDTO.builder()
+                .phraseId(testPhraseId2)
+                .listOfCosigners(mockUsernameDTOSList2)
+                .build();
+
+        CosignsForUserDTO mockCosignsForUserDTO3 = CosignsForUserDTO.builder()
+                .phraseId(testPhraseId3)
+                .listOfCosigners(mockUsernameDTOSList3)
+                .build();
+
 
         List<CosignsForUserDTO> mockCosignsForUserDTOList = new ArrayList<>();
-        mockCosignsForUserDTOList.add(mockCosignsForUserDTO);
+        mockCosignsForUserDTOList.add(mockCosignsForUserDTO1);
+        mockCosignsForUserDTOList.add(mockCosignsForUserDTO2);
+        mockCosignsForUserDTOList.add(mockCosignsForUserDTO3);
 
         // mock returns
         when(cosignService.getAllCosignsForUser(anyLong())).thenReturn(mockCosignsForUserDTOList);
+        for(CosignsForUserDTO c : mockCosignsForUserDTOList) {
+            System.out.println(c.phraseId);
+            for(UsernameDTO u : c.listOfCosigners){
+                System.out.print(u.userId + " " + u.username + "\n");
+            }
+        }
 
         // test
         this.mockMvc
                 .perform(
-                        get("/api/connect/cosign/{userIdReceiving}/all",testUserIdReceiving,testPhraseId)
+                        get("/api/connect/cosign/{userIdReceiving}/all",testUserIdReceiving)
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"phraseId\":1,\"listOfCosigners\":[{\"userId\":1,\"username\":\"test\"}]}]"));
+                .andExpect(content().json(
+                        "[" +
+                                "{\"phraseId\":1,\"listOfCosigners\":" +
+                                    "[" +
+                                        "{\"userId\":1,\"username\":\"test1\"}," +
+                                        "{\"userId\":2,\"username\":\"test2\"}," +
+                                        "{\"userId\":3,\"username\":\"test3\"}" +
+                                    "]" +
+                                "}," +
+                                "{\"phraseId\":2,\"listOfCosigners\":" +
+                                    "[" +
+                                        "{\"userId\":1,\"username\":\"test1\"}," +
+                                        "{\"userId\":2,\"username\":\"test2\"}," +
+                                        "{\"userId\":3,\"username\":\"test3\"}" +
+                                    "]" +
+                                "}," +
+                                "{\"phraseId\":3,\"listOfCosigners\":" +
+                                    "[" +
+                                        "{\"userId\":1,\"username\":\"test1\"}," +
+                                        "{\"userId\":2,\"username\":\"test2\"}," +
+                                        "{\"userId\":3,\"username\":\"test3\"}" +
+                                    "]" +
+                                "}]"));
     }
 }

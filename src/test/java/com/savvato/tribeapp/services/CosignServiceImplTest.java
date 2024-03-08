@@ -236,7 +236,7 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
     }
 
     @Test
-    public void testGetAllCosignsForUserWithThreeCosigns() {
+    public void testGetAllCosignsForUserWithThreeCosignsForThreePhrases() {
         // test data
         Long testUserIdIssuing1 = 1L;
         Long testUserIdIssuing2 = 2L;
@@ -250,64 +250,7 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
         Long testUserIdReceiving = 4L;
 
         // mock return data
-        Cosign mockCosign1a = new Cosign();
-        mockCosign1a.setUserIdIssuing(testUserIdIssuing1);
-        mockCosign1a.setUserIdReceiving(testUserIdReceiving);
-        mockCosign1a.setPhraseId(testPhraseId1);
-
-        Cosign mockCosign1b = new Cosign();
-        mockCosign1b.setUserIdIssuing(testUserIdIssuing2);
-        mockCosign1b.setUserIdReceiving(testUserIdReceiving);
-        mockCosign1b.setPhraseId(testPhraseId1);
-
-        Cosign mockCosign1c = new Cosign();
-        mockCosign1c.setUserIdIssuing(testUserIdIssuing3);
-        mockCosign1c.setUserIdReceiving(testUserIdReceiving);
-        mockCosign1c.setPhraseId(testPhraseId1);
-
-
-        Cosign mockCosign2a = new Cosign();
-        mockCosign2a.setUserIdIssuing(testUserIdIssuing1);
-        mockCosign2a.setUserIdReceiving(testUserIdReceiving);
-        mockCosign2a.setPhraseId(testPhraseId2);
-
-        Cosign mockCosign2b = new Cosign();
-        mockCosign2b.setUserIdIssuing(testUserIdIssuing2);
-        mockCosign2b.setUserIdReceiving(testUserIdReceiving);
-        mockCosign2b.setPhraseId(testPhraseId2);
-
-        Cosign mockCosign2c = new Cosign();
-        mockCosign2c.setUserIdIssuing(testUserIdIssuing3);
-        mockCosign2c.setUserIdReceiving(testUserIdReceiving);
-        mockCosign2c.setPhraseId(testPhraseId2);
-
-
-        Cosign mockCosign3a = new Cosign();
-        mockCosign3a.setUserIdIssuing(testUserIdIssuing1);
-        mockCosign3a.setUserIdReceiving(testUserIdReceiving);
-        mockCosign3a.setPhraseId(testPhraseId3);
-
-        Cosign mockCosign3b = new Cosign();
-        mockCosign3b.setUserIdIssuing(testUserIdIssuing2);
-        mockCosign3b.setUserIdReceiving(testUserIdReceiving);
-        mockCosign3b.setPhraseId(testPhraseId3);
-
-        Cosign mockCosign3c = new Cosign();
-        mockCosign3c.setUserIdIssuing(testUserIdIssuing3);
-        mockCosign3c.setUserIdReceiving(testUserIdReceiving);
-        mockCosign3c.setPhraseId(testPhraseId3);
-
-
-        List<Cosign> mockAllCosignsByUserIdReceivingList = new ArrayList<>();
-        mockAllCosignsByUserIdReceivingList.add(mockCosign1a);
-        mockAllCosignsByUserIdReceivingList.add(mockCosign1b);
-        mockAllCosignsByUserIdReceivingList.add(mockCosign1c);
-        mockAllCosignsByUserIdReceivingList.add(mockCosign2a);
-        mockAllCosignsByUserIdReceivingList.add(mockCosign2b);
-        mockAllCosignsByUserIdReceivingList.add(mockCosign2c);
-        mockAllCosignsByUserIdReceivingList.add(mockCosign3a);
-        mockAllCosignsByUserIdReceivingList.add(mockCosign3b);
-        mockAllCosignsByUserIdReceivingList.add(mockCosign3c);
+        List<Cosign> mockAllCosignsByUserIdReceivingList = listBuilderCosignForUser(3,3); // See helper method listBuilderCosignForUser below
 
         UsernameDTO mockUsernameDTO1 = UsernameDTO.builder()
                 .userId(testUserIdIssuing1)
@@ -324,7 +267,6 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
                 .username(testUsernameIssuing3)
                 .build();
 
-
         List<UsernameDTO> mockUsernameDTOSList1 = new ArrayList<>();
         mockUsernameDTOSList1.add(mockUsernameDTO1);
         mockUsernameDTOSList1.add(mockUsernameDTO2);
@@ -339,7 +281,6 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
         mockUsernameDTOSList3.add(mockUsernameDTO1);
         mockUsernameDTOSList3.add(mockUsernameDTO2);
         mockUsernameDTOSList3.add(mockUsernameDTO3);
-
 
         CosignsForUserDTO mockCosignsForUserDTO1 = CosignsForUserDTO.builder()
                 .phraseId(testPhraseId1)
@@ -371,27 +312,26 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
 
         for(int i=0; i<testCosignsForUserDTOs.size(); i++) {
             assertEquals(testCosignsForUserDTOs.get(i).phraseId,expectedCosignsForUserDTOSList.get(i).phraseId);
-            System.out.println(
-                    "Test phrase " + i + ": expected phrase = "
-                            + expectedCosignsForUserDTOSList.get(i).phraseId
-                            + " actual phrase = "
-                            + testCosignsForUserDTOs.get(i).phraseId
-            );
             for(int j=0; j<testCosignsForUserDTOs.get(i).listOfCosigners.size(); j++){
-                System.out.println(
-                        "Test phrase " + i + " test user " + j
-                                + ": expected user id = "
-                                + expectedCosignsForUserDTOSList.get(j).listOfCosigners.get(j).userId
-                                + " actual user id = "
-                                + testCosignsForUserDTOs.get(i).listOfCosigners.get(j).userId
-                                + ": expected user name = "
-                                + expectedCosignsForUserDTOSList.get(j).listOfCosigners.get(j).username
-                                + " actual user name = "
-                                + testCosignsForUserDTOs.get(i).listOfCosigners.get(j).username
-                );
                 assertEquals(testCosignsForUserDTOs.get(i).listOfCosigners.get(j).userId, expectedCosignsForUserDTOSList.get(j).listOfCosigners.get(j).userId);
                 assertEquals(testCosignsForUserDTOs.get(i).listOfCosigners.get(j).username,expectedCosignsForUserDTOSList.get(j).listOfCosigners.get(j).username);
             }
         }
+    }
+
+    // Helper method to build a list of cosigns for a user with the specified amount of phrases and the specified amount of cosigners per phrase.
+    private List<Cosign> listBuilderCosignForUser (int phraseCount, int userPerPhraseCount) {
+        List<Cosign> list = new ArrayList<>();
+        Long userIdReceiving = userPerPhraseCount + 1L;
+
+        for(int i=1; i<=phraseCount; i++) {
+            Cosign cosign = new Cosign();
+            cosign.setPhraseId((long)i);
+            for(int j=1; j<=userPerPhraseCount; j++)
+                cosign.setUserIdIssuing((long)j);
+            cosign.setUserIdReceiving(userIdReceiving);
+            list.add(cosign);
+        }
+        return list;
     }
 }

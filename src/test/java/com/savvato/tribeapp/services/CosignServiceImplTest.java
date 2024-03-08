@@ -134,6 +134,58 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
     }
 
     @Test
+    public void testGetCosignersForUserWithThreeCosigners(){
+        // test data
+        Long testUserIdIssuing1 = 1L;
+        Long testUserIdIssuing2 = 2L;
+        Long testUserIdIssuing3 = 3L;
+        String testUsernameIssuing1 = "test1";
+        String testUsernameIssuing2 = "test2";
+        String testUsernameIssuing3 = "test3";
+        Long testUserIdReceiving = 4L;
+        Long testPhraseId = 1L;
+
+        // mock return data
+        UsernameDTO mockUsernameDTO1 = UsernameDTO.builder()
+                .userId(testUserIdIssuing1)
+                .username(testUsernameIssuing1)
+                .build();
+
+        UsernameDTO mockUsernameDTO2 = UsernameDTO.builder()
+                .userId(testUserIdIssuing2)
+                .username(testUsernameIssuing2)
+                .build();
+
+        UsernameDTO mockUsernameDTO3 = UsernameDTO.builder()
+                .userId(testUserIdIssuing3)
+                .username(testUsernameIssuing3)
+                .build();
+
+        List<Long> mockCosignerIds = new ArrayList<>();
+        mockCosignerIds.add(testUserIdIssuing1);
+        mockCosignerIds.add(testUserIdIssuing2);
+        mockCosignerIds.add(testUserIdIssuing3);
+
+        // mock returns
+        when(cosignRepository.findCosignersByUserIdReceivingAndPhraseId(anyLong(),anyLong())).thenReturn(mockCosignerIds);
+        when(userService.getUsernameDTO(anyLong())).thenReturn(mockUsernameDTO1).thenReturn(mockUsernameDTO2).thenReturn(mockUsernameDTO3);
+
+        // expected results
+        List<UsernameDTO> expectedListUsernameDTO = new ArrayList<>();
+        expectedListUsernameDTO.add(mockUsernameDTO1);
+        expectedListUsernameDTO.add(mockUsernameDTO2);
+        expectedListUsernameDTO.add(mockUsernameDTO3);
+
+        // test
+        List<UsernameDTO> usernameDTOS = cosignService.getCosignersForUserAttribute(testUserIdReceiving,testPhraseId);
+
+        for(int i=0; i<usernameDTOS.size(); i++){
+            assertEquals(usernameDTOS.get(i).userId, expectedListUsernameDTO.get(i).userId);
+            assertEquals(usernameDTOS.get(i).username, expectedListUsernameDTO.get(i).username);
+        }
+    }
+
+    @Test
     public void testGetAllCosignsForUser() {
         // test data
         Long testUserIdIssuing = 1L;

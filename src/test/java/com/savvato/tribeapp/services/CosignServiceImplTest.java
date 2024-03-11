@@ -88,4 +88,16 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
 
         assertThat(CosignDTORepeat.get()).usingRecursiveComparison().isEqualTo(expectedCosignDTO);
     }
+
+    @Test
+    public void saveCosignFailsWhenIdsEqual() {
+        Long testUserIdIssuing = 1L;
+        Long testUserIdReceiving = 1L;
+        Long testPhraseId = 1L;
+
+        Optional<CosignDTO> cosignDTO = cosignService.saveCosign(testUserIdIssuing, testUserIdReceiving, testPhraseId);
+
+        verify(cosignRepository, never()).save(Mockito.any());
+        assertThat(cosignDTO).usingRecursiveComparison().isEqualTo(Optional.empty());
+    }
 }

@@ -12,7 +12,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 import static net.bytebuddy.matcher.ElementMatchers.any;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -38,57 +41,51 @@ public class CosignServiceImplTest extends AbstractServiceImplTest{
     @Test
     public void saveCosign() {
         Long userIdIssuing = 1L;
-        Long userIdReceiving = 1L;
+        Long userIdReceiving = 2L;
         Long phraseId = 1L;
 
-        Cosign cosign = new Cosign();
-        cosign.setUserIdIssuing(userIdIssuing);
-        cosign.setUserIdReceiving(userIdReceiving);
-        cosign.setPhraseId(phraseId);
+        Cosign mockCosign = new Cosign();
+        mockCosign.setUserIdIssuing(userIdIssuing);
+        mockCosign.setUserIdReceiving(userIdReceiving);
+        mockCosign.setPhraseId(phraseId);
 
-        CosignDTO cosignDTO = CosignDTO.builder().build();
-        cosignDTO.userIdIssuing = userIdIssuing;
-        cosignDTO.userIdReceiving = userIdReceiving;
-        cosignDTO.phraseId = phraseId;
+        CosignDTO expectedCosignDTO = CosignDTO.builder().build();
+        expectedCosignDTO.userIdIssuing = userIdIssuing;
+        expectedCosignDTO.userIdReceiving = userIdReceiving;
+        expectedCosignDTO.phraseId = phraseId;
 
-        when(cosignRepository.save(Mockito.any())).thenReturn(cosign);
+        when(cosignRepository.save(Mockito.any())).thenReturn(mockCosign);
 
-        CosignDTO expectedCosignDTO = cosignService.saveCosign(userIdIssuing, userIdReceiving, phraseId);
+        Optional<CosignDTO> CosignDTO = cosignService.saveCosign(userIdIssuing, userIdReceiving, phraseId);
 
         verify(cosignRepository, times(1)).save(Mockito.any());
-        assertEquals(cosignDTO.userIdIssuing, expectedCosignDTO.userIdIssuing);
-        assertEquals(cosignDTO.userIdReceiving, expectedCosignDTO.userIdReceiving);
-        assertEquals(cosignDTO.phraseId, expectedCosignDTO.phraseId);
+        assertThat(CosignDTO.get()).usingRecursiveComparison().isEqualTo(expectedCosignDTO);
     }
 
     @Test
     public void saveCosignAlreadyExisting() {
         Long userIdIssuing = 1L;
-        Long userIdReceiving = 1L;
+        Long userIdReceiving = 2L;
         Long phraseId = 1L;
 
-        Cosign cosign = new Cosign();
-        cosign.setUserIdIssuing(userIdIssuing);
-        cosign.setUserIdReceiving(userIdReceiving);
-        cosign.setPhraseId(phraseId);
+        Cosign mockCosign = new Cosign();
+        mockCosign.setUserIdIssuing(userIdIssuing);
+        mockCosign.setUserIdReceiving(userIdReceiving);
+        mockCosign.setPhraseId(phraseId);
 
-        CosignDTO cosignDTO = CosignDTO.builder().build();
-        cosignDTO.userIdIssuing = userIdIssuing;
-        cosignDTO.userIdReceiving = userIdReceiving;
-        cosignDTO.phraseId = phraseId;
+        CosignDTO expectedCosignDTO = CosignDTO.builder().build();
+        expectedCosignDTO.userIdIssuing = userIdIssuing;
+        expectedCosignDTO.userIdReceiving = userIdReceiving;
+        expectedCosignDTO.phraseId = phraseId;
 
-        when(cosignRepository.save(Mockito.any())).thenReturn(cosign).thenReturn(cosign);
+        when(cosignRepository.save(Mockito.any())).thenReturn(mockCosign).thenReturn(mockCosign);
 
-        CosignDTO expectedCosignDTO = cosignService.saveCosign(userIdIssuing, userIdReceiving, phraseId);
+        Optional<CosignDTO> CosignDTO = cosignService.saveCosign(userIdIssuing, userIdReceiving, phraseId);
 
-        assertEquals(cosignDTO.userIdIssuing, expectedCosignDTO.userIdIssuing);
-        assertEquals(cosignDTO.userIdReceiving, expectedCosignDTO.userIdReceiving);
-        assertEquals(cosignDTO.phraseId, expectedCosignDTO.phraseId);
+        assertThat(CosignDTO.get()).usingRecursiveComparison().isEqualTo(expectedCosignDTO);
 
-        CosignDTO expectedCosignDTORepeat = cosignService.saveCosign(userIdIssuing, userIdReceiving, phraseId);
+        Optional<CosignDTO> CosignDTORepeat = cosignService.saveCosign(userIdIssuing, userIdReceiving, phraseId);
 
-        assertEquals(cosignDTO.userIdIssuing, expectedCosignDTORepeat.userIdIssuing);
-        assertEquals(cosignDTO.userIdReceiving, expectedCosignDTORepeat.userIdReceiving);
-        assertEquals(cosignDTO.phraseId, expectedCosignDTORepeat.phraseId);
+        assertThat(CosignDTORepeat.get()).usingRecursiveComparison().isEqualTo(expectedCosignDTO);
     }
 }

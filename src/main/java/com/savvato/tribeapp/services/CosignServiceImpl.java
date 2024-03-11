@@ -1,6 +1,5 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.entities.Cosign;
 import com.savvato.tribeapp.repositories.CosignRepository;
@@ -18,7 +17,11 @@ public class CosignServiceImpl implements CosignService {
     CosignRepository cosignRepository;
 
     @Override
-    public CosignDTO saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
+    public Optional<CosignDTO> saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
+
+        if(userIdIssuing == userIdReceiving) {
+            return Optional.empty();
+        }
 
         Cosign cosign = new Cosign();
         cosign.setUserIdIssuing(userIdIssuing);
@@ -35,7 +38,7 @@ public class CosignServiceImpl implements CosignService {
                 .phraseId(savedCosign.getPhraseId())
                 .build();
 
-        return cosignDTO;
+        return Optional.of(cosignDTO);
     }
 
     @Override

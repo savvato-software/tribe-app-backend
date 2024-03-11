@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface CosignService {
 
-    CosignDTO saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId);
+    Optional<CosignDTO> saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId);
     boolean deleteCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId);
 }

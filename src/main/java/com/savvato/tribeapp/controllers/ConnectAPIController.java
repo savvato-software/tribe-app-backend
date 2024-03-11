@@ -2,6 +2,7 @@ package com.savvato.tribeapp.controllers;
 
 import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.*;
+import com.savvato.tribeapp.controllers.annotations.responses.BadRequest;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
@@ -92,10 +93,13 @@ public class ConnectAPIController {
   @PostMapping("/cosign")
   public ResponseEntity<CosignDTO> saveCosign(@RequestBody @Valid CosignRequest cosignRequest) {
 
-      CosignDTO cosignDTO = cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
-      
-      return ResponseEntity.status(HttpStatus.OK).body(cosignDTO);
+    Optional<CosignDTO> opt = cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
 
+    if(opt.isEmpty()) {
+      log.error("Users may not cosign themselves. ");
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+    }
+      return ResponseEntity.status(HttpStatus.OK).body(opt.get());
   }
   @DeleteCosign
   @DeleteMapping("/cosign")

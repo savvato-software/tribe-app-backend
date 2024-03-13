@@ -133,6 +133,7 @@ public class ConnectServiceImpl implements ConnectService {
         return null;
     }
 
+    // deprecated
     public List<ConnectOutgoingMessageDTO> getAllConnectionsForAUser(Long userId) {
         List<Connection> connections = connectionsRepository.findAllByToBeConnectedWithUserId(userId);
         List<ConnectOutgoingMessageDTO> outgoingMessages = new ArrayList<>();

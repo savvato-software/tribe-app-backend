@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface ConnectService {
 
+    // deprecated
     List<ConnectOutgoingMessageDTO> getAllConnectionsForAUser(Long userId);
 
     Optional<String> getQRCodeString(long userId);

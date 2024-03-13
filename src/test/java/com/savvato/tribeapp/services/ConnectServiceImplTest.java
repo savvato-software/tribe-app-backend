@@ -291,6 +291,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         verify(connectionsRepository, never()).removeConnection(anyLong(), anyLong());
     }
 
+    // deprecated
     public void testGetAllConnectionsForAUserWhenConnectionsExist() {
         Long toBeConnectedUserId = 2L;
 

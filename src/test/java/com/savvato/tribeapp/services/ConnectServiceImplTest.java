@@ -4,6 +4,7 @@ import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
+import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTOUpdated;
 import com.savvato.tribeapp.entities.Connection;
 import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -309,6 +310,30 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         expectedOutgoingMessageDTOS.add(outgoingMessage);
 
         List<ConnectOutgoingMessageDTO> actualMessageDTOs = connectService.getAllConnectionsForAUser(toBeConnectedUserId);
+
+        assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(expectedOutgoingMessageDTOS);
+
+    }
+    @Test
+    public void testGetAllConnectionsForAUserUpdatedWhenConnectionsExist() {
+        Long toBeConnectedUserId = 2L;
+
+        Connection connection = new Connection();
+        connection.setCreated();
+        connection.setRequestingUserId(1L);
+        connection.setToBeConnectedWithUserId(toBeConnectedUserId);
+
+        when(connectionsRepository.findAllByToBeConnectedWithUserId(anyLong())).thenReturn(List.of(connection));
+
+        List<ConnectOutgoingMessageDTOUpdated> expectedOutgoingMessageDTOS = new ArrayList<>();
+        ConnectOutgoingMessageDTOUpdated outgoingMessage = ConnectOutgoingMessageDTOUpdated.builder()
+                .connectionSuccess(true)
+                .to(connection.getRequestingUserId())
+                .message("")
+                .build();
+        expectedOutgoingMessageDTOS.add(outgoingMessage);
+
+        List<ConnectOutgoingMessageDTOUpdated> actualMessageDTOs = connectService.getAllConnectionsForAUserUpdated(toBeConnectedUserId);
 
         assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(expectedOutgoingMessageDTOS);
 

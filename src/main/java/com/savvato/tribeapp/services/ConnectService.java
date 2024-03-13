@@ -1,10 +1,9 @@
 package com.savvato.tribeapp.services;
 
-import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
-import org.springframework.messaging.handler.annotation.Header;
+import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTOUpdated;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +21,8 @@ public interface ConnectService {
 
     boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId);
     ConnectOutgoingMessageDTO handleConnectionIntent(String connectionIntent, Long requestingUserId, Long toBeRequestedWithUserId);
+
+    List<ConnectOutgoingMessageDTOUpdated> getAllConnectionsForAUserUpdated(Long userId);
 
     boolean removeConnection(ConnectionRemovalRequest connectionDeleteRequest);
 }

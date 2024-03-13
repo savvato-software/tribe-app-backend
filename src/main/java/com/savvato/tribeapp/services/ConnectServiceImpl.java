@@ -3,6 +3,7 @@ package com.savvato.tribeapp.services;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
+import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTOUpdated;
 import com.savvato.tribeapp.entities.Connection;
 import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -139,6 +140,22 @@ public class ConnectServiceImpl implements ConnectService {
             ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
                     .connectionSuccess(true)
                     .to(new ArrayList<>(Collections.singletonList(connection.getRequestingUserId())))
+                    .message("")
+                    .build();
+            outgoingMessages.add(outgoingMessage);
+        }
+        return outgoingMessages;
+    }
+
+    // New get all connections method
+    @Override
+    public List<ConnectOutgoingMessageDTOUpdated> getAllConnectionsForAUserUpdated(Long userId) {
+        List<Connection> connections = connectionsRepository.findAllByToBeConnectedWithUserId(userId);
+        List<ConnectOutgoingMessageDTOUpdated> outgoingMessages = new ArrayList<>();
+        for (Connection connection : connections) {
+            ConnectOutgoingMessageDTOUpdated outgoingMessage = ConnectOutgoingMessageDTOUpdated.builder()
+                    .connectionSuccess(true)
+                    .to(connection.getRequestingUserId())
                     .message("")
                     .build();
             outgoingMessages.add(outgoingMessage);

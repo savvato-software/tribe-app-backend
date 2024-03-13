@@ -8,6 +8,7 @@ import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
+import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTOUpdated;
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
@@ -311,7 +312,7 @@ public class ConnectAPITest {
 
     }
 
-    @Test
+    //@Test  deprecated
     public void testGetConnectionsHappyPath() throws Exception {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));
@@ -345,6 +346,44 @@ public class ConnectAPITest {
         Type connectOutgoingMessageListDTOType = new TypeToken<List<ConnectOutgoingMessageDTO>>(){}.getType();
 
         List<ConnectOutgoingMessageDTO> actualConnectOutingMessages =
+                gson.fromJson(result.getResponse().getContentAsString(), connectOutgoingMessageListDTOType);
+
+        assertThat(actualConnectOutingMessages).usingRecursiveComparison().isEqualTo(expectedReturnDtoList);
+    }
+
+    @Test
+    public void testGetConnectionsUpdatedHappyPath() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+        Long toBeConnectedWithUserId = 1L;
+        Long requestingUserId = 2L;
+
+        ConnectOutgoingMessageDTOUpdated returnDTO = ConnectOutgoingMessageDTOUpdated
+                .builder()
+                .connectionError(null)
+                .connectionSuccess(true)
+                .message("")
+                .to(requestingUserId)
+                .build();
+
+        List<ConnectOutgoingMessageDTOUpdated> expectedReturnDtoList = new ArrayList<>();
+        expectedReturnDtoList.add(returnDTO);
+
+        when(connectService.getAllConnectionsForAUserUpdated(anyLong())).thenReturn(expectedReturnDtoList);
+
+        MvcResult result =
+                this.mockMvc
+                        .perform(
+                                get("/api/connect/{userId}/allUpdated", toBeConnectedWithUserId)
+                                        .header("Authorization", "Bearer " + auth)
+                                        .characterEncoding("utf-8"))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        Type connectOutgoingMessageListDTOType = new TypeToken<List<ConnectOutgoingMessageDTOUpdated>>(){}.getType();
+
+        List<ConnectOutgoingMessageDTOUpdated> actualConnectOutingMessages =
                 gson.fromJson(result.getResponse().getContentAsString(), connectOutgoingMessageListDTOType);
 
         assertThat(actualConnectOutingMessages).usingRecursiveComparison().isEqualTo(expectedReturnDtoList);

@@ -1,12 +1,10 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.*;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
-import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTOUpdated;
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.services.ConnectService;
 import com.savvato.tribeapp.services.CosignService;
@@ -47,11 +45,11 @@ public class ConnectAPIController {
   ConnectAPIController() {}
 
   @GetConnections
-  @GetMapping("/{userId}/allUpdated") // temp name
-  public ResponseEntity<List<ConnectOutgoingMessageDTOUpdated>> getConnections(
+  @GetMapping("/{userId}/all")
+  public ResponseEntity<List<ConnectOutgoingMessageDTO>> getConnections(
       @Parameter(description = "The user ID of a user", example = "1") @PathVariable Long userId) {
 
-    List<ConnectOutgoingMessageDTOUpdated> list = connectService.getAllConnectionsForAUserUpdated(userId);
+    List<ConnectOutgoingMessageDTO> list = connectService.getAllConnectionsForAUser(userId);
 
     if (list != null) {
       return ResponseEntity.status(HttpStatus.OK).body(list);

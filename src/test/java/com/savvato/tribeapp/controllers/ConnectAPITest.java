@@ -8,7 +8,6 @@ import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
-import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTOUpdated;
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
@@ -312,36 +311,35 @@ public class ConnectAPITest {
 
     }
 
-    //@Test  deprecated
+    @Test
     public void testGetConnectionsHappyPath() throws Exception {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
         Long toBeConnectedWithUserId = 1L;
-        List requestingUserIds = new ArrayList<Long>();
-        requestingUserIds.add(2L);
+        Long requestingUserId = 2L;
 
         ConnectOutgoingMessageDTO returnDTO = ConnectOutgoingMessageDTO
                 .builder()
                 .connectionError(null)
                 .connectionSuccess(true)
                 .message("")
-                .to(requestingUserIds)
+                .to(requestingUserId)
                 .build();
 
-        List expectedReturnDtoList = new ArrayList<>();
+        List<ConnectOutgoingMessageDTO> expectedReturnDtoList = new ArrayList<>();
         expectedReturnDtoList.add(returnDTO);
 
         when(connectService.getAllConnectionsForAUser(anyLong())).thenReturn(expectedReturnDtoList);
 
         MvcResult result =
-            this.mockMvc
-                    .perform(
-                            get("/api/connect/{userId}/all", toBeConnectedWithUserId)
-                                    .header("Authorization", "Bearer " + auth)
-                                    .characterEncoding("utf-8"))
-                    .andExpect(status().isOk())
-                    .andReturn();
+                this.mockMvc
+                        .perform(
+                                get("/api/connect/{userId}/all", toBeConnectedWithUserId)
+                                        .header("Authorization", "Bearer " + auth)
+                                        .characterEncoding("utf-8"))
+                        .andExpect(status().isOk())
+                        .andReturn();
 
         Type connectOutgoingMessageListDTOType = new TypeToken<List<ConnectOutgoingMessageDTO>>(){}.getType();
 
@@ -352,44 +350,6 @@ public class ConnectAPITest {
     }
 
     @Test
-    public void testGetConnectionsUpdatedHappyPath() throws Exception {
-        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
-                .thenReturn(new UserPrincipal(user));
-        String auth = AuthServiceImpl.generateAccessToken(user);
-        Long toBeConnectedWithUserId = 1L;
-        Long requestingUserId = 2L;
-
-        ConnectOutgoingMessageDTOUpdated returnDTO = ConnectOutgoingMessageDTOUpdated
-                .builder()
-                .connectionError(null)
-                .connectionSuccess(true)
-                .message("")
-                .to(requestingUserId)
-                .build();
-
-        List<ConnectOutgoingMessageDTOUpdated> expectedReturnDtoList = new ArrayList<>();
-        expectedReturnDtoList.add(returnDTO);
-
-        when(connectService.getAllConnectionsForAUserUpdated(anyLong())).thenReturn(expectedReturnDtoList);
-
-        MvcResult result =
-                this.mockMvc
-                        .perform(
-                                get("/api/connect/{userId}/allUpdated", toBeConnectedWithUserId)
-                                        .header("Authorization", "Bearer " + auth)
-                                        .characterEncoding("utf-8"))
-                        .andExpect(status().isOk())
-                        .andReturn();
-
-        Type connectOutgoingMessageListDTOType = new TypeToken<List<ConnectOutgoingMessageDTOUpdated>>(){}.getType();
-
-        List<ConnectOutgoingMessageDTOUpdated> actualConnectOutingMessages =
-                gson.fromJson(result.getResponse().getContentAsString(), connectOutgoingMessageListDTOType);
-
-        assertThat(actualConnectOutingMessages).usingRecursiveComparison().isEqualTo(expectedReturnDtoList);
-    }
-
-    //@Test deprecated
     public void testGetConnectionsSadPath() throws Exception {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));
@@ -403,27 +363,6 @@ public class ConnectAPITest {
                 this.mockMvc
                         .perform(
                                 get("/api/connect/{userId}/all", userId)
-                                        .header("Authorization", "Bearer " + auth)
-                                        .characterEncoding("utf-8"))
-                        .andExpect(status().isBadRequest())
-                        .andReturn();
-
-    }
-
-    @Test
-    public void testGetConnectionsUpdatedSadPath() throws Exception {
-        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
-                .thenReturn(new UserPrincipal(user));
-        String auth = AuthServiceImpl.generateAccessToken(user);
-
-        Long userId = 1L;
-
-        when(connectService.getAllConnectionsForAUserUpdated(anyLong())).thenReturn(null);
-
-        MvcResult result =
-                this.mockMvc
-                        .perform(
-                                get("/api/connect/{userId}/allUpdated", userId)
                                         .header("Authorization", "Bearer " + auth)
                                         .characterEncoding("utf-8"))
                         .andExpect(status().isBadRequest())

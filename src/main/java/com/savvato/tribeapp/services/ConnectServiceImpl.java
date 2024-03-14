@@ -3,7 +3,6 @@ package com.savvato.tribeapp.services;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
-import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTOUpdated;
 import com.savvato.tribeapp.entities.Connection;
 import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -82,6 +81,7 @@ public class ConnectServiceImpl implements ConnectService {
         return qrcodePhrase.equals(getQRCodeString(toBeConnectedWithUserId).orElse("")) && StringUtils.isNotBlank(qrcodePhrase);
     }
 
+    @Override
     @MessageMapping("/connect/room")
     public void connect(ConnectIncomingMessageDTO incoming) {
         if (!validateQRCode(incoming.qrcodePhrase, incoming.toBeConnectedWithUserId)) {
@@ -94,67 +94,64 @@ public class ConnectServiceImpl implements ConnectService {
                     "/connect/user/queue/specific-user",
                     msg);
         } else {
-            ConnectOutgoingMessageDTO outgoingMsg = handleConnectionIntent(incoming.connectionIntent, incoming.requestingUserId, incoming.toBeConnectedWithUserId);
-            for (Long userId : outgoingMsg.to) {
+            List<ConnectOutgoingMessageDTO> outgoingMsg = handleConnectionIntent(incoming.connectionIntent, incoming.requestingUserId, incoming.toBeConnectedWithUserId);
+            for (ConnectOutgoingMessageDTO dto : outgoingMsg) {
                 simpMessagingTemplate.convertAndSendToUser(
-                        String.valueOf(userId),
+                        String.valueOf(dto.to),
                         "/connect/user/queue/specific-user",
                         outgoingMsg);
             }
         }
     }
 
-    public ConnectOutgoingMessageDTO handleConnectionIntent(String connectionIntent, Long requestingUserId, Long toBeConnectedWithUserId) {
+    @Override
+    public List<ConnectOutgoingMessageDTO> handleConnectionIntent(String connectionIntent, Long requestingUserId, Long toBeConnectedWithUserId) {
+        List<ConnectOutgoingMessageDTO> rtn = new ArrayList<>();
+        List<Long> allRecipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
+
         if (connectionIntent == "") {
-            List<Long> recipients = new ArrayList<>(Collections.singletonList(toBeConnectedWithUserId));
-            return ConnectOutgoingMessageDTO.builder().message("Please confirm that you wish to connect.").to(recipients).build();
+            rtn.add(ConnectOutgoingMessageDTO.builder()
+                    .message("Please confirm that you wish to connect.")
+                    .to(toBeConnectedWithUserId)
+                    .build());
         } else if (connectionIntent == "confirmed") {
             Boolean connectionStatus = saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
-            List<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
-            if (connectionStatus) {
-                return ConnectOutgoingMessageDTO.builder()
-                        .connectionSuccess(true)
-                        .to(recipients)
-                        .message("Successfully saved connection!").build();
-            } else {
-                return ConnectOutgoingMessageDTO.builder()
-                        .connectionError(true)
-                        .to(recipients)
-                        .message("Failed to save connection to database.").build();
+            for(Long id : allRecipients) {
+                if (connectionStatus) {
+                    rtn.add(ConnectOutgoingMessageDTO.builder()
+                            .connectionSuccess(true)
+                            .to(id)
+                            .message("Successfully saved connection!")
+                            .build());
+                } else {
+                    rtn.add(ConnectOutgoingMessageDTO.builder()
+                            .connectionError(true)
+                            .to(id)
+                            .message("Failed to save connection to database.")
+                            .build());
+                }
             }
         } else if (connectionIntent == "denied") {
-            List<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
-            return ConnectOutgoingMessageDTO.builder()
-                    .connectionError(true)
-                    .to(recipients)
-                    .message("Connection request denied.").build();
-
+            for(Long id : allRecipients) {
+                rtn.add(ConnectOutgoingMessageDTO.builder()
+                        .connectionError(true)
+                        .to(id)
+                        .message("Connection request denied.")
+                        .build());
+            }
+        } else {
+            rtn = null;
         }
-        return null;
+
+        return rtn;
     }
 
-    // deprecated
+    @Override
     public List<ConnectOutgoingMessageDTO> getAllConnectionsForAUser(Long userId) {
         List<Connection> connections = connectionsRepository.findAllByToBeConnectedWithUserId(userId);
         List<ConnectOutgoingMessageDTO> outgoingMessages = new ArrayList<>();
         for (Connection connection : connections) {
             ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
-                    .connectionSuccess(true)
-                    .to(new ArrayList<>(Collections.singletonList(connection.getRequestingUserId())))
-                    .message("")
-                    .build();
-            outgoingMessages.add(outgoingMessage);
-        }
-        return outgoingMessages;
-    }
-
-    // New get all connections method
-    @Override
-    public List<ConnectOutgoingMessageDTOUpdated> getAllConnectionsForAUserUpdated(Long userId) {
-        List<Connection> connections = connectionsRepository.findAllByToBeConnectedWithUserId(userId);
-        List<ConnectOutgoingMessageDTOUpdated> outgoingMessages = new ArrayList<>();
-        for (Connection connection : connections) {
-            ConnectOutgoingMessageDTOUpdated outgoingMessage = ConnectOutgoingMessageDTOUpdated.builder()
                     .connectionSuccess(true)
                     .to(connection.getRequestingUserId())
                     .message("")

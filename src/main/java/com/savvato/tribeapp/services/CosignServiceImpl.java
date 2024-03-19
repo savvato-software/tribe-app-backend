@@ -22,7 +22,11 @@ public class CosignServiceImpl implements CosignService {
     UserService userService;
 
     @Override
-    public CosignDTO saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
+    public Optional<CosignDTO> saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
+
+        if(userIdIssuing == userIdReceiving) {
+            return Optional.empty();
+        }
 
         Cosign cosign = new Cosign();
         cosign.setUserIdIssuing(userIdIssuing);
@@ -39,7 +43,7 @@ public class CosignServiceImpl implements CosignService {
                 .phraseId(savedCosign.getPhraseId())
                 .build();
 
-        return cosignDTO;
+        return Optional.of(cosignDTO);
     }
 
     @Override

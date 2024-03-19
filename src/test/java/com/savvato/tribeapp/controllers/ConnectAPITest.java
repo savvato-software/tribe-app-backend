@@ -199,6 +199,7 @@ public class ConnectAPITest {
     }
 
 
+
     @Test
     public void connectWhenQrCodeInvalid() throws Exception {
         when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
@@ -235,21 +236,21 @@ public class ConnectAPITest {
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
 
-        Long userIdIssuing = 1L;
-        Long userIdReceiving = 1L;
-        Long phraseId = 1L;
+        Long testUserIdIssuing = 1L;
+        Long testUserIdReceiving = 2L;
+        Long testPhraseId = 1L;
+
+        CosignDTO mockCosignDTO = CosignDTO.builder().build();
+        mockCosignDTO.userIdIssuing = testUserIdIssuing;
+        mockCosignDTO.userIdReceiving = testUserIdReceiving;
+        mockCosignDTO.phraseId = testPhraseId;
 
         CosignRequest cosignRequest = new CosignRequest();
-        cosignRequest.userIdIssuing = userIdIssuing;
-        cosignRequest.userIdReceiving = userIdReceiving;
-        cosignRequest.phraseId = phraseId;
+        cosignRequest.userIdIssuing = testUserIdIssuing;
+        cosignRequest.userIdReceiving = testUserIdReceiving;
+        cosignRequest.phraseId = testPhraseId;
 
-        CosignDTO cosignDTO = CosignDTO.builder().build();
-        cosignDTO.userIdIssuing = userIdIssuing;
-        cosignDTO.userIdReceiving = userIdReceiving;
-        cosignDTO.phraseId = phraseId;
-
-        when(cosignService.saveCosign(anyLong(), anyLong(), anyLong())).thenReturn(cosignDTO);
+        when(cosignService.saveCosign(anyLong(), anyLong(), anyLong())).thenReturn(Optional.of(mockCosignDTO));
 
         this.mockMvc
                 .perform(
@@ -259,8 +260,36 @@ public class ConnectAPITest {
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"userIdIssuing\":1,\"userIdReceiving\":1,\"phraseId\":1}"));
+                .andExpect(content().json("{\"userIdIssuing\":1,\"userIdReceiving\":2,\"phraseId\":1}"));
 
+    }
+
+    @Test
+    public void saveCosignSadPathUserCosignsThemselves() throws Exception {
+        when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
+                .thenReturn(new UserPrincipal(user));
+        String auth = AuthServiceImpl.generateAccessToken(user);
+
+        Long testUserIdIssuing = 1L;
+        Long testUserIdReceiving = 1L;
+        Long testPhraseId = 1L;
+
+        CosignRequest cosignRequest = new CosignRequest();
+        cosignRequest.userIdIssuing = testUserIdIssuing;
+        cosignRequest.userIdReceiving = testUserIdReceiving;
+        cosignRequest.phraseId = testPhraseId;
+
+        when(cosignService.saveCosign(anyLong(), anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        this.mockMvc
+                .perform(
+                        post("/api/connect/cosign")
+                                .content(gson.toJson(cosignRequest))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + auth)
+                                .characterEncoding("utf-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json("{\"responseMessage\":\"Users may not cosign themselves.\"}"));
     }
 
     public void removeConnectionHappyPath() throws Exception {

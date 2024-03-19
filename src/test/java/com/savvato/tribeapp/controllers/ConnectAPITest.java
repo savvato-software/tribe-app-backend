@@ -319,30 +319,29 @@ public class ConnectAPITest {
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
         Long toBeConnectedWithUserId = 1L;
-        List requestingUserIds = new ArrayList<Long>();
-        requestingUserIds.add(2L);
+        Long requestingUserId = 2L;
 
         ConnectOutgoingMessageDTO returnDTO = ConnectOutgoingMessageDTO
                 .builder()
                 .connectionError(null)
                 .connectionSuccess(true)
                 .message("")
-                .to(requestingUserIds)
+                .to(requestingUserId)
                 .build();
 
-        List expectedReturnDtoList = new ArrayList<>();
+        List<ConnectOutgoingMessageDTO> expectedReturnDtoList = new ArrayList<>();
         expectedReturnDtoList.add(returnDTO);
 
         when(connectService.getAllConnectionsForAUser(anyLong())).thenReturn(expectedReturnDtoList);
 
         MvcResult result =
-            this.mockMvc
-                    .perform(
-                            get("/api/connect/{userId}/all", toBeConnectedWithUserId)
-                                    .header("Authorization", "Bearer " + auth)
-                                    .characterEncoding("utf-8"))
-                    .andExpect(status().isOk())
-                    .andReturn();
+                this.mockMvc
+                        .perform(
+                                get("/api/connect/{userId}/all", toBeConnectedWithUserId)
+                                        .header("Authorization", "Bearer " + auth)
+                                        .characterEncoding("utf-8"))
+                        .andExpect(status().isOk())
+                        .andReturn();
 
         Type connectOutgoingMessageListDTOType = new TypeToken<List<ConnectOutgoingMessageDTO>>(){}.getType();
 

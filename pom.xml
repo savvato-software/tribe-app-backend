@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.savvato</groupId>
-    <artifactId>tribeapp</artifactId>
+    <artifactId>savvato-tribe-app-backend-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>tribeapp</name>
     <description>A social network that helps you find your tribe.</description>

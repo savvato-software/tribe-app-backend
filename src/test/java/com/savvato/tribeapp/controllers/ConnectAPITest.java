@@ -326,7 +326,10 @@ public class ConnectAPITest {
                 .connectionError(null)
                 .connectionSuccess(true)
                 .message("")
-                .to(requestingUserId)
+                .to(UsernameDTO.builder()
+                        .userId(requestingUserId)
+                        .username("test")
+                        .build())
                 .build();
 
         List<ConnectOutgoingMessageDTO> expectedReturnDtoList = new ArrayList<>();

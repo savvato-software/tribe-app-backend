@@ -288,7 +288,8 @@ public class ConnectAPITest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("Authorization", "Bearer " + auth)
                                 .characterEncoding("utf-8"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json("{\"responseMessage\":\"Users may not cosign themselves.\"}"));
     }
 
     public void removeConnectionHappyPath() throws Exception {

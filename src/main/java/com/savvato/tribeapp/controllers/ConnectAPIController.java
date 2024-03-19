@@ -1,13 +1,10 @@
 package com.savvato.tribeapp.controllers;
 
-import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.annotations.controllers.ConnectAPIController.*;
 import com.savvato.tribeapp.controllers.annotations.responses.BadRequest;
 import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.CosignRequest;
-import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
-import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
-import com.savvato.tribeapp.dto.CosignDTO;
+import com.savvato.tribeapp.dto.*;
 import com.savvato.tribeapp.services.ConnectService;
 import com.savvato.tribeapp.services.CosignService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -110,4 +107,23 @@ public class ConnectAPIController {
     return ResponseEntity.status(HttpStatus.OK).build();
 
   }
+
+  @GetCosignersForUserAttribute
+  @GetMapping("cosign/{userIdReceiving}/{phraseId}")
+  public ResponseEntity<List<UsernameDTO>> getCosignersForUserAttribute(@PathVariable Long userIdReceiving, @PathVariable Long phraseId) {
+
+    List<UsernameDTO> list = cosignService.getCosignersForUserAttribute(userIdReceiving,phraseId);
+
+    return ResponseEntity.status(HttpStatus.OK).body(list);
+  }
+
+  @GetAllCosignsForUser
+  @GetMapping("cosign/{userIdReceiving}/all")
+  public ResponseEntity<List<CosignsForUserDTO>> getAllCosignsForUser(@PathVariable Long userIdReceiving) {
+
+    List<CosignsForUserDTO> list = cosignService.getAllCosignsForUser(userIdReceiving);
+
+    return ResponseEntity.status(HttpStatus.OK).body(list);
+  }
+
 }

@@ -2,8 +2,6 @@ package com.savvato.tribeapp.dto;
 
 import lombok.Builder;
 
-import java.util.List;
-
 @Builder
 public class ConnectOutgoingMessageDTO {
     public Boolean connectionError;
@@ -12,5 +10,5 @@ public class ConnectOutgoingMessageDTO {
 
     public String  message;
 
-    public List<Long> to;
+    public Long to;
 }

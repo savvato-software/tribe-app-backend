@@ -200,10 +200,10 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         List<ConnectOutgoingMessageDTO> expectedOutgoingMsg = new ArrayList<>();
         expectedOutgoingMsg.add(ConnectOutgoingMessageDTO.builder()
                 .message("Please confirm that you wish to connect.")
-                .to(getUsernameDTOForUserID(requestingUserId))
+                .to(getUsernameDTOForUserID(toBeConnectedWithUserId))
                 .build());
         ConnectService connectServiceSpy = spy(connectService);
-        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(getUser1())).thenReturn(Optional.of(getUser2()));
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(getUser2()));
         List<ConnectOutgoingMessageDTO> outgoing = connectServiceSpy.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
 
         verify(connectServiceSpy, never()).saveConnectionDetails(Mockito.any(), Mockito.any());

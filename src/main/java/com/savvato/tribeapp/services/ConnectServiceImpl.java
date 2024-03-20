@@ -114,8 +114,8 @@ public class ConnectServiceImpl implements ConnectService {
             rtn.add(ConnectOutgoingMessageDTO.builder()
                     .message("Please confirm that you wish to connect.")
                             .to(UsernameDTO.builder()
-                                    .userId(requestingUserId)
-                                    .username(userRepository.findById(requestingUserId).get().getName())
+                                    .userId(toBeConnectedWithUserId)
+                                    .username(userRepository.findById(toBeConnectedWithUserId).get().getName())
                                     .build())
                     .build());
 

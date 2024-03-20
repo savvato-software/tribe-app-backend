@@ -12,9 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -33,15 +30,12 @@ public class ConnectServiceImpl implements ConnectService {
     ConnectionsRepository connectionsRepository;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     UserRepository userRepository;
 
     private final int QRCODE_STRING_LENGTH = 12;
-
-    private Long getLoggedInUserId(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userRepository.findByName(userDetails.getUsername()).get().getId();
-    };
 
     public Optional<String> getQRCodeString(long userId) {
         String userIdToCacheKey = String.valueOf(userId);
@@ -69,7 +63,7 @@ public class ConnectServiceImpl implements ConnectService {
     }
 
     public boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
-        if (getLoggedInUserId() != requestingUserId) {
+        if (userService.getLoggedInUserId() != requestingUserId) {
             log.error("The logged in user does not match requesting user.");
             return false;
         }

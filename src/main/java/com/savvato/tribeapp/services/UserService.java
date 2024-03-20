@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
+	Long getLoggedInUserId();
+
 	public Optional<User> createNewUser(UserRequest req, String preferredContactMethod);
 
 	public Optional<User> find(String query);

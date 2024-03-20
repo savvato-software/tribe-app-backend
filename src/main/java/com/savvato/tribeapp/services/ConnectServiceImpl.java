@@ -70,13 +70,16 @@ public class ConnectServiceImpl implements ConnectService {
 
     public boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
         if (getLoggedInUserId() != requestingUserId) {
+            log.error("The logged in user does not match requesting user.");
             return false;
         }
         if (requestingUserId.equals(toBeConnectedWithUserId)) {
+            log.error("Users may not connect with themselves.");
             return false;
         }
         Optional<Connection> existingConnectionWithReversedIds = connectionsRepository.findExistingConnectionWithReversedUserIds(requestingUserId, toBeConnectedWithUserId);
         if (existingConnectionWithReversedIds.isPresent()) {
+            log.error("This connection already exists between these two users.");
             return false;
         }
         try {

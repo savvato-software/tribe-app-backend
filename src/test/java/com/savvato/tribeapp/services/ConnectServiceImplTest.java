@@ -56,7 +56,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void getQRCodeString() {
-        Long userId = 1L;
+        Long userId = USER1_ID;
         Optional<String> qrCodeString = Optional.of("QR code");
         Mockito.when(cacheService.get(Mockito.any(), Mockito.any())).thenReturn(qrCodeString.get());
         Optional<String> rtn = connectService.getQRCodeString(userId);
@@ -65,7 +65,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void storeQRCodeString() {
-        Long userId = 1L;
+        Long userId = USER1_ID;
         Optional<String> generatedQRCodeString = Optional.of("QR code");
 
         Optional<String> rtn = connectService.storeQRCodeString(userId);
@@ -80,8 +80,8 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void saveConnectionDetailsHappyPath() {
-        Long requestingUserId = 1L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER1_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
 
         Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
         assertEquals(connectionStatus, true);
@@ -89,8 +89,8 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void saveConnectionDetailsUnhappyPath() {
-        Long requestingUserId = 1L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER1_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
         doThrow(new IndexOutOfBoundsException()).when(connectionsRepository).save(Mockito.any());
         Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
         assertEquals(connectionStatus, false);
@@ -98,8 +98,8 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void saveConnectionDetailsWhenExistingConnectionWithReversedUserIdsExists() {
-        Long requestingUserId = 1L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER1_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
         Connection existingConnection = new Connection(requestingUserId, toBeConnectedWithUserId);
         when(connectionsRepository.findExistingConnectionWithReversedUserIds(anyLong(), anyLong())).thenReturn(Optional.of(existingConnection));
         Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
@@ -109,8 +109,8 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void saveConnectionDetailsWhenIdsAreTheSame() {
-        Long requestingUserId = 2L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER2_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
         Boolean connectionStatus = connectService.saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
         assertEquals(connectionStatus, false);
 
@@ -121,8 +121,8 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     @Test
     public void connectWhenQrCodeIsInvalid() {
         UserPrincipal user = new UserPrincipal(getUser1());
-        Long requestingUserId = 1L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER1_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
         String qrcodePhrase = "invalid code";
         String connectionIntent = "";
         String expectedDestination = "/connect/user/queue/specific-user";
@@ -291,7 +291,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         ConnectService connectServiceSpy = spy(connectService);
         Optional<String> qrCodeOpt = Optional.of("ABCDEFGHIJKL");
         String providedQRCode = "ABCDEFGHIJKL";
-        Long toBeConnectedWithUserId = 1L;
+        Long toBeConnectedWithUserId = USER1_ID;
         doReturn(qrCodeOpt).when(connectServiceSpy).getQRCodeString(anyLong());
         Boolean isValid = connectServiceSpy.validateQRCode(providedQRCode, toBeConnectedWithUserId);
         assertTrue(isValid);
@@ -300,8 +300,8 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     @Test
     public void removeConnectionHappyPath() {
         ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
-        connectionDeleteRequest.requestingUserId = 1L;
-        connectionDeleteRequest.connectedWithUserId = 2L;
+        connectionDeleteRequest.requestingUserId = USER1_ID;
+        connectionDeleteRequest.connectedWithUserId = USER2_ID;
         ArgumentCaptor<Long> requestingUserIdCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<Long> connectedWithUserIdCaptor = ArgumentCaptor.forClass(Long.class);
         assertTrue(connectService.removeConnection(connectionDeleteRequest));
@@ -313,8 +313,8 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     @Test
     public void removeConnectionWhenDatabaseDeleteFails() {
         ConnectionRemovalRequest connectionDeleteRequest = new ConnectionRemovalRequest();
-        connectionDeleteRequest.requestingUserId = 1L;
-        connectionDeleteRequest.connectedWithUserId = 2L;
+        connectionDeleteRequest.requestingUserId = USER1_ID;
+        connectionDeleteRequest.connectedWithUserId = USER2_ID;
         ArgumentCaptor<Long> requestingUserIdCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<Long> connectedWithUserIdCaptor = ArgumentCaptor.forClass(Long.class);
         doThrow(new IllegalArgumentException("Database delete failed.")).when(connectionsRepository).removeConnection(anyLong(), anyLong());
@@ -327,19 +327,19 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     @Test
     public void removeConnectionWhenBothIdsAreTheSame() {
         ConnectionRemovalRequest connectionRemovalRequest = new ConnectionRemovalRequest();
-        connectionRemovalRequest.requestingUserId = 1L;
-        connectionRemovalRequest.connectedWithUserId = 1L;
+        connectionRemovalRequest.requestingUserId = USER1_ID;
+        connectionRemovalRequest.connectedWithUserId = USER1_ID;
         assertFalse(connectService.removeConnection(connectionRemovalRequest));
         verify(connectionsRepository, never()).removeConnection(anyLong(), anyLong());
     }
 
     @Test
     public void testGetAllConnectionsForAUserWhenConnectionsExist() {
-        Long toBeConnectedUserId = 2L;
+        Long toBeConnectedUserId = USER2_ID;
 
         Connection connection = new Connection();
         connection.setCreated();
-        connection.setRequestingUserId(1L);
+        connection.setRequestingUserId(USER1_ID);
         connection.setToBeConnectedWithUserId(toBeConnectedUserId);
 
         when(connectionsRepository.findAllByToBeConnectedWithUserId(anyLong())).thenReturn(List.of(connection));
@@ -361,7 +361,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void testGetAllConnectionsForAUserWhenConnectionsDoNotExist() {
-        Long toBeConnectedUserId = 2L;
+        Long toBeConnectedUserId = USER2_ID;
 
         when(connectionsRepository.findAllByToBeConnectedWithUserId(anyLong())).thenReturn(Collections.emptyList());
 
@@ -374,7 +374,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     @Test
     public void validateQRCodeWhenQRCodeIsEmpty() {
         String qrcodePhrase = "";
-        Long userId = 1L;
+        Long userId = USER1_ID;
         when(cacheService.get(any(), any())).thenReturn("");
         boolean isValidQRCode = connectService.validateQRCode(qrcodePhrase, userId);
         assertFalse(isValidQRCode);
@@ -383,7 +383,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     @Test
     public void validateQRCodeWhenQRCodeIsValid() {
         String qrcodePhrase = "ABCDE";
-        Long userId = 1L;
+        Long userId = USER1_ID;
         when(cacheService.get(any(), any())).thenReturn(qrcodePhrase);
         boolean isValidQRCode = connectService.validateQRCode(qrcodePhrase, userId);
         assertTrue(isValidQRCode);
@@ -392,7 +392,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     @Test
     public void validateQRCodeWhenNoQRCodeIsCached() {
         String qrcodePhrase = "ABCDE";
-        Long userId = 1L;
+        Long userId = USER1_ID;
         when(cacheService.get(any(), any())).thenReturn(null);
         boolean isValidQRCode = connectService.validateQRCode(qrcodePhrase, userId);
         assertFalse(isValidQRCode);

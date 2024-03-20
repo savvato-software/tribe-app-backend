@@ -1,6 +1,7 @@
 package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
+import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.*;
 
 import java.util.HashSet;
@@ -82,6 +83,22 @@ public abstract class AbstractServiceImplTest {
         rtn.setRoles(getUserRoles_Admin());
 
         return rtn;
+    }
+
+    public UsernameDTO getUsernameDTOForUserID(Long userId) {
+        if (userId == USER1_ID) {
+            return UsernameDTO.builder()
+                    .userId(USER1_ID)
+                    .username(USER1_NAME)
+                    .build();
+        } else if (userId == USER2_ID) {
+            return UsernameDTO.builder()
+                    .userId(USER2_ID)
+                    .username(USER2_NAME)
+                    .build();
+        } else {
+            return null;
+        }
     }
 
     public UserRequest getUserRequestFor(User user) {

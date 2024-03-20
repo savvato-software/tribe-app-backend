@@ -3,6 +3,7 @@ package com.savvato.tribeapp.services;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
+import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.Connection;
 import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -112,21 +113,32 @@ public class ConnectServiceImpl implements ConnectService {
         if (connectionIntent == "") {
             rtn.add(ConnectOutgoingMessageDTO.builder()
                     .message("Please confirm that you wish to connect.")
-                    .to(toBeConnectedWithUserId)
+                            .to(UsernameDTO.builder()
+                                    .userId(toBeConnectedWithUserId)
+                                    .username(userRepository.findById(toBeConnectedWithUserId).get().getName())
+                                    .build())
                     .build());
+
+            return rtn;
         } else if (connectionIntent == "confirmed") {
             Boolean connectionStatus = saveConnectionDetails(requestingUserId, toBeConnectedWithUserId);
             for(Long id : allRecipients) {
                 if (connectionStatus) {
                     rtn.add(ConnectOutgoingMessageDTO.builder()
                             .connectionSuccess(true)
-                            .to(id)
+                            .to(UsernameDTO.builder()
+                                    .userId(id)
+                                    .username(userRepository.findById(id).get().getName())
+                                    .build())
                             .message("Successfully saved connection!")
                             .build());
                 } else {
                     rtn.add(ConnectOutgoingMessageDTO.builder()
                             .connectionError(true)
-                            .to(id)
+                            .to(UsernameDTO.builder()
+                                    .userId(id)
+                                    .username(userRepository.findById(id).get().getName())
+                                    .build())
                             .message("Failed to save connection to database.")
                             .build());
                 }
@@ -135,7 +147,10 @@ public class ConnectServiceImpl implements ConnectService {
             for(Long id : allRecipients) {
                 rtn.add(ConnectOutgoingMessageDTO.builder()
                         .connectionError(true)
-                        .to(id)
+                        .to(UsernameDTO.builder()
+                                .userId(id)
+                                .username(userRepository.findById(id).get().getName())
+                                .build())
                         .message("Connection request denied.")
                         .build());
             }
@@ -153,7 +168,10 @@ public class ConnectServiceImpl implements ConnectService {
         for (Connection connection : connections) {
             ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
                     .connectionSuccess(true)
-                    .to(connection.getRequestingUserId())
+                    .to(UsernameDTO.builder()
+                            .userId(connection.getRequestingUserId())
+                            .username(userRepository.findById(connection.getRequestingUserId()).get().getName())
+                            .build())
                     .message("")
                     .build();
             outgoingMessages.add(outgoingMessage);

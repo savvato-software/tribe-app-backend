@@ -155,8 +155,8 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
     @Test
     public void connectWhenQrCodeIsValid() {
         UserPrincipal user = new UserPrincipal(getUser1());
-        Long requestingUserId = 1L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER1_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
         String connectionIntent = "";
         String expectedDestination = "/connect/user/queue/specific-user";
         ConnectIncomingMessageDTO incoming = ConnectIncomingMessageDTO.builder()
@@ -167,7 +167,7 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         List<ConnectOutgoingMessageDTO> outgoing = new ArrayList<>();
         outgoing.add(ConnectOutgoingMessageDTO.builder()
                 .message("Please confirm that you wish to connect.")
-                .to(toBeConnectedWithUserId)
+                .to(getUsernameDTOForUserID(toBeConnectedWithUserId))
                 .build());
         ConnectService connectServiceSpy = spy(connectService);
         doReturn(true).when(connectServiceSpy).validateQRCode(Mockito.any(), Mockito.any());
@@ -194,15 +194,16 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void handleConnectionIntentWhenNoConnectionIntent() {
-        Long requestingUserId = 1L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER1_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
         String connectionIntent = "";
         List<ConnectOutgoingMessageDTO> expectedOutgoingMsg = new ArrayList<>();
         expectedOutgoingMsg.add(ConnectOutgoingMessageDTO.builder()
                 .message("Please confirm that you wish to connect.")
-                .to(toBeConnectedWithUserId)
+                .to(getUsernameDTOForUserID(toBeConnectedWithUserId))
                 .build());
         ConnectService connectServiceSpy = spy(connectService);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(getUser2()));
         List<ConnectOutgoingMessageDTO> outgoing = connectServiceSpy.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
 
         verify(connectServiceSpy, never()).saveConnectionDetails(Mockito.any(), Mockito.any());
@@ -212,20 +213,21 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void handleConnectionIntentWhenConnectionIntentConfirmedAndDatabaseSaveSuccessful() {
-        Long requestingUserId = 1L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER1_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
         String connectionIntent = "confirmed";
         ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
         List<ConnectOutgoingMessageDTO> expectedOutgoingMsg = new ArrayList<>();
         for(Long id : recipients) {
             expectedOutgoingMsg.add(ConnectOutgoingMessageDTO.builder()
                     .connectionSuccess(true)
-                    .to(id)
+                    .to(getUsernameDTOForUserID(id))
                     .message("Successfully saved connection!")
                     .build());
         }
         Connection connection = new Connection(requestingUserId, toBeConnectedWithUserId);
         Mockito.when(connectionsRepository.save(Mockito.any())).thenReturn(connection);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(getUser1())).thenReturn(Optional.of(getUser2()));
         List<ConnectOutgoingMessageDTO> outgoing = connectService.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
 
         ArgumentCaptor<Connection> connectionArg = ArgumentCaptor.forClass(Connection.class);
@@ -237,20 +239,21 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void handleConnectionIntentWhenConnectionIntentConfirmedAndDatabaseSaveUnsuccessful() throws Exception {
-        Long requestingUserId = 1L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER1_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
         String connectionIntent = "confirmed";
         ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
         List<ConnectOutgoingMessageDTO> expectedOutgoingMsg = new ArrayList<>();
         for(Long id : recipients) {
             expectedOutgoingMsg.add(ConnectOutgoingMessageDTO.builder()
                     .connectionError(true)
-                    .to(id)
+                    .to(getUsernameDTOForUserID(id))
                     .message("Failed to save connection to database.")
                     .build());
         }
 
         Mockito.when(connectionsRepository.save(Mockito.any())).thenThrow(new NullPointerException("Something went wrong."));
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(getUser1())).thenReturn(Optional.of(getUser2()));
         List<ConnectOutgoingMessageDTO> outgoing = connectService.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
 
         ArgumentCaptor<Connection> connectionArg = ArgumentCaptor.forClass(Connection.class);
@@ -262,19 +265,20 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
 
     @Test
     public void handleConnectionIntentWhenConnectionIntentDenied() {
-        Long requestingUserId = 1L;
-        Long toBeConnectedWithUserId = 2L;
+        Long requestingUserId = USER1_ID;
+        Long toBeConnectedWithUserId = USER2_ID;
         String connectionIntent = "denied";
         ArrayList<Long> recipients = new ArrayList<>(Arrays.asList(requestingUserId, toBeConnectedWithUserId));
         List<ConnectOutgoingMessageDTO> expectedOutgoingMsg = new ArrayList<>();
         for(Long id : recipients) {
             expectedOutgoingMsg.add(ConnectOutgoingMessageDTO.builder()
                     .connectionError(true)
-                    .to(id)
+                    .to(getUsernameDTOForUserID(id))
                     .message("Connection request denied.")
                     .build());
         }
         ConnectService connectServiceSpy = spy(connectService);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(getUser1())).thenReturn(Optional.of(getUser2()));
         List<ConnectOutgoingMessageDTO> outgoing = connectServiceSpy.handleConnectionIntent(connectionIntent, requestingUserId, toBeConnectedWithUserId);
 
         verify(connectServiceSpy, never()).saveConnectionDetails(Mockito.any(), Mockito.any());
@@ -343,11 +347,12 @@ public class ConnectServiceImplTest extends AbstractServiceImplTest {
         List<ConnectOutgoingMessageDTO> expectedOutgoingMessageDTOS = new ArrayList<>();
         ConnectOutgoingMessageDTO outgoingMessage = ConnectOutgoingMessageDTO.builder()
                 .connectionSuccess(true)
-                .to(connection.getRequestingUserId())
+                .to(getUsernameDTOForUserID(connection.getRequestingUserId()))
                 .message("")
                 .build();
         expectedOutgoingMessageDTOS.add(outgoingMessage);
 
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.of(getUser1())).thenReturn(Optional.of(getUser2()));
         List<ConnectOutgoingMessageDTO> actualMessageDTOs = connectService.getAllConnectionsForAUser(toBeConnectedUserId);
 
         assertThat(actualMessageDTOs).usingRecursiveComparison().isEqualTo(expectedOutgoingMessageDTOS);

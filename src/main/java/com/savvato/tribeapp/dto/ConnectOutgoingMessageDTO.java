@@ -10,5 +10,5 @@ public class ConnectOutgoingMessageDTO {
 
     public String  message;
 
-    public Long to;
+    public UsernameDTO to;
 }

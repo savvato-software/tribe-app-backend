@@ -7,9 +7,8 @@ import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.Connection;
 import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import com.savvato.tribeapp.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Slf4j
 @Service
 public class ConnectServiceImpl implements ConnectService {
 
@@ -34,8 +34,6 @@ public class ConnectServiceImpl implements ConnectService {
 
     @Autowired
     UserRepository userRepository;
-
-    private static final Log logger = LogFactory.getLog(ConnectServiceImpl.class);
 
     private final int QRCODE_STRING_LENGTH = 12;
 
@@ -56,7 +54,7 @@ public class ConnectServiceImpl implements ConnectService {
         String generatedQRCodeString = generateRandomString(QRCODE_STRING_LENGTH);
         String userIdToCacheKey = String.valueOf(userId);
         cache.put("ConnectQRCodeString", userIdToCacheKey, generatedQRCodeString);
-        logger.debug("User ID: " + userId + " ConnectQRCodeString: " + generatedQRCodeString);
+        log.debug("User ID: " + userId + " ConnectQRCodeString: " + generatedQRCodeString);
         return Optional.of(generatedQRCodeString);
     }
 

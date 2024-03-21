@@ -108,7 +108,7 @@ public class PermissionsAPITest {
                         .id(user.getId())
                         .name(user.getName())
                         .email(user.getEmail())
-                        .roles(getUserRoleDTO(user))
+                        .roles(getUserRoleDTOSet(user))
                         .password(user.getPassword())
                         .created(user.getCreated().toString())
                         .lastUpdated(user.getLastUpdated().toString())
@@ -133,14 +133,14 @@ public class PermissionsAPITest {
         assertThat(actualUserList).usingRecursiveComparison().isEqualTo(expectedUserList);
     }
 
-    private List <UserRoleDTO> getUserRoleDTO(User user){
+    private Set<UserRoleDTO> getUserRoleDTOSet(User user) {
         Set<UserRole> userRole = user.getRoles();
-        List<UserRoleDTO> rtn = new ArrayList<>();
-        Iterator<UserRole> iterator  = userRole.iterator();
-        while (iterator.hasNext()){
-            UserRole userRoles = iterator.next();
-            Long id = userRoles.getId();
-            String name = userRoles.getName();
+        Set<UserRoleDTO> rtn = new HashSet<>();
+        Iterator<UserRole> iterator = userRole.iterator();
+        while (iterator.hasNext()) {
+            UserRole ur = iterator.next();
+            Long id = ur.getId();
+            String name = ur.getName();
             UserRoleDTO userRoleDTO = UserRoleDTO.builder()
                     .id(id)
                     .name(name)
@@ -148,7 +148,6 @@ public class PermissionsAPITest {
             rtn.add(userRoleDTO);
         }
         return rtn;
-
     }
 
     @Test

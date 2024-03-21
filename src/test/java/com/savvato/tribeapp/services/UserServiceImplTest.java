@@ -298,6 +298,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
         List<UserDTO> rtn = userService.getAllUsers();
         assertEquals(rtn.size(), 2);
         for (int i = 0; i < rtn.size(); i++) {
+            UserDTO UserDTOS = userDTOS.get(i);
             assertEquals(rtn.get(i).id, userDTOS.get(i).id);
             assertEquals(rtn.get(i).name, userDTOS.get(i).name);
             assertEquals(rtn.get(i).password, userDTOS.get(i).password);
@@ -306,14 +307,25 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
             assertEquals(rtn.get(i).enabled, userDTOS.get(i).enabled);
             assertEquals(rtn.get(i).created, userDTOS.get(i).created);
             assertEquals(rtn.get(i).lastUpdated, userDTOS.get(i).lastUpdated);
+
             // Compare UserRoleDTOs
-            assertEquals(rtn.get(i).roles.size(), userDTOS.get(i).roles.size());
-            for (int j = 0; j < rtn.get(i).roles.size(); j++) {
-                assertEquals(rtn.get(i).roles.get(j).id, userDTOS.get(i).roles.get(j).id);
-                assertEquals(rtn.get(i).roles.get(j).name, userDTOS.get(i).roles.get(j).name);
+            Set<UserRoleDTO> rtnRoles = rtn.get(i).roles;
+            Set<UserRoleDTO> expectedRoles = userDTOS.get(i).roles;
+            assertEquals(rtnRoles.size(), expectedRoles.size());
+            for (UserRoleDTO rtnRole : rtnRoles) {
+                boolean found = false;
+                for (UserRoleDTO expectedRole : expectedRoles) {
+                    if (rtnRole.id.equals(expectedRole.id) &&
+                            rtnRole.name.equals(expectedRole.name)) {
+                        found = true;
+                        break;
+                    }
+                }
+                assertTrue("UserRoleDTO not found in expectedRoles: " + rtnRole,found);
             }
         }
     }
+
 
     @Test
     public void find() {
@@ -370,10 +382,13 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
         assertEquals(rtn.enabled, userDTO.enabled);
         assertEquals(rtn.created, userDTO.created);
         assertEquals(rtn.lastUpdated, userDTO.lastUpdated);
-        assertEquals(rtn.roles.size(), userDTO.roles.size());
-        for (int i = 0; i < rtn.roles.size(); i++) {
-            assertEquals(rtn.roles.get(i).id, userDTO.roles.get(i).id);
-            assertEquals(rtn.roles.get(i).name, userDTO.roles.get(i).name);
+
+        Set<UserRoleDTO> expectedRoles = userDTO.roles;
+        Set<UserRoleDTO> rtnRoles = rtn.roles;
+        assertEquals(expectedRoles.size(), rtnRoles.size());
+        for (UserRoleDTO expectedRole : expectedRoles) {
+            assertTrue(rtnRoles.stream().anyMatch(rtnRole ->
+                    rtnRole.id.equals(expectedRole.id) && rtnRole.name.equals(expectedRole.name)));
         }
     }
 
@@ -387,20 +402,20 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
                 .enabled(user.getEnabled())
                 .created(user.getCreated().toString())
                 .lastUpdated(user.getLastUpdated().toString())
-                .roles(getUserRoleDTO(user))
+                .roles(getUserRoleDTOSet(user))
                 .build();
 
         return userDTO;
     }
 
-    private List <UserRoleDTO> getUserRoleDTO(User user){
+    private Set<UserRoleDTO> getUserRoleDTOSet(User user) {
         Set<UserRole> userRole = user.getRoles();
-        List<UserRoleDTO> rtn = new ArrayList<>();
-        Iterator<UserRole> iterator  = userRole.iterator();
-        while (iterator.hasNext()){
-            UserRole userRoles = iterator.next();
-            Long id = userRoles.getId();
-            String name = userRoles.getName();
+        Set<UserRoleDTO> rtn = new HashSet<>();
+        Iterator<UserRole> iterator = userRole.iterator();
+        while (iterator.hasNext()) {
+            UserRole ur = iterator.next();
+            Long id = ur.getId();
+            String name = ur.getName();
             UserRoleDTO userRoleDTO = UserRoleDTO.builder()
                     .id(id)
                     .name(name)
@@ -408,7 +423,6 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
             rtn.add(userRoleDTO);
         }
         return rtn;
-
     }
 
 }

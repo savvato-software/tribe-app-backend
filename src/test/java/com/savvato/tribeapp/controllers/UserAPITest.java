@@ -383,7 +383,7 @@ public class UserAPITest {
                         .phone(changePasswordRequest.phoneNumber)
                         .email(Constants.FAKE_USER_EMAIL2)
                         .enabled(1)
-                        .roles(getUserRoleDTO(user))
+                        .roles(getUserRoleDTOSet(user))
                         .build();
         when(userService.changePassword(anyString(), anyString(), anyString())).thenReturn(expectedUserDTO);
 
@@ -403,14 +403,14 @@ public class UserAPITest {
         assertThat(actualUserDTO).usingRecursiveComparison().isEqualTo(expectedUserDTO);
     }
 
-    private List <UserRoleDTO> getUserRoleDTO(User user){
+    private Set<UserRoleDTO> getUserRoleDTOSet(User user) {
         Set<UserRole> userRole = user.getRoles();
-        List<UserRoleDTO> rtn = new ArrayList<>();
-        Iterator<UserRole> iterator  = userRole.iterator();
-        while (iterator.hasNext()){
-            UserRole userRoles = iterator.next();
-            Long id = userRoles.getId();
-            String name = userRoles.getName();
+        Set<UserRoleDTO> rtn = new HashSet<>();
+        Iterator<UserRole> iterator = userRole.iterator();
+        while (iterator.hasNext()) {
+            UserRole ur = iterator.next();
+            Long id = ur.getId();
+            String name = ur.getName();
             UserRoleDTO userRoleDTO = UserRoleDTO.builder()
                     .id(id)
                     .name(name)

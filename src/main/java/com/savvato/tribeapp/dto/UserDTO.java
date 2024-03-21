@@ -35,5 +35,5 @@ public class UserDTO {
   @Schema(example = "2007-12-13T10:15:30")
   public String lastUpdated;
 
-  public List<UserRoleDTO> roles;
+  public Set<UserRoleDTO> roles;
 }

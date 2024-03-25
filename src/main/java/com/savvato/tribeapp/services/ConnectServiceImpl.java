@@ -63,7 +63,7 @@ public class ConnectServiceImpl implements ConnectService {
     }
 
     public boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
-        if (userService.getLoggedInUserId() != requestingUserId) {
+        if (userService.getLoggedInUserId().equals(requestingUserId)) {
             log.error("The logged in user does not match requesting user.");
             return false;
         }

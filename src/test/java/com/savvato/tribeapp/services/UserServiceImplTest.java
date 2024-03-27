@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.UserDTO;
+import com.savvato.tribeapp.dto.UserRoleDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -297,6 +298,7 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
         List<UserDTO> rtn = userService.getAllUsers();
         assertEquals(rtn.size(), 2);
         for (int i = 0; i < rtn.size(); i++) {
+            UserDTO UserDTOS = userDTOS.get(i);
             assertEquals(rtn.get(i).id, userDTOS.get(i).id);
             assertEquals(rtn.get(i).name, userDTOS.get(i).name);
             assertEquals(rtn.get(i).password, userDTOS.get(i).password);
@@ -305,11 +307,25 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
             assertEquals(rtn.get(i).enabled, userDTOS.get(i).enabled);
             assertEquals(rtn.get(i).created, userDTOS.get(i).created);
             assertEquals(rtn.get(i).lastUpdated, userDTOS.get(i).lastUpdated);
-            for (UserRole userRole : users.get(i).getRoles()) {
-                assertTrue(rtn.get(i).roles.contains(userRole));
+
+            // Compare UserRoleDTOs
+            Set<UserRoleDTO> rtnRoles = rtn.get(i).roles;
+            Set<UserRoleDTO> expectedRoles = userDTOS.get(i).roles;
+            assertEquals(rtnRoles.size(), expectedRoles.size());
+            for (UserRoleDTO rtnRole : rtnRoles) {
+                boolean found = false;
+                for (UserRoleDTO expectedRole : expectedRoles) {
+                    if (rtnRole.id.equals(expectedRole.id) &&
+                            rtnRole.name.equals(expectedRole.name)) {
+                        found = true;
+                        break;
+                    }
+                }
+                assertTrue("UserRoleDTO not found in expectedRoles: " + rtnRole,found);
             }
         }
     }
+
 
     @Test
     public void find() {
@@ -366,8 +382,13 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
         assertEquals(rtn.enabled, userDTO.enabled);
         assertEquals(rtn.created, userDTO.created);
         assertEquals(rtn.lastUpdated, userDTO.lastUpdated);
-        for (UserRole userRole : user.getRoles()) {
-            assertTrue(rtn.roles.contains(userRole));
+
+        Set<UserRoleDTO> expectedRoles = userDTO.roles;
+        Set<UserRoleDTO> rtnRoles = rtn.roles;
+        assertEquals(expectedRoles.size(), rtnRoles.size());
+        for (UserRoleDTO expectedRole : expectedRoles) {
+            assertTrue(rtnRoles.stream().anyMatch(rtnRole ->
+                    rtnRole.id.equals(expectedRole.id) && rtnRole.name.equals(expectedRole.name)));
         }
     }
 
@@ -381,10 +402,27 @@ public class UserServiceImplTest extends AbstractServiceImplTest {
                 .enabled(user.getEnabled())
                 .created(user.getCreated().toString())
                 .lastUpdated(user.getLastUpdated().toString())
-                .roles(user.getRoles())
+                .roles(getUserRoleDTOSet(user))
                 .build();
 
         return userDTO;
+    }
+
+    private Set<UserRoleDTO> getUserRoleDTOSet(User user) {
+        Set<UserRole> userRole = user.getRoles();
+        Set<UserRoleDTO> rtn = new HashSet<>();
+        Iterator<UserRole> iterator = userRole.iterator();
+        while (iterator.hasNext()) {
+            UserRole ur = iterator.next();
+            Long id = ur.getId();
+            String name = ur.getName();
+            UserRoleDTO userRoleDTO = UserRoleDTO.builder()
+                    .id(id)
+                    .name(name)
+                    .build();
+            rtn.add(userRoleDTO);
+        }
+        return rtn;
     }
 
 }

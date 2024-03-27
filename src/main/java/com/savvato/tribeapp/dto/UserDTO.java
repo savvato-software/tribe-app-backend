@@ -6,6 +6,7 @@ import com.savvato.tribeapp.entities.UserRole;
 
 import lombok.Builder;
 
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -34,5 +35,5 @@ public class UserDTO {
   @Schema(example = "2007-12-13T10:15:30")
   public String lastUpdated;
 
-  public Set<UserRole> roles;
+  public Set<UserRoleDTO> roles;
 }

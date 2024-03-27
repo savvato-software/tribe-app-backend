@@ -27,4 +27,6 @@ public interface ConnectService {
     List<ConnectOutgoingMessageDTO> handleConnectionIntent(String connectionIntent, Long requestingUserId, Long toBeConnectedWithUserId);
 
     boolean removeConnection(ConnectionRemovalRequest connectionDeleteRequest);
+
+    Boolean validateConnection(Long requestingUserId, Long toBeConnectedWithUserId);
 }

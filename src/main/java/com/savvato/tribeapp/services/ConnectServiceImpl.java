@@ -63,19 +63,7 @@ public class ConnectServiceImpl implements ConnectService {
     }
 
     public boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
-        if (userService.getLoggedInUserId().equals(requestingUserId)) {
-            log.error("The logged in user does not match requesting user.");
-            return false;
-        }
-        if (requestingUserId.equals(toBeConnectedWithUserId)) {
-            log.error("Users may not connect with themselves.");
-            return false;
-        }
-        Optional<Connection> existingConnectionWithReversedIds = connectionsRepository.findExistingConnectionWithReversedUserIds(requestingUserId, toBeConnectedWithUserId);
-        if (existingConnectionWithReversedIds.isPresent()) {
-            log.error("This connection already exists between these two users.");
-            return false;
-        }
+
         try {
             connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId));
             return true;
@@ -196,5 +184,28 @@ public class ConnectServiceImpl implements ConnectService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public Boolean validateConnection(Long requestingUserId, Long toBeConnectedWithUserId) {
+
+        if (!userService.getLoggedInUserId().equals(requestingUserId)) {
+            log.error("The logged in user does not match issuing user.");
+            return false;
+        }
+
+        if (requestingUserId.equals(toBeConnectedWithUserId)) {
+            log.error("Users may not cosign themselves.");
+            return false;
+        }
+
+        Optional<Connection> existingConnectionWithReversedIds = connectionsRepository.findExistingConnectionWithReversedUserIds(requestingUserId, toBeConnectedWithUserId);
+
+        if (existingConnectionWithReversedIds.isPresent()) {
+            log.error("This connection already exists between these two users.");
+            return false;
+        }
+
+        return true;
     }
 }

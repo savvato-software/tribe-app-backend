@@ -8,6 +8,7 @@ import com.savvato.tribeapp.constants.Constants;
 import com.savvato.tribeapp.controllers.dto.ChangePasswordRequest;
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.UserDTO;
+import com.savvato.tribeapp.dto.UserRoleDTO;
 import com.savvato.tribeapp.entities.User;
 import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
@@ -366,6 +367,7 @@ public class UserAPITest {
         user.setCreated();
         user.setLastUpdated();
         user.setEmail(Constants.FAKE_USER_EMAIL1);
+        user.setRoles(Set.of(UserRole.ROLE_ACCOUNTHOLDER));
         Mockito.when(userPrincipalService.getUserPrincipalByEmail(Mockito.anyString()))
                 .thenReturn(new UserPrincipal(user));
         String auth = AuthServiceImpl.generateAccessToken(user);
@@ -381,7 +383,7 @@ public class UserAPITest {
                         .phone(changePasswordRequest.phoneNumber)
                         .email(Constants.FAKE_USER_EMAIL2)
                         .enabled(1)
-                        .roles(Set.of(UserRole.ROLE_ACCOUNTHOLDER))
+                        .roles(getUserRoleDTOSet(user))
                         .build();
         when(userService.changePassword(anyString(), anyString(), anyString())).thenReturn(expectedUserDTO);
 
@@ -399,5 +401,22 @@ public class UserAPITest {
         }.getType();
         UserDTO actualUserDTO = gson.fromJson(result.getResponse().getContentAsString(), userDTOType);
         assertThat(actualUserDTO).usingRecursiveComparison().isEqualTo(expectedUserDTO);
+    }
+
+    private Set<UserRoleDTO> getUserRoleDTOSet(User user) {
+        Set<UserRole> userRole = user.getRoles();
+        Set<UserRoleDTO> rtn = new HashSet<>();
+        Iterator<UserRole> iterator = userRole.iterator();
+        while (iterator.hasNext()) {
+            UserRole ur = iterator.next();
+            Long id = ur.getId();
+            String name = ur.getName();
+            UserRoleDTO userRoleDTO = UserRoleDTO.builder()
+                    .id(id)
+                    .name(name)
+                    .build();
+            rtn.add(userRoleDTO);
+        }
+        return rtn;
     }
 }

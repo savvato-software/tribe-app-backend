@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="johnathan" id="1">
+        <sql>DELETE FROM user_user_role_map;</sql>
+
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (1, 1);</sql>
+
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (1, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (2, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (3, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (4, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (5, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (6, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (7, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (8, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (9, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (10, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (11, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (12, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (13, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (14, 2);</sql>
+        <sql>INSERT INTO user_user_role_map (user_id, user_role_id) VALUES (15, 2);</sql>
+    </changeSet>
+
+</databaseChangeLog>

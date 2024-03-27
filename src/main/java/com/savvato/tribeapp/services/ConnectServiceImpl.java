@@ -188,21 +188,22 @@ public class ConnectServiceImpl implements ConnectService {
 
     @Override
     public Boolean validateConnection(Long requestingUserId, Long toBeConnectedWithUserId) {
+        Long loggedInUser = userService.getLoggedInUserId();
 
-        if (!userService.getLoggedInUserId().equals(requestingUserId)) {
-            log.error("The logged in user does not match issuing user.");
+        if (!loggedInUser.equals(requestingUserId)) {
+            log.error("The logged in user (" + loggedInUser + ") does not match issuing user (" + requestingUserId + ")");
             return false;
         }
 
         if (requestingUserId.equals(toBeConnectedWithUserId)) {
-            log.error("Users may not cosign themselves.");
+            log.error("User " + requestingUserId + " may not cosign themselves");
             return false;
         }
 
         Optional<Connection> existingConnectionWithReversedIds = connectionsRepository.findExistingConnectionWithReversedUserIds(requestingUserId, toBeConnectedWithUserId);
 
         if (existingConnectionWithReversedIds.isPresent()) {
-            log.error("This connection already exists between these two users.");
+            log.error("This connection already exists in reverse between the requesting user " + requestingUserId + " and the to be connected with user " + toBeConnectedWithUserId);
             return false;
         }
 

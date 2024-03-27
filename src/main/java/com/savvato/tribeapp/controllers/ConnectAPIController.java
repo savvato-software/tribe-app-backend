@@ -74,11 +74,17 @@ public class ConnectAPIController {
   @Connect
   @PostMapping
   public boolean connect(@RequestBody @Valid ConnectRequest connectRequest) {
-    if (connectService.validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
-      return connectService.saveConnectionDetails(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId);
-    } else {
+
+    if (!connectService.validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
       return false;
     }
+
+    if (!connectService.validateConnection(connectRequest.requestingUserId,connectRequest.toBeConnectedWithUserId)) {
+      return false;
+    }
+
+    return connectService.saveConnectionDetails(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId);
+
   }
 
   @MessageMapping("/connect/room")

@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
@@ -62,10 +63,31 @@ public class ConnectServiceImpl implements ConnectService {
         return new String(digits);
     }
 
+    // deprecated in favor of saveConnectionRequestDetails
     public boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
 
         try {
             connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
+    @Override
+    public boolean saveConnectionRequestDetails(ConnectRequest connectRequest) {
+
+//        if (!validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
+//            return false;
+//        }
+
+        if (!validateConnection(connectRequest.requestingUserId,connectRequest.toBeConnectedWithUserId)) {
+            return false;
+        }
+
+        try {
+            connectionsRepository.save(new Connection(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId));
             return true;
         } catch (Exception e) {
             return false;
@@ -196,7 +218,7 @@ public class ConnectServiceImpl implements ConnectService {
         }
 
         if (requestingUserId.equals(toBeConnectedWithUserId)) {
-            log.error("User " + requestingUserId + " may not cosign themselves");
+            log.error("User " + requestingUserId + " may not connect with themselves");
             return false;
         }
 

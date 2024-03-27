@@ -103,10 +103,12 @@ public class CosignServiceImpl implements CosignService {
 
         GenericResponseDTO genericResponseDTO = GenericResponseDTO.builder().build();
 
-        if (!userService.getLoggedInUserId().equals(userIdIssuing)) {
-            genericResponseDTO.responseMessage = "The logged in user does not match issuing user.";
+        Long loggedInUser = userService.getLoggedInUserId();
+
+        if (!loggedInUser.equals(userIdIssuing)) {
+            genericResponseDTO.responseMessage = "The logged in user (" + loggedInUser + ") does not match issuing user (" + userIdIssuing + ")";
         } else if (userIdIssuing.equals(userIdReceiving)) {
-            genericResponseDTO.responseMessage = "Users may not cosign themselves.";
+            genericResponseDTO.responseMessage = "User " + userIdIssuing + " may not cosign themselves.";
         } else {
             return Optional.empty();
         }

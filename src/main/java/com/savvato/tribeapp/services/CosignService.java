@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.dto.CosignsForUserDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.dto.UsernameDTO;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface CosignService {
     List<UsernameDTO> getCosignersForUserAttribute(Long userReceivingId, Long phraseId);
 
     List<CosignsForUserDTO> getAllCosignsForUser(Long userIdReceiving);
+
+    Optional<GenericResponseDTO> validateCosigners(Long userIdIssuing, Long userIdReceiving);
 }

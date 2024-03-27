@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import java.util.*;
 
+import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.NotificationDTO;
 import com.savvato.tribeapp.dto.UserDTO;
@@ -12,6 +13,9 @@ import com.savvato.tribeapp.entities.UserRole;
 import com.savvato.tribeapp.repositories.UserRepository;
 import com.savvato.tribeapp.utils.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +30,13 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	SMSChallengeCodeService smsccs;
+
+	@Override
+	public Long getLoggedInUserId(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		return userPrincipal.getId();
+	};
 
 	// TODO: Implement the preferredContactMethod behavior
 	public Optional<User> createNewUser(UserRequest request, String preferredContactMethod) {

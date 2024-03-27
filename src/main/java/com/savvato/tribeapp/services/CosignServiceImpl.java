@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import com.savvato.tribeapp.dto.CosignDTO;
 import com.savvato.tribeapp.dto.CosignsForUserDTO;
+import com.savvato.tribeapp.dto.GenericResponseDTO;
 import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.Cosign;
 import com.savvato.tribeapp.repositories.CosignRepository;
@@ -23,10 +24,6 @@ public class CosignServiceImpl implements CosignService {
 
     @Override
     public Optional<CosignDTO> saveCosign(Long userIdIssuing, Long userIdReceiving, Long phraseId) {
-
-        if(userIdIssuing == userIdReceiving) {
-            return Optional.empty();
-        }
 
         Cosign cosign = new Cosign();
         cosign.setUserIdIssuing(userIdIssuing);
@@ -99,5 +96,23 @@ public class CosignServiceImpl implements CosignService {
         });
 
         return cosignsForUserDTOs;
+    }
+
+    @Override
+    public Optional<GenericResponseDTO> validateCosigners(Long userIdIssuing, Long userIdReceiving) {
+
+        GenericResponseDTO genericResponseDTO = GenericResponseDTO.builder().build();
+
+        Long loggedInUser = userService.getLoggedInUserId();
+
+        if (!loggedInUser.equals(userIdIssuing)) {
+            genericResponseDTO.responseMessage = "The logged in user (" + loggedInUser + ") does not match issuing user (" + userIdIssuing + ")";
+        } else if (userIdIssuing.equals(userIdReceiving)) {
+            genericResponseDTO.responseMessage = "User " + userIdIssuing + " may not cosign themselves.";
+        } else {
+            return Optional.empty();
+        }
+
+        return Optional.of(genericResponseDTO);
     }
 }

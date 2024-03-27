@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
@@ -16,6 +17,8 @@ public interface ConnectService {
 
     Optional<String> storeQRCodeString(long userId);
 
+    boolean saveConnectionRequestDetails(ConnectRequest connectRequest);
+
     Boolean validateQRCode(String qrcodePhrase, Long toBeConnectedWithUserId);
 //    void connect(ConnectIncomingMessageDTO incoming);
 
@@ -27,4 +30,6 @@ public interface ConnectService {
     List<ConnectOutgoingMessageDTO> handleConnectionIntent(String connectionIntent, Long requestingUserId, Long toBeConnectedWithUserId);
 
     boolean removeConnection(ConnectionRemovalRequest connectionDeleteRequest);
+
+    Boolean validateConnection(Long requestingUserId, Long toBeConnectedWithUserId);
 }

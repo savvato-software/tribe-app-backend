@@ -1,5 +1,6 @@
 package com.savvato.tribeapp.services;
 
+import com.savvato.tribeapp.controllers.dto.ConnectRequest;
 import com.savvato.tribeapp.controllers.dto.ConnectionRemovalRequest;
 import com.savvato.tribeapp.dto.ConnectIncomingMessageDTO;
 import com.savvato.tribeapp.dto.ConnectOutgoingMessageDTO;
@@ -7,9 +8,8 @@ import com.savvato.tribeapp.dto.UsernameDTO;
 import com.savvato.tribeapp.entities.Connection;
 import com.savvato.tribeapp.repositories.ConnectionsRepository;
 import com.savvato.tribeapp.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Slf4j
 @Service
 public class ConnectServiceImpl implements ConnectService {
 
@@ -30,9 +31,10 @@ public class ConnectServiceImpl implements ConnectService {
     ConnectionsRepository connectionsRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
-    private static final Log logger = LogFactory.getLog(ConnectServiceImpl.class);
+    @Autowired
+    UserRepository userRepository;
 
     private final int QRCODE_STRING_LENGTH = 12;
 
@@ -47,7 +49,7 @@ public class ConnectServiceImpl implements ConnectService {
         String generatedQRCodeString = generateRandomString(QRCODE_STRING_LENGTH);
         String userIdToCacheKey = String.valueOf(userId);
         cache.put("ConnectQRCodeString", userIdToCacheKey, generatedQRCodeString);
-        logger.debug("User ID: " + userId + " ConnectQRCodeString: " + generatedQRCodeString);
+        log.debug("User ID: " + userId + " ConnectQRCodeString: " + generatedQRCodeString);
         return Optional.of(generatedQRCodeString);
     }
 
@@ -61,16 +63,31 @@ public class ConnectServiceImpl implements ConnectService {
         return new String(digits);
     }
 
+    // deprecated in favor of saveConnectionRequestDetails
     public boolean saveConnectionDetails(Long requestingUserId, Long toBeConnectedWithUserId) {
-        if (requestingUserId.equals(toBeConnectedWithUserId)) {
-            return false;
-        }
-        Optional<Connection> existingConnectionWithReversedIds = connectionsRepository.findExistingConnectionWithReversedUserIds(requestingUserId, toBeConnectedWithUserId);
-        if (existingConnectionWithReversedIds.isPresent()) {
-            return false;
-        }
+
         try {
             connectionsRepository.save(new Connection(requestingUserId, toBeConnectedWithUserId));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
+    @Override
+    public boolean saveConnectionRequestDetails(ConnectRequest connectRequest) {
+
+        if (!validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
+            return false;
+        }
+
+        if (!validateConnection(connectRequest.requestingUserId,connectRequest.toBeConnectedWithUserId)) {
+            return false;
+        }
+
+        try {
+            connectionsRepository.save(new Connection(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId));
             return true;
         } catch (Exception e) {
             return false;
@@ -189,5 +206,29 @@ public class ConnectServiceImpl implements ConnectService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public Boolean validateConnection(Long requestingUserId, Long toBeConnectedWithUserId) {
+        Long loggedInUser = userService.getLoggedInUserId();
+
+        if (!loggedInUser.equals(requestingUserId)) {
+            log.error("The logged in user (" + loggedInUser + ") does not match issuing user (" + requestingUserId + ")");
+            return false;
+        }
+
+        if (requestingUserId.equals(toBeConnectedWithUserId)) {
+            log.error("User " + requestingUserId + " may not connect with themselves");
+            return false;
+        }
+
+        Optional<Connection> existingConnectionWithReversedIds = connectionsRepository.findExistingConnectionWithReversedUserIds(requestingUserId, toBeConnectedWithUserId);
+
+        if (existingConnectionWithReversedIds.isPresent()) {
+            log.error("This connection already exists in reverse between the requesting user " + requestingUserId + " and the to be connected with user " + toBeConnectedWithUserId);
+            return false;
+        }
+
+        return true;
     }
 }

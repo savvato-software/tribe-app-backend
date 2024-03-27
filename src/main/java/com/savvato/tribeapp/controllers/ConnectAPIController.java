@@ -74,11 +74,9 @@ public class ConnectAPIController {
   @Connect
   @PostMapping
   public boolean connect(@RequestBody @Valid ConnectRequest connectRequest) {
-    if (connectService.validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
-      return connectService.saveConnectionDetails(connectRequest.requestingUserId, connectRequest.toBeConnectedWithUserId);
-    } else {
-      return false;
-    }
+
+    return connectService.saveConnectionRequestDetails(connectRequest);
+
   }
 
   @MessageMapping("/connect/room")
@@ -90,16 +88,20 @@ public class ConnectAPIController {
   @PostMapping("/cosign")
   public ResponseEntity saveCosign(@RequestBody @Valid CosignRequest cosignRequest) {
 
+    Optional<GenericResponseDTO> optionalGenericResponseDTO = cosignService.validateCosigners(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving);
+
+    if(optionalGenericResponseDTO.isPresent()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(optionalGenericResponseDTO.get());
+    }
+    
     Optional<CosignDTO> opt = cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
 
-    if(opt.isEmpty()) {
-      log.error("Users may not cosign themselves. ");
-      GenericResponseDTO genericResponseDTO = GenericResponseDTO.builder()
-              .responseMessage("Users may not cosign themselves.")
-              .build();
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(genericResponseDTO);
-    }
+    if(opt.isPresent()) {
       return ResponseEntity.status(HttpStatus.OK).body(opt.get());
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
+
   }
   @DeleteCosign
   @DeleteMapping("/cosign")

@@ -78,9 +78,9 @@ public class ConnectServiceImpl implements ConnectService {
     @Override
     public boolean saveConnectionRequestDetails(ConnectRequest connectRequest) {
 
-//        if (!validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
-//            return false;
-//        }
+        if (!validateQRCode(connectRequest.qrcodePhrase, connectRequest.toBeConnectedWithUserId)) {
+            return false;
+        }
 
         if (!validateConnection(connectRequest.requestingUserId,connectRequest.toBeConnectedWithUserId)) {
             return false;

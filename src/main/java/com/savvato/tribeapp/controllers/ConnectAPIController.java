@@ -96,14 +96,12 @@ public class ConnectAPIController {
   @PostMapping("/cosign")
   public ResponseEntity saveCosign(@RequestBody @Valid CosignRequest cosignRequest) {
 
-    // meeting note: first check if IDs are okay
     Optional<GenericResponseDTO> optionalGenericResponseDTO = cosignService.validateCosigners(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving);
 
     if(optionalGenericResponseDTO.isPresent()) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(optionalGenericResponseDTO.get());
     }
-
-    // then attempt to save cosign. Do we want to handle an exception?
+    
     Optional<CosignDTO> opt = cosignService.saveCosign(cosignRequest.userIdIssuing, cosignRequest.userIdReceiving, cosignRequest.phraseId);
 
     if(opt.isPresent()) {

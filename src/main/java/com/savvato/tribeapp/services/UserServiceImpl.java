@@ -2,6 +2,7 @@ package com.savvato.tribeapp.services;
 
 import java.util.*;
 
+import com.savvato.tribeapp.config.principal.UserPrincipal;
 import com.savvato.tribeapp.controllers.dto.UserRequest;
 import com.savvato.tribeapp.dto.UserDTO;
 import com.savvato.tribeapp.dto.UsernameDTO;
@@ -31,8 +32,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Long getLoggedInUserId(){
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		return userRepo.findByName(userDetails.getUsername()).get().getId();
+		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		return userPrincipal.getId();
 	};
 
 	// TODO: Implement the preferredContactMethod behavior
